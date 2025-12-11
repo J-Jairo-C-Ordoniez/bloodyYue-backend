@@ -14,5 +14,3 @@ const data = {
 const db = createPool(data);
 
 export default db;
-
-// consultar sobbre mysql2 y los orm // tarea 
