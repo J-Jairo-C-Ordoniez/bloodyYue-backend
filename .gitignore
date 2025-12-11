@@ -7,3 +7,7 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+
+# environment variables
+.env
+.env.example

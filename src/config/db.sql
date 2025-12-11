@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS settings (
 CREATE TABLE IF NOT EXISTS users (
   userId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100),
-  birthday DATE, /* CONSULTA FECHAS EN MYSQL */
+  birthday DATE,
   email VARCHAR(50) UNIQUE,
   password VARCHAR(255),
   avatar VARCHAR(255),
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS codes (
   codeId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   code VARCHAR(255),
-  deadLine DATE, /* CONSULTA FECHAS EN MYSQL */
+  deadLine DATETIME,
   userId INT UNSIGNED,
   type ENUM('verify', 'restartPassword'),
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS commissions (
   content VARCHAR(255),
   example VARCHAR(255),
   description VARCHAR(255),
-  price DECIMAL(10,6), /* CONSULTA SOBRE DECIMALES EN MYSQL */
+  price DECIMAL(10,2),
   terms TEXT,
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -112,8 +112,8 @@ CREATE TABLE IF NOT EXISTS cartItems (
   cartId INT UNSIGNED,
   commissionId INT UNSIGNED,
   quantity INT,
-  status ENUM('selected', 'unavailable', 'purchased'),
-  priceAtMoment DECIMAL(10,6), /* CONSULTA SOBRE DECIMALES EN MYSQL */
+  status ENUM('selected', 'unavailable', 'discarded', 'purchased'),
+  priceAtMoment DECIMAL(10,2),
   details VARCHAR(255),
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS cartItems (
 CREATE TABLE IF NOT EXISTS sales (
   saleId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   cartItemId INT UNSIGNED,
-  total DECIMAL(10,6), /* CONSULTA SOBRE DECIMALES EN MYSQL */
+  total DECIMAL(10,2),
   paymentMethod VARCHAR(100),
   isCompleted BOOLEAN DEFAULT FALSE,
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -214,7 +214,7 @@ CREATE TABLE IF NOT EXISTS postsReactions (
 CREATE TABLE IF NOT EXISTS notifications (  
   notificationId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   userId INT UNSIGNED,
-  type ENUM('reaction', 'sale', 'message', 'post'),
+  type ENUM('reaction', 'sale', 'message', 'post', 'other'),
   message VARCHAR(255),
   isRead BOOLEAN DEFAULT FALSE,
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
