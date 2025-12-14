@@ -60,16 +60,16 @@ const authController = {
             const verify = await authService.verifyCode(req.body);
             success(req, res, verify, 201);
         } catch (err) {
-            error(req, res, err.message, 400);
+            error(req, res, err.message, err.statusCode);
         }
     },
 
-    changePassword: async (req, res) => {
+    resetPassword: async (req, res) => {
         try {
-            const user = await authService.changePassword(req.body);
+            const user = await authService.resetPassword(req.body);
             success(req, res, user, 201);
         } catch (err) {
-            error(req, res, err.message, 400);
+            error(req, res, err.message, err.statusCode);
         }
     },
 
@@ -78,16 +78,17 @@ const authController = {
             const user = await authService.changeRole(req.body);
             success(req, res, user, 201);
         } catch (err) {
-            error(req, res, err.message, 400);
+            error(req, res, err.message, err.statusCode);
         }
     },
 
-    refreshToken: async (req, res) => {
+    refreshToken: async (req, res) => { 
         try {
-            const user = await authService.refreshToken(req.body);
+            const refreshToken = req.cookies?.refreshToken;
+            const user = await authService.refreshToken(refreshToken);
             success(req, res, user, 201);
         } catch (err) {
-            error(req, res, err.message, 400);
+            error(req, res, err.message, err.statusCode);
         }
     }
 };

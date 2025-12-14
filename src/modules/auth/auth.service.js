@@ -118,18 +118,18 @@ const authService = {
         }
 
         const code = await bcrypt.hash(crypto.randomInt(100000, 999999).toString(), 10);
-        const registerCode =await authRepository.createVerificationCode({
+        const registerCode = await authRepository.createVerificationCode({
             code,
             userId: user.userId,
             type
         });
 
-        if(!registerCode) {
+        if (!registerCode) {
             throw new AppError("Verification code creation failed", 500);
         }
 
         await sendMail.sendVerification(email, code);
-        return 
+        return
     },
 
     verifyCode: async (data) => {
@@ -152,7 +152,7 @@ const authService = {
         return { message: "Code verified" };
     },
 
-    changePassword: async (data) => {
+    resetPassword: async (data) => {
         const { password, email } = data;
 
         if (!validators.isPassword(password) || !validators.isEmail(email)) {
@@ -208,8 +208,33 @@ const authService = {
     },
 
     refreshToken: async (data) => {
-        // Implement refresh token logic here
-        return { message: "Refresh token (placeholder)" };
+
+        if (!data) throw new AppError("Unauthorized", 401);
+
+        let payload;
+
+        try {
+            payload = verifyToken.refreshToken(data);
+        } catch {
+            throw new AppError("Invalid refresh token", 401);
+        }
+
+        const stored = await authRepository.getRefreshToken(payload.userId);
+        if (!stored || stored.isRevoked) {
+            throw new AppError("Refresh token revoked", 401);
+        }
+
+        const user = await authRepository.getByUserId(stored.userId);
+        if (!user) {
+            throw new AppError("User not found", 404);
+        }
+
+        const newAccessToken = createToken.accesToken({
+            userId: stored.userId,
+            rolId: user.rolId,
+        });
+
+        return { accessToken: newAccessToken };
     }
 };
 

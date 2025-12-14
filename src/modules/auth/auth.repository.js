@@ -134,6 +134,19 @@ const authRepository = {
         } catch (err) {
             throw new AppError(err.message, err.code);
         }
+    },
+
+    async getRefreshToken(data) {
+        try {
+            const [result] = await db.query(
+                'SELECT * FROM refreshTokens WHERE userId = ?',
+                [data]
+            );
+            
+            return (result[0]) ? result[0] : null;   
+        } catch (err) {
+           throw new AppError(err.message, err.code) 
+        }
     }
 }
 
