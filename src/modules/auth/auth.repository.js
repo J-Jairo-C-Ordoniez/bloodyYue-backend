@@ -23,9 +23,9 @@ const authRepository = {
                 'SELECT * FROM users WHERE email = ?',
                 [email]
             );
-            return (result[0]) ? result[0] : null;   
+            return (result[0]) ? result[0] : null;
         } catch (err) {
-           throw new AppError(err.message, err.code) 
+            throw new AppError(err.message, err.code)
         }
     },
 
@@ -35,9 +35,9 @@ const authRepository = {
                 'SELECT * FROM users WHERE userId = ?',
                 [userId]
             );
-            return (result[0]) ? result[0] : null;   
+            return (result[0]) ? result[0] : null;
         } catch (err) {
-           throw new AppError(err.message, err.code) 
+            throw new AppError(err.message, err.code)
         }
     },
 
@@ -118,9 +118,9 @@ const authRepository = {
                 'SELECT * FROM roles WHERE rolId = ?',
                 [rolId]
             );
-            return (result[0]) ? result[0] : null;   
+            return (result[0]) ? result[0] : null;
         } catch (err) {
-           throw new AppError(err.message, err.code) 
+            throw new AppError(err.message, err.code)
         }
     },
 
@@ -142,11 +142,24 @@ const authRepository = {
                 'SELECT * FROM refreshTokens WHERE userId = ?',
                 [data]
             );
-            
-            return (result[0]) ? result[0] : null;   
+
+            return (result[0]) ? result[0] : null;
         } catch (err) {
-           throw new AppError(err.message, err.code) 
+            throw new AppError(err.message, err.code)
         }
+    },
+
+    async roleHasPermission(rolId, permissionTitleBack) {
+        const [rows] = await db.query(`
+        SELECT 1
+        FROM roles r
+        INNER JOIN rolXpermits rp ON r.rolId = rp.rolId
+        INNER JOIN permits p ON rp.permitId = p.permitId
+        WHERE r.rolId = ? AND p.name = ?
+        LIMIT 1
+    `, [rolId, permissionTitleBack]);
+
+        return rows.length > 0;
     }
 }
 

@@ -11,6 +11,7 @@ import cartRoutes from './modules/cart/cart.routes.js';
 import salesRoutes from './modules/sales/sales.routes.js';
 import postsRoutes from './modules/posts/posts.routes.js';
 import chatRoutes from './modules/chat/chat.routes.js';
+import authenticate from './middlewares/auth/authenticate.middleware.js';
 
 const PORT = process.env.PORT || 3000;
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
+
 
 // Routes
 app.use('/api/auth', authRoutes);
