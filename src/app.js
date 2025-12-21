@@ -1,8 +1,10 @@
+import 'dotenv/config';
+
 import express from 'express';
 import cors from 'cors';
+import morgan from 'morgan';
 import helmet from 'helmet';
 import authRoutes from './modules/auth/auth.routes.js';
-import morgan from 'morgan';
 import userRoutes from './modules/users/user.routes.js';
 import adminRoutes from './modules/admin/admin.routes.js';
 import settingsRoutes from './modules/settings/settings.routes.js';
@@ -10,8 +12,8 @@ import commissionsRoutes from './modules/commissions/commissions.routes.js';
 import cartRoutes from './modules/cart/cart.routes.js';
 import salesRoutes from './modules/sales/sales.routes.js';
 import postsRoutes from './modules/posts/posts.routes.js';
+import mediaRoutes from './modules/media/media.routes.js';
 import chatRoutes from './modules/chat/chat.routes.js';
-import authenticate from './middlewares/auth/authenticate.middleware.js';
 
 const PORT = process.env.PORT || 3000;
 
@@ -21,7 +23,6 @@ app.use(express.json());
 app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
-
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -33,6 +34,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/posts', postsRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/media', mediaRoutes);
 
 app.get('/', (req, res) => {
   res.send('BloodyYue Backend API is running');

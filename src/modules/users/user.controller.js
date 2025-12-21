@@ -1,20 +1,69 @@
-import * as userService from './user.service.js';
+import userService from './user.service.js';
 import { success, error } from '../../utils/response/response.js';
 
-export const getAll = async (req, res) => {
-    try {
-        const users = await userService.getAll();
-        success(req, res, users, 200);
-    } catch (err) {
-        error(req, res, err.message, 500);
-    }
-};
+const usersController = {
+    getMyProfile: async (req, res) => {
+        try {
+            const user = await userService.getMyProfile(req.user.id);
+            success(req, res, user, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
 
-export const getById = async (req, res) => {
-    try {
-        const user = await userService.getById(req.params.id);
-        success(req, res, user, 200);
-    } catch (err) {
-        error(req, res, err.message, 500);
-    }
-};
+    updateMyProfile: async (req, res) => {
+        try {
+            const user = await userService.updateMyProfile(req.user.id, req.body);
+            success(req, res, user, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
+    changeStatus: async (req, res) => {
+        try {
+            const user = await userService.changeStatus(req.user.id, req.body);
+            success(req, res, user, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
+    getMyTestimonies: async (req, res) => {
+        try {
+            const testimonies = await userService.getMyTestimonies(req.user.id);
+            success(req, res, testimonies, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
+    createTestimony: async (req, res) => {
+        try {
+            const testimony = await userService.createTestimony(req.user.id, req.body);
+            success(req, res, testimony, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
+    updateTestimony: async (req, res) => {
+        try {
+            const testimony = await userService.updateTestimony(req.user.id, req.body);
+            success(req, res, testimony, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
+    deleteTestimony: async (req, res) => {
+        try {
+            const testimony = await userService.deleteTestimony(req.user.id, req.body);
+            success(req, res, testimony, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+}
+
+export default usersController;

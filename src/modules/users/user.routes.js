@@ -1,9 +1,51 @@
 import { Router } from 'express';
-import * as userController from './user.controller.js';
+import usersController from './user.controller.js';
+import authenticate from '../../middlewares/auth/authenticate.middleware.js';
+import authorizePermission from '../../middlewares/auth/authorize.middleware.js';
 
 const router = Router();
 
-router.get('/', userController.getAll);
-router.get('/:id', userController.getById);
+router.get(
+    '/me',
+    authenticate,
+    usersController.getMyProfile
+);
+
+router.put(
+    '/me',
+    authenticate,
+    usersController.updateMyProfile
+);
+
+router.patch(
+    '/:id/status',
+    authenticate,
+    authorizePermission('changeUserStatus'),
+    usersController.changeStatus
+);
+
+router.get(
+    '/testimonies/me',
+    authenticate,
+    usersController.getMyTestimonies
+);
+
+router.post(
+    '/testimonies',
+    authenticate,
+    usersController.createTestimony
+);
+
+router.put(
+    '/testimonies/:id',
+    authenticate,
+    usersController.updateTestimony
+);
+
+router.delete(
+    '/testimonies/:id',
+    authenticate,
+    usersController.deleteTestimony
+);
 
 export default router;
