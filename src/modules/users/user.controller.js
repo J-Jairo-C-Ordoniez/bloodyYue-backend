@@ -29,10 +29,10 @@ const usersController = {
         }
     },
 
-    getMyTestimonies: async (req, res) => {
+    getMyTestimony: async (req, res) => {
         try {
-            const testimonies = await userService.getMyTestimonies(req.user.userId);
-            success(req, res, testimonies, 200);
+            const testimony = await userService.getMyTestimony(req.user.userId);
+            success(req, res, testimony, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
         }
@@ -58,7 +58,7 @@ const usersController = {
 
     deleteTestimony: async (req, res) => {
         try {
-            const testimony = await userService.deleteTestimony(req.user.userId, req.body);
+            const testimony = await userService.deleteTestimony(req.body);
             success(req, res, testimony, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);

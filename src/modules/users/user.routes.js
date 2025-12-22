@@ -25,9 +25,9 @@ router.patch(
 );
 
 router.get(
-    '/testimonies/me',
+    '/testimony/me',
     authenticate,
-    usersController.getMyTestimonies
+    usersController.getMyTestimony
 );
 
 router.post(
