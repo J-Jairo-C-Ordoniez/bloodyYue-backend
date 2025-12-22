@@ -1,4 +1,4 @@
-import { pool } from '../../config/database.js';
+import db from '../../config/db.js';
 
 export const getSettings = async () => {
     return { theme: 'dark', language: 'en' };

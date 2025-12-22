@@ -1,4 +1,4 @@
-import { pool } from '../../config/database.js';
+import db from '../../config/db.js';
 
 export const create = async (data) => {
     // await pool.query('INSERT INTO sales SET ?', [data]);

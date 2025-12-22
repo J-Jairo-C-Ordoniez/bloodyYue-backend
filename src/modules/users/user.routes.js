@@ -18,10 +18,16 @@ router.put(
 );
 
 router.patch(
-    '/:id/status',
+    '/me/status',
     authenticate,
     authorizePermission('changeUserStatus'),
     usersController.changeStatus
+);
+
+router.get(
+    '/testimonies',
+    authenticate,
+    usersController.getTestimonies
 );
 
 router.get(
@@ -37,7 +43,7 @@ router.post(
 );
 
 router.put(
-    '/testimonies/:id',
+    '/testimonies',
     authenticate,
     usersController.updateTestimony
 );
@@ -45,6 +51,7 @@ router.put(
 router.delete(
     '/testimonies/:id',
     authenticate,
+    authorizePermission('deleteUserTestimony'),
     usersController.deleteTestimony
 );
 

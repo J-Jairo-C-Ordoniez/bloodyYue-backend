@@ -1,5 +1,5 @@
-import authRepository from "../../modules/auth/auth.repository";
-import { error } from "../../utils/response/response";
+import authRepository from "../../modules/auth/auth.repository.js";
+import { error } from "../../utils/response/response.js";
 
 export default function authorizePermission(permission) {
     return async (req, res, next) => {

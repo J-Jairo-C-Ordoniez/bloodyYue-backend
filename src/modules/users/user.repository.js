@@ -45,6 +45,17 @@ const userRepository = {
         }
     },
 
+    getTestimonies: async () => {
+        try {
+            const [result] = await db.query(
+                'SELECT testimonyId, userId, message, createdAt FROM testimonies');
+
+            return (result) ? result : null;
+        } catch (err) {
+            throw new AppError(err.message, err.code)
+        }
+    },
+
     getTestimonyById: async (id) => {
         try {
             const [result] = await db.query(

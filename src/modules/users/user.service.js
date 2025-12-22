@@ -54,6 +54,16 @@ const usersService = {
         return usersService.getMyProfile(id);
     },
 
+    getTestimonies: async () => {
+        const testimonies = await userRepository.getTestimonies();
+
+        if (!testimonies) {
+            throw new AppError('Testimonies not found', 404);
+        }
+
+        return testimonies;
+    },
+
     getMyTestimony: async (id) => {
         const user = await userRepository.getUserById(id);
 

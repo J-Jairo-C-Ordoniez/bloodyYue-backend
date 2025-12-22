@@ -1,4 +1,4 @@
-import { pool } from '../../config/database.js';
+import db from '../../config/db.js';
 
 export const addItem = async (data) => {
     // await pool.query('INSERT INTO cart_items SET ?', [data]);
