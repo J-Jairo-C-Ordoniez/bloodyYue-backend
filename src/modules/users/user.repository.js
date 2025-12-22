@@ -1,11 +1,12 @@
-import { pool } from '../../config/database.js';
+import db from '../../config/db.js';
 
-export const getAll = async () => {
-    // const [rows] = await pool.query('SELECT * FROM users');
-    return [];
+const userRepository = {
+    getUserById: async (id) => {
+        const [result] = await db.query(
+            'SELECT userId, name, birthday, avatar, poster, isActive, isVerified, status FROM users WHERE userId = ?', [id]);
+        
+        return (result[0]) ? result[0] : null;
+    },
 };
 
-export const getById = async (id) => {
-    // const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
-    return { id, name: "User Placeholder" };
-};
+export default userRepository;

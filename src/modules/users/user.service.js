@@ -1,8 +1,8 @@
-import * as userRepository from './user.repository.js';
+import userRepository from './user.repository.js';
 
 const usersService = {
     getMyProfile: async (id) => {
-        const user = await userRepository.getMyProfile(id);
+        const user = await userRepository.getUserById(id);
 
         if(!user) {
             throw new AppError('User not found', 404);
@@ -12,7 +12,24 @@ const usersService = {
     },
 
     updateMyProfile: async (id, body) => {
-        return userRepository.updateMyProfile(id, body);
+        const user = await userRepository.getUserById(id);
+
+        if(!user) {
+            throw new AppError('User not found', 404);
+        }
+
+        /*  
+            name
+            birthday
+            email
+            password
+            avatar
+            poster
+        */
+
+        const updatedUser = await userRepository.updateMyProfile(id, body);
+
+        return updatedUser;
     },
     
     changeStatus: async (id, body) => {
