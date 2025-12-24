@@ -19,12 +19,12 @@ router.get(
 );
 
 router.get(
-    '/posts/filter/:labelId',
+    '/posts/filter/label/:labelId',
     postsController.getPostsByLabel
 );
 
 router.get(
-    '/posts/filter/:title',
+    '/posts/filter/title/:title',
     postsController.getPostsByTitle
 );
 
@@ -49,7 +49,7 @@ router.get(
 );
 
 router.post(
-    '/:id/reactions',
+    '/posts/:id/reactions',
     postsController.createPostReaction
 );
 
@@ -59,23 +59,3 @@ router.delete(
 );
 
 export default router;
-
-/* 
-{
-    "post": {
-        "title": "Bienbenido a BloodyYue",
-        "description": "Primer post de BloodyYue",
-        "content": "https://www.bloodyyue.com",
-        "typePostId": "image",
-        "userId": 1
-    },
-    "labels": [
-        {
-            "labelId": 1
-        },
-        {
-            "labelId": 4
-        }
-    ]
-}
-*/
