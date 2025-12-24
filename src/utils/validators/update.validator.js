@@ -9,7 +9,11 @@ const validationRules = {
     email: isEmail,
     password: isPassword,
     avatar: isLink,
-    poster: isLink
+    poster: isLink,
+    title: isString,
+    description: isString,
+    content: isLink,
+    typePostId: isString
 }
 
 export default function validateUpdate(data) {

@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 
 
 const mailTransporter = nodemailer.createTransport({
-    service: process.env.MAIL_SERVICE,
+    service: process.env.MAILSERVICE,
     auth: {
         user: process.env.MAILUSER,
         pass: process.env.MAILPASS

@@ -13,7 +13,7 @@ const authRepository = {
             );
             return (result.insertId) ? { id: result.insertId, ...data } : null;
         } catch (err) {
-            throw new AppError(err.message, err.code);
+            throw ({ message: err.message, statusCode: err.code });
         }
     },
 
@@ -25,7 +25,7 @@ const authRepository = {
             );
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({ message: err.message, statusCode: err.code });
         }
     },
 
@@ -37,7 +37,7 @@ const authRepository = {
             );
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({ message: err.message, statusCode: err.code });
         }
     },
 
@@ -50,7 +50,7 @@ const authRepository = {
 
             return result.affectedRows > 0;
         } catch (err) {
-            throw new AppError(err.message, err.code);
+            throw ({ message: err.message, statusCode: err.code });
         }
     },
 
@@ -65,9 +65,9 @@ const authRepository = {
                 values
             );
 
-            return (result.insertId) ? { id: result.insertId, ...data } : null;
+            return (result.insertId) ? { refreshTokenId: result.insertId } : null;
         } catch (err) {
-            throw new AppError(err.message, err.code);
+            throw ({ message: err.message, statusCode: err.code });
         }
     },
 
@@ -79,7 +79,7 @@ const authRepository = {
             );
             return result.affectedRows > 0;
         } catch (err) {
-            throw new AppError(err.message, err.code);
+            throw ({ message: err.message, statusCode: err.code });
         }
     },
 
@@ -94,9 +94,33 @@ const authRepository = {
                 values
             );
 
-            return (result.insertId) ? { id: result.insertId, ...data } : null;
+            return (result.insertId) ? result.insertId : null;
         } catch (err) {
-            throw new AppError(err.message, err.code);
+            throw ({ message: err.message, statusCode: err.code });
+        }
+    },
+
+    async getCodeByUserId(userId) {
+        try {
+            const [result] = await db.query(
+                'SELECT * FROM codes WHERE userId = ? ORDER BY deadline DESC LIMIT 1',
+                [userId]
+            );
+            return (result[0]) ? result[0] : null;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code });
+        }
+    },
+
+    async updateVerification(data) {
+        try {
+            const [result] = await db.query(
+                'UPDATE users SET isVerified = ? WHERE userId = ?',
+                [data.isVerified, data.userId]
+            );
+            return result.affectedRows > 0;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code });
         }
     },
 
@@ -108,7 +132,7 @@ const authRepository = {
             );
             return result.affectedRows > 0;
         } catch (err) {
-            throw new AppError(err.message, err.code);
+            throw ({ message: err.message, statusCode: err.code });
         }
     },
 
@@ -120,7 +144,7 @@ const authRepository = {
             );
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({ message: err.message, statusCode: err.code });
         }
     },
 
@@ -132,7 +156,7 @@ const authRepository = {
             );
             return result.affectedRows > 0;
         } catch (err) {
-            throw new AppError(err.message, err.code);
+            throw ({ message: err.message, statusCode: err.code });
         }
     },
 
@@ -145,21 +169,25 @@ const authRepository = {
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({ message: err.message, statusCode: err.code });
         }
     },
 
     async roleHasPermission(rolId, permissionTitleBack) {
-        const [rows] = await db.query(`
-        SELECT 1
-        FROM roles r
-        INNER JOIN rolXpermits rp ON r.rolId = rp.rolId
-        INNER JOIN permits p ON rp.permitId = p.permitId
-        WHERE r.rolId = ? AND p.name = ?
-        LIMIT 1
-    `, [rolId, permissionTitleBack]);
+        try {
+            const [rows] = await db.query(`
+                SELECT 1
+                FROM roles r
+                INNER JOIN rolXpermits rp ON r.rolId = rp.rolId
+                INNER JOIN permits p ON rp.permitId = p.permitId
+                WHERE r.rolId = ? AND p.name = ?
+                LIMIT 1
+            `, [rolId, permissionTitleBack]);
 
-        return rows.length > 0;
+            return rows.length > 0;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code });
+        }
     }
 }
 

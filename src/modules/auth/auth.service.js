@@ -15,12 +15,12 @@ const authService = {
             !validators.isPassword(password) ||
             !validators.isString(name)
         ) {
-            throw new AppError("Invalid input data", 400);
+            throw ({ message: "Invalid input data", statusCode: 400 });
         }
 
         const existing = await authRepository.getByEmail(email);
         if (existing) {
-            throw new AppError("Email already registered", 409);
+            throw ({ message: "Email already registered", statusCode: 409 });
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
@@ -29,11 +29,11 @@ const authService = {
             name: name.trim(),
             email: email.toLowerCase(),
             password: hashPassword,
-            rolId: 1
+            rolId: 2
         });
 
         if (!user) {
-            throw new AppError("User creation failed", 500);
+            throw ({ message: "User creation failed", statusCode: 500 });
         }
 
         return {
@@ -46,27 +46,27 @@ const authService = {
         const { email, password } = data;
 
         if (!validators.isEmail(email) || !password) {
-            throw new AppError("Invalid input data", 400);
+            throw ({ message: "Invalid input data", statusCode: 400 });
         }
 
         const user = await authRepository.getByEmail(email);
         if (!user) {
-            throw new AppError("Invalid credentials", 401);
+            throw ({ message: "Invalid credentials", statusCode: 401 });
         }
 
         const ok = await bcrypt.compare(password, user.password);
         if (!ok) {
-            throw new AppError("Invalid credentials", 401);
+            throw ({ message: "Invalid credentials", statusCode: 401 });
         }
 
         if (!user.isVerified) {
-            throw new AppError("Account not verified", 401);
+            throw ({ message: "Account not verified", statusCode: 401 });
         }
 
         const isActiveUser = await authRepository.isActiveUser(user.userId, true);
 
         if (!isActiveUser) {
-            throw new AppError("User status change failed", 500);
+            throw ({ message: "User status change failed", statusCode: 500 });
         }
 
         const accessToken = createToken.accesToken({ userId: user.userId, rolId: user.rolId });
@@ -74,11 +74,11 @@ const authService = {
 
         const refresh = await authRepository.createRefreshToken({
             userId: user.userId,
-            refreshToken,
+            token: refreshToken,
         });
 
         if (!refresh) {
-            throw new AppError("Refresh token creation failed", 500);
+            throw ({ message: "Refresh token creation failed", statusCode: 500 });
         }
 
         return {
@@ -98,7 +98,7 @@ const authService = {
 
     logout: async (data) => {
         if (!data) {
-            throw new AppError("Invalid input data", 400);
+            throw ({ message: "Invalid input data", statusCode: 400 });
         }
 
         await authRepository.revokedRefreshToken(data);
@@ -109,23 +109,25 @@ const authService = {
         const { email, type } = data;
 
         if (!validators.isEmail(email)) {
-            throw new AppError("Invalid email", 400);
+            throw ({ message: "Invalid email", statusCode: 400 });
         }
 
         const user = await authRepository.getByEmail(email);
         if (!user) {
-            throw new AppError("User not found", 404);
+            throw ({ message: "User not found", statusCode: 404 });
         }
 
-        const code = await bcrypt.hash(crypto.randomInt(100000, 999999).toString(), 10);
+        const code = crypto.randomInt(100000, 999999).toString();
+        const hashCode = await bcrypt.hash(code, 10);
+
         const registerCode = await authRepository.createVerificationCode({
-            code,
+            code: hashCode,
             userId: user.userId,
             type
         });
 
         if (!registerCode) {
-            throw new AppError("Verification code creation failed", 500);
+            throw ({ message: "Verification code creation failed", statusCode: 500 });
         }
 
         await sendMail.sendVerification(email, code);
@@ -133,35 +135,53 @@ const authService = {
     },
 
     verifyCode: async (data) => {
-        const { code, userId } = data;
+        const { code, email } = data;
 
-        if (!code || !userId) {
-            throw new AppError("Invalid input data", 400);
+        if (!code || !email) {
+            throw ({ message: "Invalid input data", statusCode: 400 });
         }
 
-        const verifyCode = await authRepository.getCodeByUserId(userId);
+        const user = await authRepository.getByEmail(email);
+        if (!user) {
+            throw ({ message: "User not found", statusCode: 404 });
+        }
+
+        if (user.isVerified) {
+            throw ({ message: "Account already verified", statusCode: 401 });
+        }
+
+        const verifyCode = await authRepository.getCodeByUserId(user.userId);
         if (!verifyCode) {
-            throw new AppError("Code expired", 401);
+            throw ({ message: "Code expired", statusCode: 401 });
         }
 
         const ok = await bcrypt.compare(code, verifyCode.code);
         if (!ok) {
-            throw new AppError("Invalid code", 401);
+            throw ({ message: "Invalid code", statusCode: 401 });
         }
 
-        return { message: "Code verified" };
+        const updated = await authRepository.updateVerification({
+            userId: user.userId,
+            isVerified: true
+        });
+
+        if (!updated) {
+            throw ({ message: "Account verification failed", statusCode: 500 });
+        }
+
+        return { message: "Account verified" };
     },
 
     resetPassword: async (data) => {
         const { password, email } = data;
 
         if (!validators.isPassword(password) || !validators.isEmail(email)) {
-            throw new AppError("Invalid input data", 400);
+            throw ({ message: "Invalid input data", statusCode: 400 });
         }
 
         const user = await authRepository.getByEmail(email);
         if (!user) {
-            throw new AppError("User not found", 404);
+            throw ({ message: "User not found", statusCode: 404 });
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
@@ -172,7 +192,7 @@ const authService = {
         });
 
         if (!updated) {
-            throw new AppError("Password change failed", 500);
+            throw ({ message: "Password change failed", statusCode: 500 });
         }
 
         return { message: "Password changed" };
@@ -182,17 +202,17 @@ const authService = {
         const { userId, rolId } = data;
 
         if (!userId || !rolId) {
-            throw new AppError("Invalid input data", 400);
+            throw ({ message: "Invalid input data", statusCode: 400 });
         }
 
         const user = await authRepository.getByUserId(userId);
         if (!user) {
-            throw new AppError("User not found", 404);
+            throw ({ message: "User not found", statusCode: 404 });
         }
 
         const rol = await authRepository.getRolById(rolId);
         if (!rol) {
-            throw new AppError("Role not found", 404);
+            throw ({ message: "Role not found", statusCode: 404 });
         }
 
         const updated = await authRepository.updateRol({
@@ -201,7 +221,7 @@ const authService = {
         });
 
         if (!updated) {
-            throw new AppError("Role change failed", 500);
+            throw ({ message: "Role change failed", statusCode: 500 });
         }
 
         return { message: "Role changed" };
@@ -209,24 +229,24 @@ const authService = {
 
     refreshToken: async (data) => {
 
-        if (!data) throw new AppError("Unauthorized", 401);
+        if (!data) throw ({ message: "Unauthorized", statusCode: 401 });
 
         let payload;
 
         try {
             payload = verifyToken.refreshToken(data);
         } catch {
-            throw new AppError("Invalid refresh token", 401);
+            throw ({ message: "Invalid refresh token", statusCode: 401 });
         }
 
         const stored = await authRepository.getRefreshToken(payload.userId);
         if (!stored || stored.isRevoked) {
-            throw new AppError("Refresh token revoked", 401);
+            throw ({ message: "Refresh token revoked", statusCode: 401 });
         }
 
         const user = await authRepository.getByUserId(stored.userId);
         if (!user) {
-            throw new AppError("User not found", 404);
+            throw ({ message: "User not found", statusCode: 404 });
         }
 
         const newAccessToken = createToken.accesToken({
