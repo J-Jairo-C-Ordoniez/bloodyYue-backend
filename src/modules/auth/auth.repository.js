@@ -74,11 +74,13 @@ const authRepository = {
     async revokedRefreshToken(data) {
         try {
             const [result] = await db.query(
-                'UPDATE refreshTokens SET isRevoked = 1 WHERE refreshToken = ?',
+                'UPDATE refreshTokens SET isRevoked = 1 WHERE token = ?',
                 [data]
             );
+
             return result.affectedRows > 0;
         } catch (err) {
+            console.log(err);
             throw ({ message: err.message, statusCode: err.code });
         }
     },

@@ -41,6 +41,10 @@ router.post(
     authorizePermission('changeRole'), 
     authController.changeRole
 );
-router.post('/refreshToken', authController.refreshToken);
+
+router.post(
+    '/refreshToken', 
+    authController.refreshToken
+);
 
 export default router;

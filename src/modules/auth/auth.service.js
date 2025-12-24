@@ -146,18 +146,22 @@ const authService = {
             throw ({ message: "User not found", statusCode: 404 });
         }
 
-        if (user.isVerified) {
-            throw ({ message: "Account already verified", statusCode: 401 });
-        }
-
         const verifyCode = await authRepository.getCodeByUserId(user.userId);
         if (!verifyCode) {
             throw ({ message: "Code expired", statusCode: 401 });
         }
 
+        if (user.isVerified && verifyCode.type === 'verify') {
+            throw ({ message: "Account already verified", statusCode: 401 });
+        }
+
         const ok = await bcrypt.compare(code, verifyCode.code);
         if (!ok) {
             throw ({ message: "Invalid code", statusCode: 401 });
+        }
+
+        if (verifyCode.type === 'restartPassword') {
+            return {message: 'Code verified'}
         }
 
         const updated = await authRepository.updateVerification({

@@ -1,6 +1,5 @@
 import postsRepository from './posts.repository.js';
 import validators from '../../utils/validators/index.js';
-import usersRepository from '../users/users.repository.js';
 
 const postsService = {
     createPost: async (userId, data) => {
