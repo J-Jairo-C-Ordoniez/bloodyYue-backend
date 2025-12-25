@@ -23,34 +23,12 @@ const userRepository = {
         }
     },
 
-    changeStatus: async (id, status) => {
-        try {
-            const [result] = await db.query(
-                'UPDATE users SET status = ? WHERE userId = ?', [status, id]);
-
-            return result.affectedRows > 0;
-        } catch (err) {
-            throw new AppError(err.message, err.code)
-        }
-    },
-
     getTestimonyByUserId: async (id) => {
         try {
             const [result] = await db.query(
                 'SELECT testimonyId, userId, message, createdAt FROM testimonies WHERE userId = ?', [id]);
 
             return (result[0]) ? result[0] : null;
-        } catch (err) {
-            throw new AppError(err.message, err.code)
-        }
-    },
-
-    getTestimonies: async () => {
-        try {
-            const [result] = await db.query(
-                'SELECT testimonyId, userId, message, createdAt FROM testimonies');
-
-            return (result) ? result : null;
         } catch (err) {
             throw new AppError(err.message, err.code)
         }
@@ -95,6 +73,17 @@ const userRepository = {
                 'DELETE FROM testimonies WHERE testimonyId = ?', [id]);
 
             return (result.affectedRows > 0) ? { testimonyId: id } : null;
+        } catch (err) {
+            throw new AppError(err.message, err.code)
+        }
+    },
+
+    getTestimonies: async () => {
+        try {
+            const [result] = await db.query(
+                'SELECT testimonyId, userId, message, createdAt FROM testimonies');
+
+            return (result.length > 0) ? result : null;
         } catch (err) {
             throw new AppError(err.message, err.code)
         }

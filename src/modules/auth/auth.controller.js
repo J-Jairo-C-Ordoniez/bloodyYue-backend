@@ -90,7 +90,16 @@ const authController = {
         } catch (err) {
             error(req, res, err.message, err.statusCode);
         }
-    }
+    },
+
+    changeStatus: async (req, res) => {
+        try {
+            const user = await authService.changeStatus(req.params.userId, req.body);
+            success(req, res, user, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
 };
 
 export default authController;

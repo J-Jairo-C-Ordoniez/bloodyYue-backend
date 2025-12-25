@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import sendMail from '../../utils/mailer/index.js';
 import createToken from '../../utils/tokens/create.token.js';
+import verifyToken from '../../utils/tokens/verify.token.js';
 
 
 const authService = {
@@ -235,13 +236,9 @@ const authService = {
 
         if (!data) throw ({ message: "Unauthorized", statusCode: 401 });
 
-        let payload;
+        let payload = verifyToken.refreshToken(data);
 
-        try {
-            payload = verifyToken.refreshToken(data);
-        } catch {
-            throw ({ message: "Invalid refresh token", statusCode: 401 });
-        }
+        if (!payload) throw ({ message: "Invalid refresh token", statusCode: 401 });
 
         const stored = await authRepository.getRefreshToken(payload.userId);
         if (!stored || stored.isRevoked) {
@@ -259,7 +256,21 @@ const authService = {
         });
 
         return { accessToken: newAccessToken };
-    }
+    },
+
+    changeStatus: async (id, data) => {
+        if (!id) {
+            throw ({ message: "Invalid user", statusCode: 400 });
+        }
+
+        const updateStatus = await userRepository.changeStatus(id, data.status);
+
+        if (!updateStatus) {
+            throw ({ message: "Field Not Updated", statusCode: 404 });
+        }
+
+        return usersService.getMyProfile(id);
+    },
 };
 
 export default authService;

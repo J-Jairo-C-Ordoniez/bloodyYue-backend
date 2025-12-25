@@ -2,57 +2,57 @@ import { Router } from 'express';
 import usersController from './user.controller.js';
 import authenticate from '../../middlewares/auth/authenticate.middleware.js';
 import authorizePermission from '../../middlewares/auth/authorize.middleware.js';
+import statusUser from '../../middlewares/auth/statusUser.middleware.js';
 
 const router = Router();
 
 router.get(
     '/me',
     authenticate,
+    statusUser,
     usersController.getMyProfile
 );
 
 router.put(
     '/me',
     authenticate,
+    statusUser,
     usersController.updateMyProfile
 );
 
-router.patch(
-    '/me/status',
+router.get(
+    '/me/testimonies',
     authenticate,
-    authorizePermission('changeUserStatus'),
-    usersController.changeStatus
+    statusUser,
+    usersController.getMyTestimony
+);
+
+router.post(
+    '/me/testimonies',
+    authenticate,
+    statusUser,
+    usersController.createTestimony
+);
+
+router.put(
+    '/me/testimonies',
+    authenticate,
+    statusUser,
+    usersController.updateTestimony
+);
+
+router.delete(
+    '/me/testimonies',
+    authenticate,
+    statusUser,
+    authorizePermission('deleteUserTestimony'),
+    usersController.deleteTestimony
 );
 
 router.get(
     '/testimonies',
     authenticate,
     usersController.getTestimonies
-);
-
-router.get(
-    '/testimony/me',
-    authenticate,
-    usersController.getMyTestimony
-);
-
-router.post(
-    '/testimonies',
-    authenticate,
-    usersController.createTestimony
-);
-
-router.put(
-    '/testimonies',
-    authenticate,
-    usersController.updateTestimony
-);
-
-router.delete(
-    '/testimonies/:id',
-    authenticate,
-    authorizePermission('deleteUserTestimony'),
-    usersController.deleteTestimony
 );
 
 export default router;

@@ -1,19 +1,16 @@
-import isEmail from "./email.validator.js";
-import isPassword from "./password.validator.js";
 import isString from "./string.validator.js";
 import isLink from "./link.validator.js";
 
 const validationRules = {
     name: isString,
     birthday: isString,
-    email: isEmail,
-    password: isPassword,
     avatar: isLink,
     poster: isLink,
     title: isString,
     description: isString,
     content: isLink,
-    typePostId: isString
+    typePostId: isString,
+    message: isString
 }
 
 export default function validateUpdate(data) {

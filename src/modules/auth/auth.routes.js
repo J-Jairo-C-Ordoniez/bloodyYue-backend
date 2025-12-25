@@ -47,4 +47,11 @@ router.post(
     authController.refreshToken
 );
 
+router.patch(
+    '/changeStatus/:userId',
+    authenticate,
+    authorizePermission('changeUserStatus'),
+    authController.changeStatus
+);
+
 export default router;

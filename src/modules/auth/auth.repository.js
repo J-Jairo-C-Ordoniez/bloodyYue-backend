@@ -165,7 +165,7 @@ const authRepository = {
     async getRefreshToken(data) {
         try {
             const [result] = await db.query(
-                'SELECT * FROM refreshTokens WHERE userId = ?',
+                'SELECT * FROM refreshTokens WHERE userId = ? ORDER BY createdAt DESC LIMIT 1',
                 [data]
             );
 
@@ -177,20 +177,31 @@ const authRepository = {
 
     async roleHasPermission(rolId, permissionTitleBack) {
         try {
-            const [rows] = await db.query(`
+            const [result] = await db.query(`
                 SELECT 1
                 FROM roles r
                 INNER JOIN rolXpermits rp ON r.rolId = rp.rolId
                 INNER JOIN permits p ON rp.permitId = p.permitId
-                WHERE r.rolId = ? AND p.name = ?
+                WHERE r.rolId = ? AND p.titleBack = ?
                 LIMIT 1
             `, [rolId, permissionTitleBack]);
 
-            return rows.length > 0;
+            return result.length > 0;
         } catch (err) {
             throw ({ message: err.message, statusCode: err.code });
         }
-    }
+    },
+
+    changeStatus: async (id, status) => {
+        try {
+            const [result] = await db.query(
+                'UPDATE users SET status = ? WHERE userId = ?', [status, id]);
+
+            return result.affectedRows > 0;
+        } catch (err) {
+            throw new AppError(err.message, err.code)
+        }
+    },
 }
 
 export default authRepository;

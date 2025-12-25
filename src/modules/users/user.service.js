@@ -12,8 +12,8 @@ const usersService = {
         return user;
     },
 
-    updateMyProfile: async (id, data) => {
-        if (!id) {
+    updateMyProfile: async (userId, data) => {
+        if (!userId) {
             throw ({ message: "Invalid user", statusCode: 400 });
         }
 
@@ -23,37 +23,13 @@ const usersService = {
             throw ({ message: errors, statusCode: 400 });
         }
 
-        const updatedUser = await userRepository.updateMyProfile(id, data);
+        const updatedUser = await userRepository.updateMyProfile(userId, data);
 
         if (!updatedUser) {
             throw new AppError('Fields Not Updated', 404);
         }
 
         return usersService.getMyProfile(id);
-    },
-
-    changeStatus: async (id, data) => {
-        if (!id) {
-            throw ({ message: "Invalid user", statusCode: 400 });
-        }
-
-        const updateStatus = await userRepository.changeStatus(id, data.status);
-
-        if (!updateStatus) {
-            throw ({ message: "Field Not Updated", statusCode: 404 });
-        }
-
-        return usersService.getMyProfile(id);
-    },
-
-    getTestimonies: async () => {
-        const testimonies = await userRepository.getTestimonies();
-
-        if (!testimonies) {
-            throw new AppError('Testimonies not found', 404);
-        }
-
-        return testimonies;
     },
 
     getMyTestimony: async (id) => {
@@ -111,8 +87,10 @@ const usersService = {
             throw ({ message: "User has no testimony", statusCode: 404 });
         }
 
-        if (!data.message || !validators.isString(data.message)) {
-            throw ({ message: "No valid fields provided for update", statusCode: 400 });
+        const errors = validators.validateUpdate(data);
+
+        if (errors.length > 0) {
+            throw ({ message: errors, statusCode: 400 });
         }
 
         const updateTestimony = await userRepository.updateTestimony(id, data.message);
@@ -130,14 +108,14 @@ const usersService = {
         };
     },
 
-    deleteTestimony: async (testimonyId) => {
-        const testimony = await userRepository.getTestimonyById(testimonyId);
+    deleteTestimony: async (userId) => {
+        const testimony = await userRepository.getTestimonyByUserId(userId);
 
         if (!testimony) {
             throw ({ message: "Testimony not found", statusCode: 404 });
         }
 
-        const deleteTestimony = await userRepository.deleteTestimony(testimonyId);
+        const deleteTestimony = await userRepository.deleteTestimony(testimony.testimonyId);
 
         if (!deleteTestimony) {
             throw ({ message: "Testimony not deleted", statusCode: 400 });
@@ -148,7 +126,17 @@ const usersService = {
                 testimonyId: deleteTestimony.testimonyId
             }
         };
-    }
+    },
+
+    getTestimonies: async () => {
+        const testimonies = await userRepository.getTestimonies();
+
+        if (!testimonies) {
+            throw ({ message: "Testimonies not found", statusCode: 404 });
+        }
+
+        return testimonies;
+    },
 };
 
 export default usersService;
