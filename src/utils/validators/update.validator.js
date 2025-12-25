@@ -6,10 +6,7 @@ const validationRules = {
     birthday: isString,
     avatar: isLink,
     poster: isLink,
-    title: isString,
     description: isString,
-    content: isLink,
-    typePostId: isString,
     message: isString
 }
 

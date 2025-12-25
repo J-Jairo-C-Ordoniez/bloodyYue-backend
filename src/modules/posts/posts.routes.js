@@ -1,60 +1,76 @@
 import { Router } from 'express';
 import postsController from './posts.controller.js';
+import authenticate from '../../middlewares/auth/authenticate.middleware.js';
+import authorizePermission from '../../middlewares/auth/authorize.middleware.js';
 
 const router = Router();
 
 router.post(
-    '/posts',
+    '/create',
+    authenticate,
+    authorizePermission('createPost'),
     postsController.createPost
 );
 
 router.get(
-    '/posts/list/:id',
+    '/list/:id',
     postsController.getPosts
 );
 
 router.get(
-    '/posts/:id',
+    '/:id',
+    authenticate,
     postsController.getPost
 );
 
 router.get(
-    '/posts/filter/label/:labelId',
+    '/filter/label/:labelId',
+    authenticate,
     postsController.getPostsByLabel
 );
 
 router.get(
-    '/posts/filter/title/:title',
+    '/filter/title/:title',
+    authenticate,
     postsController.getPostsByTitle
 );
 
 router.put(
-    '/posts/:id',
+    '/:id',
+    authenticate,
+    authorizePermission('updatePost'),
     postsController.updatePost
 );
 
 router.put(
-    '/posts/:id/labels',
+    '/:id/labels',
+    authenticate,
+    authorizePermission('updatePost'),
     postsController.updatePostLabels
 );
 
 router.delete(
-    '/posts/:id',
+    '/:id',
+    authenticate,
+    authorizePermission('deletePost'),
     postsController.deletePost
 );
 
 router.get(
-    '/posts/:id/reactions',
+    '/:id/reactions',
+    authenticate,
     postsController.getPostReactions
 );
 
 router.post(
-    '/posts/:id/reactions',
+    '/:id/reactions',
+    authenticate,
     postsController.createPostReaction
 );
 
 router.delete(
-    '/posts/:id/reactions',
+    '/:id/reactions',
+    authenticate,
     postsController.deletePostReaction
 );
 

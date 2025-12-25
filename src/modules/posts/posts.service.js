@@ -9,7 +9,7 @@ const postsService = {
             (!post.title || !validators.isString(post.title)) ||
             (!post.description || !validators.isString(post.description)) ||
             (!post.content || !validators.isLink(post.content)) ||
-            (!post.typePostId || !validators.isString(post.typePostId))||
+            (!post.typePost || !validators.isString(post.typePost))||
             (!userId)
         ) {
             throw ({ message: "Invalid Inputs", statusCode: 400 });
@@ -20,7 +20,7 @@ const postsService = {
             title: post.title,
             description: post.description,
             content: post.content,
-            typePostId: post.typePostId
+            typePost: post.typePost
         });
 
         if (!newPost) {
@@ -69,9 +69,10 @@ const postsService = {
     },
 
     getPostsByTitle: async (title) => {
-        if (!title || !validators.isString(title)) {
-            throw ({ message: "Invalid title", statusCode: 400 });
+        if (!title) {
+            throw ({ message: "No title provided", statusCode: 400 });
         }
+
         const posts = await postsRepository.getPostsByTitle(title);
 
         if (!posts) {
@@ -82,6 +83,9 @@ const postsService = {
     },
 
     updatePost: async (id, data) => {
+        if (!id) {
+            throw ({ message: "No id provided", statusCode: 400 });
+        }
         const post = await postsRepository.getPostById(id);
         if (!post) {
             throw ({ message: "Post not found", statusCode: 404 });
@@ -167,6 +171,11 @@ const postsService = {
             throw ({ message: "Post not found", statusCode: 404 });
         }
 
+        const reaction = await postsRepository.getPostReactions(postId);
+        if (reaction) {
+            throw ({ message: "Reaction already exists", statusCode: 400 });
+        }
+
         const reactionId = await postsRepository.addReaction({ postId, userId });
         if (!reactionId) {
             throw ({ message: "Reaction failed", statusCode: 500 });
@@ -182,6 +191,7 @@ const postsService = {
         }
 
         const deleted = await postsRepository.removeReaction({ postId, userId });
+        console.log(deleted);
         if (!deleted) {
             throw ({ message: "Reaction not found", statusCode: 404 });
         }

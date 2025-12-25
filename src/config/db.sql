@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS posts (
   title VARCHAR(100),
   description VARCHAR(255),
   content VARCHAR(255),
-  typePostId ENUM('image', 'short'),
+  typePost ENUM('image', 'short'),
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (userId) REFERENCES users(userId)

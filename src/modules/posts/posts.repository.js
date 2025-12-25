@@ -33,7 +33,7 @@ const postsRepository = {
     async getPosts(id) {
         try {
             const [result] = await db.query(
-                'SELECT * FROM posts WHERE postId > ? ORDER BY postId ASC LIMIT 10',
+                'SELECT postId, userId, title, description, content, typePost FROM posts WHERE postId > ? ORDER BY postId ASC LIMIT 10',
                 [id]
             );
             return (result.length > 0) ? result : null;
@@ -45,7 +45,7 @@ const postsRepository = {
     async getPostById(postId) {
         try {
             const [result] = await db.query(
-                'SELECT * FROM posts WHERE postId = ?',
+                'SELECT postId, userId, title, description, content, typePost FROM posts WHERE postId = ?',
                 [postId]
             );
             return (result[0]) ? result[0] : null;
@@ -57,7 +57,7 @@ const postsRepository = {
     async getLabelsByPostId(postId) {
         try {
             const [result] = await db.query(
-                `SELECT l.* 
+                `SELECT l.labelId, l.name, l.color 
                  FROM labels l
                  INNER JOIN labelsXposts lx ON l.labelId = lx.labelId
                  WHERE lx.postId = ?`,
@@ -72,7 +72,7 @@ const postsRepository = {
     async getPostsByLabel(labelId) {
         try {
             const [result] = await db.query(
-                `SELECT p.* 
+                `SELECT p.postId, p.userId, p.title, p.description, p.content, p.typePost 
                  FROM posts p
                  INNER JOIN labelsXposts lx ON p.postId = lx.postId
                  WHERE lx.labelId = ?`,
@@ -87,7 +87,7 @@ const postsRepository = {
     async getPostsByTitle(title) {
         try {
             const [result] = await db.query(
-                `SELECT * FROM posts WHERE title LIKE ?`,
+                `SELECT postId, userId, title, description, content, typePost FROM posts WHERE title LIKE ?`,
                 [`%${title}%`]
             );
 
@@ -133,6 +133,30 @@ const postsRepository = {
         }
     },
 
+    async removeAllReactionsByPostId(postId) {
+        try {
+            const [result] = await db.query(
+                'DELETE FROM postsReactions WHERE postId = ?',
+                [postId]
+            );
+            return result.affectedRows > 0;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code || 500 });
+        }
+    },
+
+    async getPostReactions(postId) {
+        try {
+            const [result] = await db.query(
+                'SELECT postId, userId FROM postsReactions WHERE postId = ?',
+                [postId]
+            );
+            return (result.length > 0) ? result : null;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code || 500 });
+        }
+    },
+
     async addReaction(data) {
         try {
             const { postId, userId } = data;
@@ -153,6 +177,8 @@ const postsRepository = {
                 'DELETE FROM postsReactions WHERE postId = ? AND userId = ?',
                 [postId, userId]
             );
+
+            console.log(result);
             return result.affectedRows > 0;
         } catch (err) {
             throw ({ message: err.message, statusCode: err.code || 500 });
