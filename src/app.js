@@ -15,6 +15,7 @@ import salesRoutes from './modules/sales/sales.routes.js';
 import postsRoutes from './modules/posts/posts.routes.js';
 import mediaRoutes from './modules/media/media.routes.js';
 import chatRoutes from './modules/chat/chat.routes.js';
+import labelsRoutes from './modules/labels/labels.routes.js';
 
 const PORT = process.env.PORT || 3000;
 
@@ -36,6 +37,7 @@ app.use('/api/sales', salesRoutes);
 app.use('/api/posts', postsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/media', mediaRoutes);
+app.use('/api/labels', labelsRoutes);
 
 app.get('/', (req, res) => {
   res.send('BloodyYue Backend API is running');

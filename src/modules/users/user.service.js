@@ -122,9 +122,8 @@ const usersService = {
         }
 
         return {
-            testimony: {
-                testimonyId: deleteTestimony.testimonyId
-            }
+            message: "Testimony deleted",
+            testimonyId: deleteTestimony.testimonyId
         };
     },
 

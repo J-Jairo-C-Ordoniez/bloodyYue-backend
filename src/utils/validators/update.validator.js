@@ -2,6 +2,7 @@ import isString from "./string.validator.js";
 import isLink from "./link.validator.js";
 import isEmail from "./email.validator.js";
 import isJson from "./json.validator.js";
+import isHexadecial from "./hexadecial.validator.js";
 
 const validationRules = {
     name: isString,
@@ -17,7 +18,8 @@ const validationRules = {
     abaut: isString,
     work: isString,
     redes: isJson,
-    usagePolicies: isString
+    usagePolicies: isString,
+    color: isHexadecial
 }
 
 export default function validateUpdate(data) {

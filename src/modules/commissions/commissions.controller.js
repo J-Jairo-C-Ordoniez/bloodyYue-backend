@@ -1,4 +1,4 @@
-import * as commissionsService from './commissions.service.js';
+import commissionsService from './commissions.service.js';
 import { success, error } from '../../utils/response/response.js';
 
 export const createCommission = async (req, res) => {

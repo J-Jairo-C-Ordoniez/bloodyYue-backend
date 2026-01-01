@@ -7,12 +7,12 @@ const settingsRepository = {
             const placeholders = Object.keys(data).map(() => '?').join(', ');
             const values = Object.values(data);
 
-            const [settings] = await db.query(
+            const [result] = await db.query(
                 `INSERT INTO settings (${colums}) VALUES (${placeholders})`,
                 values
             );
             
-            return (settings.insertId) ? { settingId: settings.insertId, ...data } : null;
+            return (result.insertId) ? { settingId: result.insertId, ...data } : null;
         } catch (error) {
             throw ({message: error.message, statusCode: error.code});
         }
@@ -29,8 +29,8 @@ const settingsRepository = {
     
     updateSettings: async (id, data) => {
         try {
-            const [settings] = await db.query('UPDATE settings SET ? WHERE settingId = ?', [id, data]);
-            return (settings.affectedRows > 0) ? settings : null;
+            const [result] = await db.query('UPDATE settings SET ? WHERE settingId = ?', [id, data]);
+            return (result.affectedRows > 0) ? result : null;
         } catch (error) {
             throw ({message: error.message, statusCode: error.code});
         }
