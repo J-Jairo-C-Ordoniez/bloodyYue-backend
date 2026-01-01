@@ -1,9 +1,65 @@
 import { Router } from 'express';
-import * as commissionsController from './commissions.controller.js';
+import commissionsController from './commissions.controller.js';
+import authenticate from '../../middlewares/auth/authenticate.middleware.js';
+import authorizePermission from '../../middlewares/auth/authorize.middleware.js';
 
 const router = Router();
 
-router.post('/', commissionsController.createCommission);
-router.get('/', commissionsController.getCommissions);
+router.post(
+    '/create',
+    authenticate,
+    authorizePermission('createCommission'),
+    commissionsController.createCommission
+);
+
+router.get(
+    '/list/:id',
+    commissionsController.getCommissions
+);
+
+router.get(
+    '/:id',
+    authenticate,
+    commissionsController.getCommissionsById
+);
+
+router.get(
+    '/filter/label/:labelId',
+    authenticate,
+    commissionsController.getCommissionsByLabel
+);
+
+router.get(
+    '/filter/title/:title',
+    authenticate,
+    commissionsController.getCommissionsByTitle
+);
+
+router.get(
+    '/filter/price/:price',
+    authenticate,
+    commissionsController.getCommissionsByPrice
+);
+
+router.put(
+    '/:id',
+    authenticate,
+    authorizePermission('updateCommission'),
+    commissionsController.updateCommission
+);
+
+router.put(
+    '/:id/labels',
+    authenticate,
+    authorizePermission('updateCommission'),
+    commissionsController.updateCommissionLabels
+);
+
+router.delete(
+    '/:id',
+    authenticate,
+    authorizePermission('deleteCommission'),
+    commissionsController.deleteCommission
+);
 
 export default router;

@@ -3,6 +3,7 @@ import isLink from "./link.validator.js";
 import isEmail from "./email.validator.js";
 import isJson from "./json.validator.js";
 import isHexadecial from "./hexadecial.validator.js";
+import isPrice from "./price.validator.js";
 
 const validationRules = {
     name: isString,
@@ -19,7 +20,9 @@ const validationRules = {
     work: isString,
     redes: isJson,
     usagePolicies: isString,
-    color: isHexadecial
+    color: isHexadecial,
+    price: isPrice,
+    terms: isString
 }
 
 export default function validateUpdate(data) {
