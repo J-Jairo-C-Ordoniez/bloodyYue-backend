@@ -8,7 +8,7 @@ const userRepository = {
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({message: err.message, statusCode: err.code})
         }
     },
 
@@ -19,7 +19,7 @@ const userRepository = {
 
             return result.affectedRows > 0;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({message: err.message, statusCode: err.code})
         }
     },
 
@@ -30,7 +30,7 @@ const userRepository = {
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({message: err.message, statusCode: err.code})
         }
     },
 
@@ -41,7 +41,7 @@ const userRepository = {
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({message: err.message, statusCode: err.code})
         }
     },
 
@@ -52,7 +52,7 @@ const userRepository = {
 
             return (result.insertId) ? { testimonyId: result.insertId, message, userId: id } : null;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({message: err.message, statusCode: err.code})
         }
     },
 
@@ -63,7 +63,7 @@ const userRepository = {
 
             return (result.affectedRows > 0) ? { testimonyId: result.insertId, message, userId: id } : null;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({message: err.message, statusCode: err.code})
         }
     },
 
@@ -74,7 +74,7 @@ const userRepository = {
 
             return (result.affectedRows > 0) ? { testimonyId: id } : null;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({message: err.message, statusCode: err.code})
         }
     },
 
@@ -85,7 +85,7 @@ const userRepository = {
 
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({message: err.message, statusCode: err.code})
         }
     },
 };

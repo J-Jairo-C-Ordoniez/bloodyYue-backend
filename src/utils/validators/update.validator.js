@@ -1,5 +1,7 @@
 import isString from "./string.validator.js";
 import isLink from "./link.validator.js";
+import isEmail from "./email.validator.js";
+import isJson from "./json.validator.js";
 
 const validationRules = {
     name: isString,
@@ -7,7 +9,15 @@ const validationRules = {
     avatar: isLink,
     poster: isLink,
     description: isString,
-    message: isString
+    message: isString,
+    title: isString,
+    subtitle: isString,
+    contentHero: isLink,
+    email: isEmail,
+    abaut: isString,
+    work: isString,
+    redes: isJson,
+    usagePolicies: isString
 }
 
 export default function validateUpdate(data) {

@@ -6,7 +6,7 @@ export const createSale = async (req, res) => {
         const sale = await salesService.createSale(req.body);
         success(req, res, sale, 201);
     } catch (err) {
-        error(req, res, err.message, 400);
+        error(req, res, err.message, err.statusCode);
     }
 };
 

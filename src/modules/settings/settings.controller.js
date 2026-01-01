@@ -1,20 +1,33 @@
-import * as settingsService from './settings.service.js';
+import settingsService from './settings.service.js';
 import { success, error } from '../../utils/response/response.js';
 
-export const getSettings = async (req, res) => {
-    try {
-        const settings = await settingsService.getSettings();
-        success(req, res, settings, 200);
-    } catch (err) {
-        error(req, res, err.message, 500);
-    }
+const settingsController = {
+    createSettings: async (req, res) => {
+        try {
+            const settings = await settingsService.createSettings(req.body);
+            success(req, res, settings, 201);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
+    getSettings: async (req, res) => {
+        try {
+            const settings = await settingsService.getSettings(req.params.id);
+            success(req, res, settings, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
+    updateSettings: async (req, res) => {
+        try {
+            const settings = await settingsService.updateSettings(req.params.id, req.body);
+            success(req, res, settings, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
 };
 
-export const updateSettings = async (req, res) => {
-    try {
-        const settings = await settingsService.updateSettings(req.body);
-        success(req, res, settings, 200);
-    } catch (err) {
-        error(req, res, err.message, 500);
-    }
-};
+export default settingsController;
