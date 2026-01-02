@@ -3,7 +3,8 @@ import * as chatController from './chat.controller.js';
 
 const router = Router();
 
-router.post('/', chatController.sendMessage);
-router.get('/:conversationId', chatController.getMessages);
+router.post('/send', chatController.sendMessage);
+router.get('/:userId', chatController.getMessages);
+router.put('/read/:userId', chatController.markAsRead);
 
 export default router;

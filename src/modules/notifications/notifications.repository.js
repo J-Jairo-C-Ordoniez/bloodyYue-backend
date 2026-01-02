@@ -1,11 +1,50 @@
 import db from '../../config/db.js';
 
 export const create = async (data) => {
-    // await pool.query('INSERT INTO notifications SET ?', [data]);
-    return { id: 1, ...data };
+    try {
+        const { userId, type, message } = data;
+        const [result] = await db.query(
+            'INSERT INTO notifications (userId, type, message, isRead) VALUES (?, ?, ?, false)',
+            [userId, type, message]
+        );
+        return { notificationId: result.insertId, ...data, isRead: false };
+    } catch (error) {
+        throw error;
+    }
 };
 
 export const getByUserId = async (userId) => {
-    // await pool.query('SELECT * FROM notifications WHERE user_id = ?', [userId]);
-    return [];
+    try {
+        const [rows] = await db.query(
+            'SELECT * FROM notifications WHERE userId = ? ORDER BY createdAt DESC',
+            [userId]
+        );
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const markAsRead = async (notificationId) => {
+    try {
+        const [result] = await db.query(
+            'UPDATE notifications SET isRead = true WHERE notificationId = ?',
+            [notificationId]
+        );
+        return result.affectedRows > 0;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const markAllAsRead = async (userId) => {
+    try {
+        const [result] = await db.query(
+            'UPDATE notifications SET isRead = true WHERE userId = ?',
+            [userId]
+        );
+        return result.affectedRows > 0;
+    } catch (error) {
+        throw error;
+    }
 };

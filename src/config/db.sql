@@ -135,8 +135,11 @@ CREATE TABLE IF NOT EXISTS sales (
   saleId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   cartItemId INT UNSIGNED,
   total DECIMAL(10,2),
+  /* ******************* */
   paymentMethod VARCHAR(100),
-  isCompleted BOOLEAN DEFAULT FALSE,
+  /* ******************* */
+  status ENUM('initiated', 'paid', 'cancelled') DEFAULT 'initiated',
+
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (cartItemId) REFERENCES cartItems(cartItemId)

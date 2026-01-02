@@ -5,6 +5,7 @@ import isLink from "./link.validator.js";
 import validateUpdate from "./update.validator.js";
 import isHexadecial from "./hexadecial.validator.js";
 import isPrice from "./price.validator.js";
+import isPeriod from "./period.validator.js";
 
 const validators = {
     isEmail,
@@ -13,7 +14,8 @@ const validators = {
     isLink,
     isHexadecial,
     isPrice,
-    validateUpdate
+    isPeriod,
+    validateUpdate,
 }
 
 export default validators;

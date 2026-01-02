@@ -12,8 +12,17 @@ export const sendMessage = async (req, res) => {
 
 export const getMessages = async (req, res) => {
     try {
-        const messages = await chatService.getMessages(req.params.conversationId);
+        const messages = await chatService.getMessages(req.params.userId);
         success(req, res, messages, 200);
+    } catch (err) {
+        error(req, res, err.message, 500);
+    }
+};
+
+export const markAsRead = async (req, res) => {
+    try {
+        const result = await chatService.markAsRead(req.params.userId);
+        success(req, res, { updated: result }, 200);
     } catch (err) {
         error(req, res, err.message, 500);
     }
