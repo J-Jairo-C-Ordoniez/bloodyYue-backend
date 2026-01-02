@@ -89,6 +89,37 @@ const salesService = {
         return sales;
     },
 
+    getDetailsSale: async (id) => {
+        if (!id) {
+            throw ({message: 'Missing required fields', statusCode: 400});
+        }
+
+        const detailsSale = await salesRepository.getDetailsSale(id);
+        if (!detailsSale) {
+            throw ({message: 'Details sale not found', statusCode: 404});
+        }
+
+        return detailsSale;
+    },
+
+    updateDetailsSaleStatus: async (id, status) => {
+        if (!id && validators.isString(status)) {
+            throw ({message: 'Missing required fields', statusCode: 400});
+        }
+
+        const detailsSale = await salesRepository.getDetailsSale(id);
+        if (!detailsSale) {
+            throw ({ message: "Details sale not found", statusCode: 404 });
+        }
+
+        const updated = await salesRepository.updateDetailsSaleStatus(id, status);
+        if (!updated) {
+            throw ({ message: "Details sale update failed", statusCode: 500 });
+        }
+
+        return salesService.getDetailsSale(id);
+    },
+
     updateSaleStatus: async (id, status) => {
         if (!id && validators.isString(status)) {
             throw ({message: 'Missing required fields', statusCode: 400});
@@ -109,6 +140,8 @@ const salesService = {
                 saleId: id,
                 status: 'pending',
             });
+
+            /* add: status chat to 'active' and caritem status to 'sold' */
         }
 
         return salesService.getSalesById(id);

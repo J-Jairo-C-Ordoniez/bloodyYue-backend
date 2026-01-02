@@ -60,6 +60,26 @@ const salesController = {
         }
     },
 
+    getDetailsSale: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const detailsSale = await salesService.getDetailsSale(id);
+            success(req, res, detailsSale, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
+    updateDetailsSaleStatus: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const detailsSale = await salesService.updateDetailsSaleStatus(id, req.body.status);
+            success(req, res, detailsSale, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
     updateSaleStatus: async (req, res) => {
         try {
             const { id } = req.params;

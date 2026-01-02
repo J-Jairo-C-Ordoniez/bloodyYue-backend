@@ -17,6 +17,22 @@ const salesRepository = {
         }
     },
 
+    createDetailsSale: async (data) => {
+        try {
+            const columns = Object.keys(data).join(', ');
+            const placeholders = Object.keys(data).map(() => '?').join(', ');
+            const values = Object.values(data);
+
+            const [result] = await db.query(
+                `INSERT INTO detailsSale (${columns}) VALUES (${placeholders})`,
+                values
+            );
+            return (result.insertId) ? { detailsSaleId: result.insertId, ...data } : null;
+        } catch (error) {
+            throw ({ message: error.message, statusCode: error.statusCode });
+        }
+    },
+
     getSales: async (id) => {
         try {
             const [result] = await db.query(
@@ -96,6 +112,30 @@ const salesRepository = {
         }
     },
 
+    getDetailsSale: async (id) => {
+        try {
+            const [result] = await db.query(
+                `SELECT * FROM detailsSale WHERE saleId = ?`,
+                [id]
+            );
+            return (result[0]) ? result[0] : null;
+        } catch (error) {
+            throw ({ message: error.message, statusCode: error.statusCode });
+        }
+    },
+
+    updateDetailsSaleStatus: async (id, status) => {
+        try {
+            const [result] = await db.query(
+                `UPDATE detailsSale SET status = ? WHERE saleId = ?`,
+                [status, id]
+            );
+            return (result.affectedRows > 0) ? result : null;
+        } catch (error) {
+            throw ({ message: error.message, statusCode: error.statusCode });
+        }
+    },
+
     updateSaleStatus: async (saleId, status) => {
         try {
             const [result] = await db.query(
@@ -106,21 +146,5 @@ const salesRepository = {
         } catch (error) {
             throw ({ message: error.message, statusCode: error.statusCode });
         }
-    },
-
-    createDetailsSale: async (data) => {
-        try {
-            const columns = Object.keys(data).join(', ');
-            const placeholders = Object.keys(data).map(() => '?').join(', ');
-            const values = Object.values(data);
-
-            const [result] = await db.query(
-                `INSERT INTO detailsSale (${columns}) VALUES (${placeholders})`,
-                values
-            );
-            return (result.insertId) ? { detailsSaleId: result.insertId, ...data } : null;
-        } catch (error) {
-            throw ({ message: error.message, statusCode: error.statusCode });
-        }
-    },
+    }
 };

@@ -44,6 +44,18 @@ router.get(
     salesController.getSalesByPeriod
 );
 
+router.get(
+    '/details/:id', 
+    authenticate,
+    salesController.getDetailsSale
+);
+
+router.patch(
+    '/details/:id/status', 
+    authenticate,
+    salesController.updateDetailsSaleStatus
+);
+
 router.patch(
     '/:id/status', 
     authenticate,
@@ -51,12 +63,3 @@ router.patch(
 );
 
 export default router;
-
-/* CREATE TABLE IF NOT EXISTS detailsSale (
-  detailsSaleId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  saleId INT UNSIGNED,
-  status ENUM('pending', 'process', 'done'),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (saleId) REFERENCES sales(saleId)
-); */
