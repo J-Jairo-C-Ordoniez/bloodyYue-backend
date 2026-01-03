@@ -17,6 +17,22 @@ const authRepository = {
         }
     },
 
+    async createCart(data) {
+        try {
+            const columns = Object.keys(data).join(', ');
+            const placeholders = Object.keys(data).map(() => '?').join(', ');
+            const values = Object.values(data);
+
+            const [result] = await db.query(
+                `INSERT INTO carts (${columns}) VALUES (${placeholders})`,
+                values
+            );
+            return (result.insertId) ? { id: result.insertId, ...data } : null;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code });
+        }
+    },
+
     async getByEmail(email) {
         try {
             const [result] = await db.query(

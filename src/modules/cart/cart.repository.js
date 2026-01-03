@@ -1,75 +1,84 @@
 import db from '../../config/db.js';
 
-export const getCartByUserId = async (userId) => {
-    try {
-        const [rows] = await db.query('SELECT * FROM cart WHERE userId = ?', [userId]);
-        return rows[0];
-    } catch (error) {
-        throw error;
-    }
-};
+const cartRepository = {
+    addItem: async (data) => {
+        try {
+            const columns = Object.keys(data);
+            const placeholders = columns.map(() => '?').join(', ');
+            const values = Object.values(data);
+            const [result] = await db.query(
+                `INSERT INTO cartItems (${columns.join(', ')}) 
+                 VALUES (${placeholders})`,
+                values
+            );
+            return (result.insertId) ? {cartItemId: result.insertId, ...data} : null;
+        } catch (err) {
+            throw ({message: err.message, statusCode: err.statusCode});
+        }
+    },
 
-export const createCart = async (userId) => {
-    try {
-        const [result] = await db.query('INSERT INTO cart (userId) VALUES (?)', [userId]);
-        return { cartId: result.insertId, userId };
-    } catch (error) {
-        throw error;
-    }
-};
+    getCartByUserId: async (userId) => {
+        try {
+            const [result] = await db.query(
+                `SELECT cartId FROM cartItems WHERE userId = ?`,
+                [userId]
+            );
+            return (result[0]) ? result[0] : null;
+        } catch (err) {
+            throw ({message: err.message, statusCode: err.statusCode});
+        }
+    },
 
-export const addItem = async (cartId, data) => {
-    try {
-        const { commissionId, quantity, priceAtMoment, details } = data;
-        // Check if item already exists in cart ?? typically yes, but for now simple insert or optional update
-        // We will assume unique items per commission for simplicity or multiple entries. 
-        // Let's do simple insert.
-        const [result] = await db.query(
-            `INSERT INTO cartItems (cartId, commissionId, quantity, status, priceAtMoment, details) 
-             VALUES (?, ?, ?, 'selected', ?, ?)`,
-            [cartId, commissionId, quantity, priceAtMoment, details]
-        );
-        return { cartItemId: result.insertId, cartId, ...data };
-    } catch (error) {
-        throw error;
-    }
-};
+    getItems: async (cartId) => {
+        try {
+            const [result] = await db.query(
+                `SELECT cartItemId, commissionId, quantity, status, priceAtMoment FROM cartItems WHERE cartId = ?`,
+                [cartId]
+            );
+            return (result.length > 0) ? result : null;
+        } catch (err) {
+            throw ({message: err.message, statusCode: err.statusCode});
+        }
+    },
 
-export const getItems = async (cartId) => {
-    try {
-        const [rows] = await db.query(
-            `SELECT ci.*, c.title as commissionTitle, c.price as commissionPrice 
-             FROM cartItems ci 
-             LEFT JOIN commissions c ON ci.commissionId = c.commissionId 
-             WHERE ci.cartId = ?`,
-            [cartId]
-        );
-        return rows;
-    } catch (error) {
-        throw error;
-    }
-};
+    getCartItemById: async (cartItemId) => {
+        try {
+            const [result] = await db.query(
+                `SELECT ci.cartItemId, ci.commissionId, ci.quantity, ci.status, ci.priceAtMoment, ci.details, c.title, c.content, c.description, c.terms 
+                FROM cartItems ci
+                INNER JOIN commissions c ON ci.commissionId = c.commissionId
+                WHERE ci.cartItemId = ?`,
+                [cartItemId]
+            );
+            return (result[0]) ? result[0] : null;
+        } catch (err) {
+            throw ({message: err.message, statusCode: err.statusCode});
+        }
+    },
 
-export const removeItem = async (cartItemId) => {
-    try {
-        const [result] = await db.query('DELETE FROM cartItems WHERE cartItemId = ?', [cartItemId]);
-        return result.affectedRows > 0;
-    } catch (error) {
-        throw error;
-    }
-};
+    updateItem: async (cartItemId, data) => {
+        try {
+            const [result] = await db.query(
+                `UPDATE cartItems SET ? WHERE cartItemId = ?`,
+                [data, cartItemId]
+            );
+            return (result.affectedRows > 0) ? result : null;
+        } catch (err) {
+            throw ({message: err.message, statusCode: err.statusCode});
+        }
+    },
 
-export const updateItem = async (cartItemId, data) => {
-    try {
-        // Build dynamic query or specific fields. quantity is most common.
-        const { quantity, status, details } = data;
-        // Simple implementation for now
-        const [result] = await db.query(
-            'UPDATE cartItems SET quantity = COALESCE(?, quantity), status = COALESCE(?, status), details = COALESCE(?, details) WHERE cartItemId = ?',
-            [quantity, status, details, cartItemId]
-        );
-        return result.affectedRows > 0;
-    } catch (error) {
-        throw error;
+    changeItemStatus: async (cartItemId, status) => {
+        try {
+            const [result] = await db.query(
+                `UPDATE cartItems SET status = ? WHERE cartItemId = ?`,
+                [status, cartItemId]
+            );
+            return (result.affectedRows > 0) ? result : null;
+        } catch (err) {
+            throw ({message: err.message, statusCode: err.statusCode});
+        }
     }
-};
+}
+
+export default cartRepository;

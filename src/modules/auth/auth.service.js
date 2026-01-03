@@ -37,6 +37,14 @@ const authService = {
             throw ({ message: "User creation failed", statusCode: 500 });
         }
 
+        const cart = await authRepository.createCart({
+            userId: user.userId
+        });
+
+        if (!cart) {
+            throw ({ message: "Cart creation failed", statusCode: 500 });
+        }
+
         return {
             userId: user.userId,
             email: user.email,

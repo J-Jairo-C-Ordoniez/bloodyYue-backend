@@ -141,7 +141,12 @@ const salesService = {
                 status: 'pending',
             });
 
-            /* add: status chat to 'active' and caritem status to 'sold' */
+            await cartRepository.changeItemStatus(
+                sale.cartItemId,
+                'purchased'
+            );
+
+            /* add: status chat to 'active' */
         }
 
         return salesService.getSalesById(id);

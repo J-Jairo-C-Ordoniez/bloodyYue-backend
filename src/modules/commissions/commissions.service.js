@@ -149,22 +149,6 @@ const commissionsService = {
         const newLabels = await commissionsRepository.getLabelsByCommissionId(id);
 
         return { message: "Labels updated successfully", labels: newLabels };
-    },
-
-    deleteCommission: async (id) => {
-        const commission = await commissionsRepository.getCommissionsById(id);
-        if (!commission) {
-            throw ({ message: "Commission not found", statusCode: 404 });
-        }
-
-        await commissionsRepository.removeLabels(id);
-
-        const deleted = await commissionsRepository.deleteCommission(id);
-        if (!deleted) {
-            throw ({ message: "Commission deletion failed", statusCode: 500 });
-        }
-
-        return { message: "Commission deleted successfully", commission: deleted };
     }
 }
 

@@ -116,15 +116,6 @@ const commissionsRepository = {
         } catch (err) {
             throw ({message: err.message, statusCode: err.code || 500});
         }
-    },
-
-    deleteCommission: async (id) => {
-        try {
-            const [result] = await db('DELETE FROM commissions WHERE commissionId = ?', [id]);
-            return result.affectedRows > 0;
-        } catch (err) {
-            throw ({message: err.message, statusCode: err.code || 500});
-        }
     }
 }
 

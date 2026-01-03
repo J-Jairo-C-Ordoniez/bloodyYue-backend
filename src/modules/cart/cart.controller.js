@@ -1,40 +1,56 @@
-import * as cartService from './cart.service.js';
+import cartService from './cart.service.js';
 import { success, error } from '../../utils/response/response.js';
 
-export const addToCart = async (req, res) => {
-    try {
-        const item = await cartService.addToCart(req.body); // Body should contain userId, commissionId, etc.
-        success(req, res, item, 201);
-    } catch (err) {
-        error(req, res, err.message, 400);
-    }
-};
+const cartController = {
+    addToCart: async (req, res) => {
+        try {
+            const {userId} = req.user;
+            const item = await cartService.addToCart(userId, req.body);
+            success(req, res, item, 201);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
 
-export const getCart = async (req, res) => {
-    try {
-        const cart = await cartService.getCart(req.params.userId);
-        success(req, res, cart, 200);
-    } catch (err) {
-        error(req, res, err.message, 500);
-    }
-};
+    getAllItemsCart: async (req, res) => {
+        try {
+            const {userId} = req.user;
+            const cart = await cartService.getAllItemsCart(userId);
+            success(req, res, cart, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
 
-export const removeItem = async (req, res) => {
-    try {
-        const { cartItemId } = req.params;
-        await cartService.removeItem(cartItemId);
-        success(req, res, { message: 'Item removed' }, 200);
-    } catch (err) {
-        error(req, res, err.message, 400);
-    }
-};
+    getItemById: async (req, res) => {
+        try {
+            const {cartItemId} = req.params;
+            const item = await cartService.getItemById(cartItemId);
+            success(req, res, item, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
 
-export const updateItem = async (req, res) => {
-    try {
-        const { cartItemId } = req.params;
-        await cartService.updateItem(cartItemId, req.body);
-        success(req, res, { message: 'Item updated' }, 200);
-    } catch (err) {
-        error(req, res, err.message, 400);
+    updateItem: async (req, res) => {
+        try {
+            const {cartItemId} = req.params;
+            const item = await cartService.updateItem(cartItemId, req.body);
+            success(req, res, item, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
+    changeItemStatus: async (req, res) => {
+        try {
+            const {cartItemId} = req.params;
+            const item = await cartService.changeItemStatus(cartItemId);
+            success(req, res, item, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
     }
-};
+}
+
+export default cartController;

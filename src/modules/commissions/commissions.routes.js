@@ -55,11 +55,4 @@ router.put(
     commissionsController.updateCommissionLabels
 );
 
-router.delete(
-    '/:id',
-    authenticate,
-    authorizePermission('deleteCommission'),
-    commissionsController.deleteCommission
-);
-
 export default router;

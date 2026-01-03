@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS cartItems (
   cartId INT UNSIGNED,
   commissionId INT UNSIGNED,
   quantity INT,
-  status ENUM('selected', 'unavailable', 'discarded', 'purchased'),
+  status ENUM('selected', 'discarded', 'purchased') DEFAULT 'selected',
   priceAtMoment DECIMAL(10,2),
   details VARCHAR(255),
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
