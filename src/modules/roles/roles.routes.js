@@ -1,19 +1,57 @@
 import { Router } from 'express';
-import * as rolesController from './roles.controller.js';
+import rolesController from './roles.controller.js';
+import authenticate from '../../middlewares/auth/authenticate.middleware.js';
+import authorizePermission from '../../middlewares/auth/authorize.middleware.js';
 
 const router = Router();
 
-// Roles
-router.get('/', rolesController.getAllRoles);
-router.get('/:rolId', rolesController.getRoleById);
-router.post('/', rolesController.createRole);
-router.put('/:rolId', rolesController.updateRole);
-router.delete('/:rolId', rolesController.deleteRole);
+router.post(
+    '/', 
+    authenticate,
+    authorizePermission('createRole'),
+    rolesController.createRole
+);
 
-// Permits
-router.get('/permits/all', rolesController.getAllPermits);
-router.post('/permits', rolesController.createPermit);
-router.post('/assign-permit', rolesController.assignPermit);
-router.post('/remove-permit', rolesController.removePermit);
+router.get(
+    '/', 
+    authenticate,
+    authorizePermission('readRole'),
+    rolesController.getAllRoles
+);
+
+router.get(
+    '/:rolId', 
+    authenticate,
+    authorizePermission('readRole'),
+    rolesController.getRoleById
+);
+
+router.get(
+    '/permits/all',
+    authenticate,
+    authorizePermission('readPermit'), 
+    rolesController.getAllPermits
+);
+
+router.get(
+    '/permits/:rolId',
+    authenticate,
+    authorizePermission('readPermit'), 
+    rolesController.getPermitsByRoleId
+);
+
+router.post(
+    '/permits/assign', 
+    authenticate,
+    authorizePermission('assignPermit'), 
+    rolesController.assignPermit
+);
+
+router.post(
+    '/permits/remove', 
+    authenticate,
+    authorizePermission('removePermit'), 
+    rolesController.removePermit
+);
 
 export default router;

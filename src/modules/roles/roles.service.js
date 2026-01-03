@@ -1,59 +1,100 @@
 import rolesRepository from './roles.repository.js';
 
 const rolesService = {
+    createRole: async (data) => {
+        const { rol, permits } = data;
+
+        if (
+            (!rol.name || !validators.isString(rol.name)) ||
+            (!rol.description || !validators.isString(rol.description))
+        ) {
+            throw ({ message: "Invalid Inputs", statusCode: 400 });
+        }
+
+        const newRole = await rolesRepository.createRole({
+            name: rol.name,
+            description: rol.description,
+        });
+
+        if (!newRole) {
+            throw ({ message: "Role creation failed", statusCode: 500 });
+        }
+
+        if (permits && permits.length > 0) {
+            await rolesRepository.assignPermitToRole(newRole.rolId, permits);
+        }
+
+        return { ...newRole, permits };
+    },
+
     getAllRoles: async () => {
-        return await rolesRepository.getAllRoles();
+        const roles = await rolesRepository.getAllRoles();
+        if (!roles) {
+            throw ({message: 'Roles not found', statusCode: 404});
+        }
+        
+        return roles;
     },
 
     getRoleById: async (rolId) => {
         const role = await rolesRepository.getRoleById(rolId);
         if (!role) {
-            throw new Error('Role not found');
+            throw ({message: 'Role not found', statusCode: 404});
         }
-        const permits = await rolesRepository.getPermitsByRoleId(rolId);
-        return { ...role, permits };
-    },
-
-    createRole: async (roleData) => {
-        return await rolesRepository.createRole(roleData);
-    },
-
-    updateRole: async (rolId, roleData) => {
-        const updated = await rolesRepository.updateRole(rolId, roleData);
-        if (!updated) {
-            throw new Error('Role not found or not updated');
-        }
-        return await rolesRepository.getRoleById(rolId);
-    },
-
-    deleteRole: async (rolId) => {
-        const deleted = await rolesRepository.deleteRole(rolId);
-        if (!deleted) {
-            throw new Error('Role not found or could not be deleted');
-        }
-        return { message: 'Role deleted successfully' };
+        
+        return role;
     },
 
     getAllPermits: async () => {
-        return await rolesRepository.getAllPermits();
+        const permits = await rolesRepository.getAllPermits();
+        if (!permits) {
+            throw ({message: 'Permits not found', statusCode: 404});
+        }
+        
+        return permits;
     },
 
-    createPermit: async (permitData) => {
-        return await rolesRepository.createPermit(permitData);
+    getPermitsByRoleId: async (rolId) => {
+        const permits = await rolesRepository.getPermitsByRoleId(rolId);
+        if (!permits) {
+            throw ({message: 'Permits not found', statusCode: 404});
+        }
+        
+        return permits;
     },
 
     assignPermitToRole: async (rolId, permitId) => {
-        const role = await rolesRepository.getRoleById(rolId);
-        if (!role) throw new Error('Role not found');
+        const role = await rolesRepository.getPermitsByRoleId(rolId);
+        if (!role) {
+            throw ({message: 'Role not found', statusCode: 404});
+        }
 
-        // Check if already assigned could be added here, but DB constraints might handle duplicates if set
+        if (role.some(permit => permit.permitId === permitId)) {
+            throw ({message: 'Permit already assigned to role', statusCode: 400});
+        }
 
-        await rolesRepository.assignPermitToRole(rolId, permitId);
+        const updatedRole = await rolesRepository.assignPermitToRole(rolId, permitId);
+        if (!updatedRole) {
+            throw ({message: 'Permit assignment failed', statusCode: 500});
+        }
+
         return { message: 'Permit assigned successfully' };
     },
 
     removePermitFromRole: async (rolId, permitId) => {
-        await rolesRepository.removePermitFromRole(rolId, permitId);
+        const role = await rolesRepository.getPermitsByRoleId(rolId);
+        if (!role) {
+            throw ({message: 'Role not found', statusCode: 404});
+        }
+
+        if (!role.some(permit => permit.permitId === permitId)) {
+            throw ({message: 'Permit not assigned to role', statusCode: 400});
+        }
+
+        const updatedRole = await rolesRepository.removePermitFromRole(rolId, permitId);
+        if (!updatedRole) {
+            throw ({message: 'Permit removal failed', statusCode: 500});
+        }
         return { message: 'Permit removed successfully' };
     }
 };
