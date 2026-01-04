@@ -1,6 +1,6 @@
-import commissionsRepository from './commissions.repository.js';
-import postsRepository from '../posts/posts.repository.js';
-import validators from '../../utils/validators/index.js';
+import commissionsRepository from "./commissions.repository.js";
+import postsRepository from "../posts/posts.repository.js";
+import validators from "../../utils/validators/index.js";
 
 const commissionsService = {
     createCommission: async (userId, commissionData) => {

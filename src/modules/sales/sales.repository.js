@@ -148,3 +148,5 @@ const salesRepository = {
         }
     }
 };
+
+export default salesRepository;

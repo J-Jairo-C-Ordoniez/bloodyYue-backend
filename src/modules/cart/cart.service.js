@@ -1,6 +1,6 @@
-import cartRepository from './cart.repository.js';
-import commissionRepository from '../commission/commission.repository.js';
-import validators from '../../utils/validators/index.js'
+import cartRepository from "./cart.repository.js";
+import commissionRepository from "../commissions/commissions.repository.js";
+import validators from "../../utils/validators/index.js";
 
 const cartService = {
     addToCart: async (userId, data) => {

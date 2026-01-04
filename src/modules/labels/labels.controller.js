@@ -1,4 +1,4 @@
-import labelsService from "../services/labels.service.js";
+import labelsService from "./labels.service.js";
 import { error, success } from "../../utils/response/response.js";
 
 const labelsController = {
