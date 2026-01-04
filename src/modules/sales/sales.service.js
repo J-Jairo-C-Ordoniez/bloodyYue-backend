@@ -1,22 +1,26 @@
 import salesRepository from './sales.repository.js';
 import cartRepository from '../cart/cart.repository.js';
 import validators from '../../utils/validators/index.js'
+import userRepository from '../users/user.repository.js';
+import notificationsService from '../notifications/notifications.service.js';
+
+/* readNeWSales || readUpdatedSales = permit */
 
 const salesService = {
-    createSale: async (data) => {
+    createSale: async (userId, data) => {
         const { cartItemId, total, paymentMethod } = data;
 
         if (
-            (!cartItemId) || 
-            (!total && validators.isPrice(total)) || 
+            (!cartItemId) ||
+            (!total && validators.isPrice(total)) ||
             (!paymentMethod && validators.isString(paymentMethod))
         ) {
-            throw ({message: 'Missing required fields', statusCode: 400});
+            throw ({ message: 'Missing required fields', statusCode: 400 });
         }
 
         const cartItem = await cartRepository.getCartItemById(cartItemId);
         if (!cartItem) {
-            throw ({message: 'Cart item not found', statusCode: 404});
+            throw ({ message: 'Cart item not found', statusCode: 404 });
         }
 
         const sale = await salesRepository.createSale({
@@ -25,17 +29,30 @@ const salesService = {
             paymentMethod,
         });
 
+        const users = await usersRepository.getUsersPermitNotification('readNewsales');
+
+        users.forEach(async (user) => {
+            await notificationsService.createNotificationGlobal({
+                userId,
+                type: 'sale',
+                message: `${user.name} ha hecho una compra`,
+                body: {
+                    saleId: sale.saleId,
+                }
+            });
+        });
+
         return sale;
     },
 
     getSales: async (id) => {
         if (!id) {
-            throw ({message: 'Missing required fields', statusCode: 400});
+            throw ({ message: 'Missing required fields', statusCode: 400 });
         }
 
         const sales = await salesRepository.getSales(id);
         if (!sales) {
-            throw ({message: 'Sales not found', statusCode: 404});
+            throw ({ message: 'Sales not found', statusCode: 404 });
         }
 
         return sales;
@@ -43,12 +60,12 @@ const salesService = {
 
     getSalesById: async (id) => {
         if (!id) {
-            throw ({message: 'Missing required fields', statusCode: 400});
+            throw ({ message: 'Missing required fields', statusCode: 400 });
         }
 
         const sale = await salesRepository.getSalesById(id);
         if (!sale) {
-            throw ({message: 'Sale not found', statusCode: 404});
+            throw ({ message: 'Sale not found', statusCode: 404 });
         }
 
         return sale;
@@ -57,7 +74,7 @@ const salesService = {
     getSalesSold: async () => {
         const sales = await salesRepository.getSalesSold();
         if (!sales) {
-            throw ({message: 'Sales not found', statusCode: 404});
+            throw ({ message: 'Sales not found', statusCode: 404 });
         }
 
         return sales;
@@ -65,12 +82,12 @@ const salesService = {
 
     getSalesByUserId: async (userId) => {
         if (!userId) {
-            throw ({message: 'Missing required fields', statusCode: 400});
+            throw ({ message: 'Missing required fields', statusCode: 400 });
         }
 
         const sales = await salesRepository.getSalesByUserId(userId);
         if (!sales) {
-            throw ({message: 'Sales not found', statusCode: 404});
+            throw ({ message: 'Sales not found', statusCode: 404 });
         }
 
         return sales;
@@ -78,12 +95,12 @@ const salesService = {
 
     getSalesByPeriod: async (period) => {
         if (!period && validators.isPeriod(period)) {
-            throw ({message: 'Missing required fields', statusCode: 400});
+            throw ({ message: 'Missing required fields', statusCode: 400 });
         }
 
         const sales = await salesRepository.getSalesByPeriod(period.toUpperCase());
         if (!sales) {
-            throw ({message: 'Sales not found', statusCode: 404});
+            throw ({ message: 'Sales not found', statusCode: 404 });
         }
 
         return sales;
@@ -91,20 +108,20 @@ const salesService = {
 
     getDetailsSale: async (id) => {
         if (!id) {
-            throw ({message: 'Missing required fields', statusCode: 400});
+            throw ({ message: 'Missing required fields', statusCode: 400 });
         }
 
         const detailsSale = await salesRepository.getDetailsSale(id);
         if (!detailsSale) {
-            throw ({message: 'Details sale not found', statusCode: 404});
+            throw ({ message: 'Details sale not found', statusCode: 404 });
         }
 
         return detailsSale;
     },
 
-    updateDetailsSaleStatus: async (id, status) => {
+    updateDetailsSaleStatus: async (userId, id, status) => {
         if (!id && validators.isString(status)) {
-            throw ({message: 'Missing required fields', statusCode: 400});
+            throw ({ message: 'Missing required fields', statusCode: 400 });
         }
 
         const detailsSale = await salesRepository.getDetailsSale(id);
@@ -117,12 +134,28 @@ const salesService = {
             throw ({ message: "Details sale update failed", statusCode: 500 });
         }
 
+        const user = await usersRepository.getUserById(userId);
+        const userSale = await usersRepository.getUserSaleDetails(id);
+        if (!user || !userSale) {
+            throw ({ message: "User not found", statusCode: 404 });
+        }
+
+        await notificationsService.createNotification({
+            userId,
+            userIdNotify: userSale.userId,
+            type: 'sale',
+            message: `${user.name} ha actualizado el estado de la compra`,
+            body: {
+                detailsSaleId: detailsSale.detailsSaleId,
+            }
+        });
+
         return salesService.getDetailsSale(id);
     },
 
-    updateSaleStatus: async (id, status) => {
+    updateSaleStatus: async (userId, id, status) => {
         if (!id && validators.isString(status)) {
-            throw ({message: 'Missing required fields', statusCode: 400});
+            throw ({ message: 'Missing required fields', statusCode: 400 });
         }
 
         const sale = await salesRepository.getSalesById(id);
@@ -135,19 +168,34 @@ const salesService = {
             throw ({ message: "Sale update failed", statusCode: 500 });
         }
 
-        if (status === 'paid') {
-            await salesRepository.createDetailsSale({
-                saleId: id,
-                status: 'pending',
+
+        if (status !== 'paid') return salesService.getSalesById(id);
+
+        await salesRepository.createDetailsSale({
+            saleId: id,
+            status: 'pending',
+        });
+
+        await cartRepository.changeItemStatus(
+            sale.cartItemId,
+            'purchased'
+        );
+
+        const users = await usersRepository.getUsersPermitNotification('readUpdatedSales');
+
+        users.forEach(async (user) => {
+            await notificationsService.createNotification({
+                userId,
+                userIdNotify: user.userId,
+                type: 'sale',
+                message: `${user.name} ha completado una compra`,
+                body: {
+                    saleId: sale.saleId,
+                }
             });
+        });
 
-            await cartRepository.changeItemStatus(
-                sale.cartItemId,
-                'purchased'
-            );
-
-            /* add: status chat to 'active' */
-        }
+        /* add: status chat to 'active' */
 
         return salesService.getSalesById(id);
     },

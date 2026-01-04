@@ -12,7 +12,7 @@ export default function socketConfig(server) {
     io.on('connection', (socket) => {
         console.log('a user connected');
 
-        const userId = socket.handshake.auth.userId;
+        const userId = socket.handshake.auth.userId || 1;
 
         if(userId) {
             socket.join(`notificationUser-${userId}`);

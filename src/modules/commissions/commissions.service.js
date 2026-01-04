@@ -1,6 +1,8 @@
 import commissionsRepository from "./commissions.repository.js";
 import postsRepository from "../posts/posts.repository.js";
 import validators from "../../utils/validators/index.js";
+import notificationsService from "../notifications/notifications.service.js";
+import userRepository from "../../modules/users/user.repository.js";
 
 const commissionsService = {
     createCommission: async (userId, commissionData) => {
@@ -14,14 +16,19 @@ const commissionsService = {
             (!commission.price && validators.isPrice(commission.price)) ||
             (!commission.terms && validators.isString(commission.terms))
         ) {
-            throw ({message: 'Input data invalid', statusCode: 400});
+            throw ({ message: 'Input data invalid', statusCode: 400 });
         }
 
         const existsExample = await postsRepository.getPostById(commission.exampleId);
         if (!existsExample) {
-            throw ({message: 'Example not found', statusCode: 404});
+            throw ({ message: 'Example not found', statusCode: 404 });
         }
-        
+
+        const user = await userRepository.getUserById(userId);
+        if (!user) {
+            throw ({ message: 'User not found', statusCode: 404 });
+        }
+
         const newCommission = await commissionsRepository.createCommission({
             userId,
             title: commission.title,
@@ -33,12 +40,18 @@ const commissionsService = {
         });
 
         if (!newCommission) {
-            throw ({message: 'Commission creation failed', statusCode: 500});
+            throw ({ message: 'Commission creation failed', statusCode: 500 });
         }
 
         if (labels && labels.length > 0) {
             await commissionsRepository.addLabels(newCommission.commissionId, labels);
         }
+
+        await notificationsService.createNotificationGlobal({
+            userId,
+            type: 'commission',
+            message: `${user.name} ha creado una nueva comisión`
+        });
 
         return { ...newCommission, labels };
     },
@@ -105,7 +118,7 @@ const commissionsService = {
         return commissions;
     },
 
-    updateCommission: async (id, commissionData) => {
+    updateCommission: async (userId, id, commissionData) => {
         const commission = await commissionsRepository.getCommissionsById(id);
         if (!commission) {
             throw ({ message: "Commission not found", statusCode: 404 });
@@ -121,10 +134,21 @@ const commissionsService = {
             throw ({ message: "Commission update failed", statusCode: 500 });
         }
 
-        return commissionsService.getCommission(id);
+        const user = await usersRepository.getUserById(userId);
+        if (!user) {
+            throw ({ message: 'User not found', statusCode: 404 });
+        }
+
+        await notificationsService.createNotification({
+            userId,
+            type: 'commission',
+            message: `${user.name} ha actualizado la comisión ${commission.title}`
+        });
+
+        return commissionsService.getCommissionsById(id);
     },
 
-    updateCommissionLabels: async (id, labels) => {
+    updateCommissionLabels: async (userId,id, labels) => {
         const commission = await commissionsRepository.getCommissionsById(id);
         if (!commission) {
             throw ({ message: "Commission not found", statusCode: 404 });
@@ -147,6 +171,17 @@ const commissionsService = {
         }
 
         const newLabels = await commissionsRepository.getLabelsByCommissionId(id);
+
+        const user = await usersRepository.getUserById(userId);
+        if (!user) {
+            throw ({ message: 'User not found', statusCode: 404 });
+        }
+
+        await notificationsService.createNotificationGlobal({
+            userId,
+            type: 'commission',
+            message: `${user.name} ha actualizado la comisión ${commission.title}`
+        });
 
         return { message: "Labels updated successfully", labels: newLabels };
     }

@@ -8,7 +8,7 @@ const userRepository = {
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code})
+            throw ({ message: err.message, statusCode: err.code })
         }
     },
 
@@ -19,7 +19,7 @@ const userRepository = {
 
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code})
+            throw ({ message: err.message, statusCode: err.code })
         }
     },
 
@@ -30,7 +30,7 @@ const userRepository = {
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code})
+            throw ({ message: err.message, statusCode: err.code })
         }
     },
 
@@ -41,7 +41,40 @@ const userRepository = {
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code})
+            throw ({ message: err.message, statusCode: err.code })
+        }
+    },
+
+    getUsersPermitNotification: async (permit) => {
+        try {
+            const [result] = await db.query(
+                `SELECT u.userId, u.name 
+                FROM users u
+                INNER JOIN roles r ON u.rolId = r.rolId
+                INNER JOIN rolXpermits rxp ON r.rolId = rxp.rolId
+                INNER JOIN permits p ON rxp.permitId = p.permitId
+                WHERE p.name = ?`, [permit]);
+
+            return result;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code })
+        }
+    },
+
+    getUserSaleDetails: async (id) => {
+        try {
+            const [result] = await db.query(
+                `SELECT u.userId, u.name 
+                FROM users u
+                INNER JOIN cart c ON u.userId = c.userId
+                INNER JOIN cartItems ci ON c.cartId = ci.cartId
+                INNER JOIN sales s ON ci.cartItemId = s.cartItemId
+                INNER JOIN detailsSales ds ON s.saleId = ds.saleId
+                WHERE ds.detailsSaleId = ?`, [id]);
+
+            return (result[0]) ? result[0] : null;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code })
         }
     },
 
@@ -52,7 +85,7 @@ const userRepository = {
 
             return (result.insertId) ? { testimonyId: result.insertId, message, userId: id } : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code})
+            throw ({ message: err.message, statusCode: err.code })
         }
     },
 
@@ -63,7 +96,7 @@ const userRepository = {
 
             return (result.affectedRows > 0) ? { testimonyId: result.insertId, message, userId: id } : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code})
+            throw ({ message: err.message, statusCode: err.code })
         }
     },
 
@@ -74,7 +107,7 @@ const userRepository = {
 
             return (result.affectedRows > 0) ? { testimonyId: id } : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code})
+            throw ({ message: err.message, statusCode: err.code })
         }
     },
 
@@ -85,7 +118,7 @@ const userRepository = {
 
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code})
+            throw ({ message: err.message, statusCode: err.code })
         }
     },
 };

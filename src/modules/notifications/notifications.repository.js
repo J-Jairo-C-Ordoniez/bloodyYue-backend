@@ -4,8 +4,9 @@ const notificationsRepository = {
     create: async (data) => {
         try {
             const columns = Object.keys(data).join(', ');
-            const placeholders = columns.map(() => '?').join(', ');
+            const placeholders = Object.keys(data).map(() => '?').join(', ');
             const values = Object.values(data);
+            
             const [result] = await db.query(
                 `INSERT INTO notifications (${columns}) VALUES (${placeholders})`,
                 values

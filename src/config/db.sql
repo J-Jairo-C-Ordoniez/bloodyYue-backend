@@ -217,7 +217,7 @@ CREATE TABLE IF NOT EXISTS postsReactions (
 CREATE TABLE IF NOT EXISTS notifications (  
   notificationId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   userId INT UNSIGNED,
-  type ENUM('reaction', 'sale', 'message', 'post', 'other'),
+  type ENUM('reaction', 'sale', 'message', 'post', 'commission', 'other'),
   message VARCHAR(255),
   isRead BOOLEAN DEFAULT FALSE,
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

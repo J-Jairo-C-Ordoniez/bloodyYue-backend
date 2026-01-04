@@ -1,7 +1,7 @@
 import postsRepository from './posts.repository.js';
 import validators from '../../utils/validators/index.js';
 import notificationsService from '../notifications/notifications.service.js';
-
+import userRepository from '../../modules/users/user.repository.js';
 
 const postsService = {
     createPost: async (userId, data) => {
@@ -15,6 +15,11 @@ const postsService = {
             (!userId)
         ) {
             throw ({ message: "Invalid Inputs", statusCode: 400 });
+        }
+
+        const user = await usersRepository.getUserById(userId);
+        if (!user) {
+            throw ({ message: "User not found", statusCode: 404 });
         }
 
         const newPost = await postsRepository.createPost({
@@ -33,11 +38,10 @@ const postsService = {
             await postsRepository.addLabels(newPost.postId, labels);
         }
 
-        notificationsService.createNotification({
+        await notificationsService.createNotificationGlobal({
             userId,
             type: 'post',
-            message: `El usuario ${userId} ha creado un nuevo post`,
-            content: post.content,
+            message: `${user.name} ha creado un nuevo post`
         });
 
         return { ...newPost, labels };
@@ -175,6 +179,11 @@ const postsService = {
             throw ({ message: "Invalid data", statusCode: 400 });
         }
 
+        const user = await usersRepository.getUserById(userId);
+        if (!user) {
+            throw ({ message: "User not found", statusCode: 404 });
+        }
+
         const post = await postsRepository.getPostById(postId);
         if (!post) {
             throw ({ message: "Post not found", statusCode: 404 });
@@ -189,6 +198,13 @@ const postsService = {
         if (!reactionId) {
             throw ({ message: "Reaction failed", statusCode: 500 });
         }
+
+        await notificationsService.createNotificationPostReaction({
+            userIdNotify: post.userId,
+            userId,
+            type: 'reaction',
+            message: `${user.name} ha reaccionado a tu post`
+        });
 
         return postsService.getPostReactions(postId);
     },

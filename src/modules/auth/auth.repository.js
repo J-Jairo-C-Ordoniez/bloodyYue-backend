@@ -187,7 +187,7 @@ const authRepository = {
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 

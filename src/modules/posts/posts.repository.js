@@ -24,6 +24,7 @@ const postsRepository = {
                 `INSERT INTO labelsXposts (postId, labelId) VALUES ?`,
                 [values]
             );
+
             return result.affectedRows > 0;
         } catch (err) {
             throw ({ message: err.message, statusCode: err.code || 500 });

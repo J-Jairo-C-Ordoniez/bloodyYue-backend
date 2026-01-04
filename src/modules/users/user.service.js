@@ -1,5 +1,6 @@
 import validators from '../../utils/validators/index.js';
 import userRepository from './user.repository.js';
+import notificationsService from '../notifications/notifications.service.js';
 
 const usersService = {
     getMyProfile: async (id) => {
@@ -67,12 +68,24 @@ const usersService = {
             throw ({ message: "Testimony not created", statusCode: 400 });
         }
 
+        const users = await userRepository.getUsersPermitNotification('createTestimony');
+
+        users.forEach(async (user) => {
+            await notificationsService.createNotification({
+                userId: id,
+                userIdNotify: user.userId,
+                type: 'testimony',
+                message: `${user.name} ha dado su testimonio`,
+                body: {
+                    testimonyId: testimony.testimonyId,
+                }
+            });
+        });
+
         return {
-            testimony: {
-                testimonyId: testimony.testimonyId,
-                message: testimony.message,
-                userId: testimony.userId
-            }
+            testimonyId: testimony.testimonyId,
+            message: testimony.message,
+            userId: testimony.userId
         };
     },
 

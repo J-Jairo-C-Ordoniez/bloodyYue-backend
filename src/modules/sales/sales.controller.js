@@ -4,7 +4,8 @@ import { success, error } from '../../utils/response/response.js';
 const salesController = {
     createSale: async (req, res) => {
         try {
-            const sale = await salesService.createSale(req.body);
+            const { userId } = req.user;
+            const sale = await salesService.createSale(userId, req.body);
             success(req, res, sale, 201);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
@@ -73,7 +74,9 @@ const salesController = {
     updateDetailsSaleStatus: async (req, res) => {
         try {
             const { id } = req.params;
-            const detailsSale = await salesService.updateDetailsSaleStatus(id, req.body.status);
+            const { status } = req.body;
+            const { userId } = req.user;
+            const detailsSale = await salesService.updateDetailsSaleStatus(userId, id, status);
             success(req, res, detailsSale, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
@@ -83,7 +86,8 @@ const salesController = {
     updateSaleStatus: async (req, res) => {
         try {
             const { id } = req.params;
-            const sale = await salesService.updateSaleStatus(id, req.body.status);
+            const { userId } = req.user;
+            const sale = await salesService.updateSaleStatus(userId, id, req.body.status);
             success(req, res, sale, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);

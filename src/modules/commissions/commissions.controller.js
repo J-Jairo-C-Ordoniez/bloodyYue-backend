@@ -65,7 +65,8 @@ const commissionsController = {
     updateCommission: async (req, res) => {
         try {
             const { id } = req.params;
-            const result = await commissionsService.updateCommission(id, req.body);
+            const { userId } = req.user;
+            const result = await commissionsService.updateCommission(userId, id, req.body);
             success(req, res, result, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
@@ -76,7 +77,8 @@ const commissionsController = {
         try {
             const { id } = req.params;
             const { labels } = req.body;
-            const result = await commissionsService.updateCommissionLabels(id, labels);
+            const { userId } = req.user;
+            const result = await commissionsService.updateCommissionLabels(userId, id, labels);
             success(req, res, result, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
