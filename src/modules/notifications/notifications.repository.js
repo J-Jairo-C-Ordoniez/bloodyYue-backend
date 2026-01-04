@@ -19,15 +19,28 @@ const notificationsRepository = {
     
     getByUserId: async (userId) => {
         try {
-            const [rows] = await db.query(
-                'SELECT * FROM notifications WHERE userId = ? ORDER BY createdAt DESC',
+            const [result] = await db.query(
+                'SELECT notificationId, title, message, isRead, createdAt FROM notifications WHERE userId = ? AND isRead = false ORDER BY createdAt DESC',
                 [userId]
             );
-            return rows;
+            return (result.length > 0) ? result : null;
         } catch (err) {
             throw {message: err.message, statusCode: err.statusCode};
         }
     },
+
+    getById: async (notificationId) => {
+        try {
+            const [result] = await db.query(
+                'SELECT notificationId, title, message, isRead, createdAt FROM notifications WHERE notificationId = ? AND isRead = false',
+                [notificationId]
+            );
+            return (result.length > 0) ? result[0] : null;
+        } catch (err) {
+            throw {message: err.message, statusCode: err.statusCode};
+        }
+    },
+
     markAsRead: async (notificationId) => {
         try {
             const [result] = await db.query(
@@ -35,10 +48,11 @@ const notificationsRepository = {
                 [notificationId]
             );
             return result.affectedRows > 0;
-        } catch (error) {
-            throw error;
+        } catch (err) {
+            throw {message: err.message, statusCode: err.statusCode};
         }
     },
+    
     markAllAsRead: async (userId) => {
         try {
             const [result] = await db.query(
@@ -46,8 +60,8 @@ const notificationsRepository = {
                 [userId]
             );
             return result.affectedRows > 0;
-        } catch (error) {
-            throw error;
+        } catch (err) {
+            throw {message: err.message, statusCode: err.statusCode};
         }
     },
 };

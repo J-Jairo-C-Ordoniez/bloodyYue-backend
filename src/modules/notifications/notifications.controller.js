@@ -3,10 +3,10 @@ import { success, error } from '../../utils/response/response.js';
 
 
 const notificationsController = {
-    getNotifications: async (req, res) => {
+    getNotificationsNotRead: async (req, res) => {
         try {
             const {userId} = req.user.userId
-            const notifications = await notificationsService.getNotifications(userId);
+            const notifications = await notificationsService.getNotificationsNotRead(userId);
             success(req, res, notifications, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);

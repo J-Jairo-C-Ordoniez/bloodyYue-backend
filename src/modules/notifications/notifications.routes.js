@@ -5,7 +5,7 @@ const router = Router();
 
 router.get(
     '/', 
-    notificationsController.getNotifications
+    notificationsController.getNotificationsNotRead
 );
 
 router.put(

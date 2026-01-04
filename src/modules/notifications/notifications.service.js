@@ -96,16 +96,39 @@ const notificationsService = {
         return newNotification;
     },
 
-    getNotifications: async (userId) => {
-        return await notificationsRepository.getByUserId(userId);
+    getNotificationsNotRead: async (userId) => {
+        const notifications = await notificationsRepository.getByUserId(userId);
+        if (!notifications) {
+            throw ({message: 'Notifications not found', statusCode: 404});
+        }
+        return notifications;
+    },
+
+    getNotificationsNotReadById: async (notificationId) => {
+        const notification = await notificationsRepository.getById(notificationId);
+        if (!notification) {
+            throw ({message: 'Notification not found', statusCode: 404});
+        }
+
+        return notification;
     },
 
     markAsRead: async (notificationId) => {
-        return await notificationsRepository.markAsRead(notificationId);
+        const notification = await notificationsRepository.markAsRead(notificationId);
+        if (!notification) {
+            throw ({message: 'Notification not found', statusCode: 404});
+        }
+
+        return notificationsService.getNotificationsNotReadById(notificationId);
     },
 
     markAllAsRead: async (userId) => {
-        return await notificationsRepository.markAllAsRead(userId);
+        const notifications = await notificationsRepository.markAllAsRead(userId);
+        if (!notifications) {
+            throw ({message: 'Notifications not found', statusCode: 404});
+        }
+
+        return notificationsService.getNotificationsNotRead(userId);
     },
 };
 
