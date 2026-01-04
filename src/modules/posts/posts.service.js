@@ -1,5 +1,7 @@
 import postsRepository from './posts.repository.js';
 import validators from '../../utils/validators/index.js';
+import notificationsService from '../notifications/notifications.service.js';
+
 
 const postsService = {
     createPost: async (userId, data) => {
@@ -30,6 +32,13 @@ const postsService = {
         if (labels && labels.length > 0) {
             await postsRepository.addLabels(newPost.postId, labels);
         }
+
+        notificationsService.createNotification({
+            userId,
+            type: 'post',
+            message: `El usuario ${userId} ha creado un nuevo post`,
+            content: post.content,
+        });
 
         return { ...newPost, labels };
     },

@@ -14,7 +14,7 @@ const commissionsService = {
             (!commission.price && validators.isPrice(commission.price)) ||
             (!commission.terms && validators.isString(commission.terms))
         ) {
-            throw ({message: 'All fields are required', statusCode: 400});
+            throw ({message: 'Input data invalid', statusCode: 400});
         }
 
         const existsExample = await postsRepository.getPostById(commission.exampleId);

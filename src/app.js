@@ -1,10 +1,12 @@
 import 'dotenv/config';
 
+import http from 'http';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import socketConfig from './config/socket.config.js';
 
 import authRoutes from './modules/auth/auth.routes.js';
 import userRoutes from './modules/users/user.routes.js';
@@ -22,6 +24,8 @@ import notificationsRoutes from './modules/notifications/notifications.routes.js
 const PORT = process.env.PORT || 3000;
 
 const app = express();
+const server = http.createServer(app);
+const io = socketConfig(server);
 
 app.use(cookieParser());
 app.use(express.json());
@@ -47,4 +51,4 @@ app.get('/', (req, res) => {
   res.send('BloodyYue Backend API is running');
 });
 
-app.listen(PORT, () => { console.log(`Server running at http://localhost:${PORT}`) });
+server.listen(PORT, () => { console.log(`Server running at http://localhost:${PORT}`) });

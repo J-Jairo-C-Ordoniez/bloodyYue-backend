@@ -1,4 +1,4 @@
-import db from '../../config/db.js';
+import db from '../../config/db.config.js';
 
 const commissionsRepository = {
     createCommission: async (commission) => {
@@ -11,7 +11,7 @@ const commissionsRepository = {
         
             return (result.insertId) ? {commissionId: result.insertId} : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code || 500});
+            throw ({message: err.message, statusCode: 500});
         }
     },
 
