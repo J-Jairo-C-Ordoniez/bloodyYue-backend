@@ -1,27 +1,23 @@
-import * as chatService from './chat.service.js';
+import chatService from './chat.service.js';
 import { success, error } from '../../utils/response/response.js';
 
 const chatController = {
-    sendMessage: async (req, res) => {
+    getChatsRoom: async (req, res) => {
         try {
-            const message = await chatService.sendMessage(req.body);
-            success(req, res, message, 201);
+            const {userId} = req.user;
+            const chatsRoom = await chatService.getChatsRoom(userId);
+            success(req, res, chatsRoom, 200);
         } catch (err) {
-            error(req, res, err.message, 400);
+            error(req, res, err.message, err.statusCode);
         }
     },
+
     getMessages: async (req, res) => {
         try {
-            const messages = await chatService.getMessages(req.params.userId);
+            const {userId} = req.user;
+            const chatId = req.params.chatId;
+            const messages = await chatService.getMessages(chatId);
             success(req, res, messages, 200);
-        } catch (err) {
-            error(req, res, err.message, 500);
-        }
-    },
-    markAsRead: async (req, res) => {
-        try {
-            const result = await chatService.markAsRead(req.params.userId);
-            success(req, res, { updated: result }, 200);
         } catch (err) {
             error(req, res, err.message, 500);
         }
