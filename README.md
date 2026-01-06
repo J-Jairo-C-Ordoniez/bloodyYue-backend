@@ -89,4 +89,6 @@ src/
     - POST /api/auth/changeRole (userId, rolId)
     - POST /api/auth/refreshToken
     - PATCH /api/auth/changeStatus (userId, status)
-    
+
+- users
+    - GET /api/users/:userId
