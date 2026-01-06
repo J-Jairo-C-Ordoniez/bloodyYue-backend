@@ -91,4 +91,10 @@ src/
     - PATCH /api/auth/changeStatus (userId, status)
 
 - users
-    - GET /api/users/:userId
+    - GET /api/users/me
+    - PUT /api/users/me (name, birthday, avatar, poster)
+    - GET /api/users/me/testimonies
+    - POST /api/users/me/testimonies (message)
+    - PUT /api/users/me/testimonies (message)
+    - DELETE /api/users/me/testimonies
+    - GET /api/users/testimonies

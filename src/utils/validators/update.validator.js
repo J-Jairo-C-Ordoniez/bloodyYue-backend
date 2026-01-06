@@ -5,10 +5,11 @@ import isJson from "./json.validator.js";
 import isHexadecial from "./hexadecial.validator.js";
 import isPrice from "./price.validator.js";
 import isNumber from "./number.validator.js";
+import isDate from "./date.validator.js";
 
 const validationRules = {
     name: isString,
-    birthday: isString,
+    birthday: isDate,
     avatar: isLink,
     poster: isLink,
     description: isString,

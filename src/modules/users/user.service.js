@@ -30,7 +30,7 @@ const usersService = {
             throw new AppError('Fields Not Updated', 404);
         }
 
-        return usersService.getMyProfile(id);
+        return usersService.getMyProfile(userId);
     },
 
     getMyTestimony: async (id) => {
