@@ -2,7 +2,7 @@ import salesRepository from './sales.repository.js';
 import cartRepository from '../cart/cart.repository.js';
 import validators from '../../utils/validators/index.js'
 import notificationsService from '../notifications/notifications.service.js';
-import usersRepository from '../users/users.repository.js';
+import usersRepository from '../users/user.repository.js';
 import chatService from '../chat/chat.service.js';
 
 const salesService = {

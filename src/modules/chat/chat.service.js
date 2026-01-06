@@ -1,6 +1,6 @@
 import chatRepository from './chat.repository.js';
-import notificationService from '../notification/notification.service.js';
-import userService from '../user/user.service.js';
+import notificationService from '../notifications/notifications.service.js';
+import usersService from '../users/user.service.js';
 
 const chatService = {
     createChat: async (userId, participantId) => {

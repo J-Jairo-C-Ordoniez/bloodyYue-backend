@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import socketConfig from './config/socket.config.js';
+import notFound from './middlewares/errors/notFound.middleware.js';
 
 import authRoutes from './modules/auth/auth.routes.js';
 import userRoutes from './modules/users/user.routes.js';
@@ -46,6 +47,8 @@ app.use('/api/media', mediaRoutes);
 app.use('/api/labels', labelsRoutes);
 app.use('/api/roles', rolesRoutes);
 app.use('/api/notifications', notificationsRoutes);
+
+app.use(notFound);
 
 app.get('/', (req, res) => {
   res.send('BloodyYue Backend API is running');
