@@ -6,6 +6,7 @@ const salesController = {
         try {
             const { userId } = req.user;
             const sale = await salesService.createSale(userId, req.body);
+            console.log('hola');
             success(req, res, sale, 201);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
@@ -44,6 +45,7 @@ const salesController = {
     getSalesByUserId: async (req, res) => {
         try {
             const { userId } = req.user;
+            
             const sales = await salesService.getSalesByUserId(userId);
             success(req, res, sales, 200);
         } catch (err) {
@@ -55,6 +57,7 @@ const salesController = {
         try {
             const { period } = req.params;
             const sales = await salesService.getSalesByPeriod(period);
+            
             success(req, res, sales, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
@@ -76,9 +79,11 @@ const salesController = {
             const { id } = req.params;
             const { status } = req.body;
             const { userId } = req.user;
+            
             const detailsSale = await salesService.updateDetailsSaleStatus(userId, id, status);
             success(req, res, detailsSale, 200);
         } catch (err) {
+            console.log(err);
             error(req, res, err.message, err.statusCode);
         }
     },

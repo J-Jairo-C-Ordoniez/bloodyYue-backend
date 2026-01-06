@@ -159,6 +159,15 @@ src/
     - PATCH /api/cart/items/:cartItemId/discarded
 
 - sales
+    - POST /api/sales (cartItemId, userId, commissionId, quantity, priceAtMoment, details)
+    - GET /api/sales/list/:id
+    - GET /api/sales/me
+    - GET /api/sales/:id
+    - GET /api/sales/sold
+    - GET /api/sales/period/:period
+    - GET /api/sales/details/:id
+    - PATCH /api/sales/:id/status
+    - PATCH /api/sales/details/:id/status
+
 - chat
 - notifications
-

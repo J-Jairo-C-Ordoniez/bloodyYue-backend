@@ -13,7 +13,7 @@ const salesRepository = {
             );
             return (result.insertId) ? { saleId: result.insertId, ...data } : null;
         } catch (error) {
-            throw ({ message: error.message, statusCode: error.statusCode });
+            throw ({ message: error.message, statusCode: 500 });
         }
     },
 
@@ -29,7 +29,7 @@ const salesRepository = {
             );
             return (result.insertId) ? { detailsSaleId: result.insertId, ...data } : null;
         } catch (error) {
-            throw ({ message: error.message, statusCode: error.statusCode });
+            throw ({ message: error.message, statusCode: 500 });
         }
     },
 
@@ -41,24 +41,23 @@ const salesRepository = {
             );
             return (result.length > 0) ? result : null;
         } catch (error) {
-            throw ({ message: error.message, statusCode: error.statusCode });
+            throw ({ message: error.message, statusCode: 500 });
         }
     },
 
     getSalesById: async (id) => {
         try {
             const [result] = await db.query(
-                `SELECT s.saleId, s.total, s.paymentMethod, s.status, s.createdAt, c.title as commissionTitle, c.content as commissionContent, ci.quantity as commissionQuantity, ci.status as commissionStatus, ci.priceAtMoment as commissionPriceAtMoment, ci.details as commissionDetails
+                `SELECT s.saleId, s.total, s.paymentMethod, s.status, ci.commissionId, ci.quantity, ci.priceAtMoment, ci.details
                  FROM sales s
                  INNER JOIN cartItems ci ON s.cartItemId = ci.cartItemId
-                 LEFT JOIN commissions c ON ci.commissionId = c.commissionId
                  WHERE s.saleId = ?`,
                 [id]
             );
 
             return (result[0]) ? result[0] : null;
         } catch (error) {
-            throw ({ message: error.message, statusCode: error.statusCode });
+            throw ({ message: error.message, statusCode: 500 });
         }
     },
 
@@ -73,26 +72,26 @@ const salesRepository = {
             );
             return (result.length > 0) ? result : null;
         } catch (error) {
-            throw ({ message: error.message, statusCode: error.statusCode });
+            throw ({ message: error.message, statusCode: 500 });
         }
     },
 
     getSalesByUserId: async (userId) => {
         try {
             const [result] = await db.query(
-                `SELECT s.saleId, s.total, s.paymentMethod, s.status, s.createdAt, c.title as commissionTitle, c.content as commissionContent, ci.quantity as commissionQuantity, ci.status as commissionStatus, ci.priceAtMoment as commissionPriceAtMoment, ci.details as commissionDetails
+                `SELECT s.saleId, s.total, s.paymentMethod, s.status, ci.commissionId, ci.quantity, ci.priceAtMoment, ci.details
 
                  FROM sales s
                  INNER JOIN cartItems ci ON s.cartItemId = ci.cartItemId
-                 INNER JOIN cart ca ON ci.cartId = ca.cartId
-                 LEFT JOIN commissions c ON ci.commissionId = c.commissionId
+                 INNER JOIN carts ca ON ci.cartId = ca.cartId
                  WHERE ca.userId = ?
                  ORDER BY s.createdAt DESC`,
                 [userId]
             );
+
             return (result.length > 0) ? result : null;
         } catch (error) {
-            throw ({ message: error.message, statusCode: error.statusCode });
+            throw ({ message: error.message, statusCode: 500 });
         }
     },
 
@@ -108,7 +107,7 @@ const salesRepository = {
 
             return (result.length > 0) ? result : null;
         } catch (error) {
-            throw ({ message: error.message, statusCode: error.statusCode });
+            throw ({ message: error.message, statusCode: 500 });
         }
     },
 
@@ -120,7 +119,7 @@ const salesRepository = {
             );
             return (result[0]) ? result[0] : null;
         } catch (error) {
-            throw ({ message: error.message, statusCode: error.statusCode });
+            throw ({ message: error.message, statusCode: 500 });
         }
     },
 
@@ -132,7 +131,7 @@ const salesRepository = {
             );
             return (result.affectedRows > 0) ? result : null;
         } catch (error) {
-            throw ({ message: error.message, statusCode: error.statusCode });
+            throw ({ message: error.message, statusCode: 500 });
         }
     },
 
@@ -144,7 +143,7 @@ const salesRepository = {
             );
             return (result.affectedRows > 0) ? result : null;
         } catch (error) {
-            throw ({ message: error.message, statusCode: error.statusCode });
+            throw ({ message: error.message, statusCode: 500 });
         }
     }
 };

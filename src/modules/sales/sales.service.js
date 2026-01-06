@@ -3,6 +3,7 @@ import cartRepository from '../cart/cart.repository.js';
 import validators from '../../utils/validators/index.js'
 import notificationsService from '../notifications/notifications.service.js';
 import usersRepository from '../users/user.repository.js';
+import commissionRepository from '../commissions/commissions.repository.js';
 import chatService from '../chat/chat.service.js';
 
 const salesService = {
@@ -67,7 +68,12 @@ const salesService = {
             throw ({ message: 'Sale not found', statusCode: 404 });
         }
 
-        return sale;
+        const commission = await commissionRepository.getCommissionsById(sale.commissionId);
+        if (!commission) {
+            throw ({ message: 'Commission not found', statusCode: 404 });
+        }
+
+        return { sale, commission };
     },
 
     getSalesSold: async () => {

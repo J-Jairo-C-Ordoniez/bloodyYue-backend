@@ -8,7 +8,7 @@ const userRepository = {
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code })
+            throw ({ message: err.message, statusCode: 500 })
         }
     },
 
@@ -19,7 +19,7 @@ const userRepository = {
 
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code })
+            throw ({ message: err.message, statusCode: 500 })
         }
     },
 
@@ -30,7 +30,7 @@ const userRepository = {
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code })
+            throw ({ message: err.message, statusCode: 500 })
         }
     },
 
@@ -41,7 +41,7 @@ const userRepository = {
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code })
+            throw ({ message: err.message, statusCode: 500 })
         }
     },
 
@@ -57,7 +57,7 @@ const userRepository = {
 
             return result;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code })
+            throw ({ message: err.message, statusCode: 500 })
         }
     },
 
@@ -66,15 +66,15 @@ const userRepository = {
             const [result] = await db.query(
                 `SELECT u.userId, u.name 
                 FROM users u
-                INNER JOIN cart c ON u.userId = c.userId
+                INNER JOIN carts c ON u.userId = c.userId
                 INNER JOIN cartItems ci ON c.cartId = ci.cartId
                 INNER JOIN sales s ON ci.cartItemId = s.cartItemId
-                INNER JOIN detailsSales ds ON s.saleId = ds.saleId
+                INNER JOIN detailsSale ds ON s.saleId = ds.saleId
                 WHERE ds.detailsSaleId = ?`, [id]);
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code })
+            throw ({ message: err.message, statusCode: 500 })
         }
     },
 
@@ -85,7 +85,7 @@ const userRepository = {
 
             return (result.insertId) ? { testimonyId: result.insertId, message, userId: id } : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code })
+            throw ({ message: err.message, statusCode: 500 })
         }
     },
 
@@ -96,7 +96,7 @@ const userRepository = {
 
             return (result.affectedRows > 0) ? { testimonyId: result.insertId, message, userId: id } : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code })
+            throw ({ message: err.message, statusCode: 500 })
         }
     },
 
@@ -107,7 +107,7 @@ const userRepository = {
 
             return (result.affectedRows > 0) ? { testimonyId: id } : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code })
+            throw ({ message: err.message, statusCode: 500 })
         }
     },
 
@@ -118,7 +118,7 @@ const userRepository = {
 
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code })
+            throw ({ message: err.message, statusCode: 500 })
         }
     },
 };

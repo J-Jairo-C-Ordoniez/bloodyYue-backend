@@ -6,7 +6,7 @@ import authorizePermission from '../../middlewares/auth/authorize.middleware.js'
 const router = Router();
 
 router.post(
-    '/create', 
+    '/', 
     authenticate,
     salesController.createSale
 );
@@ -16,6 +16,12 @@ router.get(
     authenticate,
     authorizePermission('readSales'),
     salesController.getSales
+);
+
+router.get(
+    '/me', 
+    authenticate,
+    salesController.getSalesByUserId
 );
 
 router.get(
@@ -29,12 +35,6 @@ router.get(
     authenticate,
     authorizePermission('readSales'),
     salesController.getSalesSold
-);
-
-router.get(
-    '/me', 
-    authenticate,
-    salesController.getSalesByUserId
 );
 
 router.get(

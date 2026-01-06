@@ -32,7 +32,7 @@ const notificationsService = {
         if (
             (!userId) ||
             (!userIdNotify) ||
-            (!type && validators.isString(type))
+            (!type && validators.isString(type)) ||
             (!message && validators.isString(message))
         ) {
             throw ({message: 'Input invalid data', statusCode: 400});
