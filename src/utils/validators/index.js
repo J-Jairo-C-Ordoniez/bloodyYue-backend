@@ -7,6 +7,7 @@ import isHexadecial from "./hexadecial.validator.js";
 import isPrice from "./price.validator.js";
 import isPeriod from "./period.validator.js";
 import isNumber from "./number.validator.js";
+import isJson from "./json.validator.js";
 
 const validators = {
     isEmail,
@@ -17,6 +18,7 @@ const validators = {
     isPrice,
     isPeriod,
     isNumber,
+    isJson,
     validateUpdate,
 }
 

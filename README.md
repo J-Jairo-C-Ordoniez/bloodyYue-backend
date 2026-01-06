@@ -98,3 +98,8 @@ src/
     - PUT /api/users/me/testimonies (message)
     - DELETE /api/users/me/testimonies
     - GET /api/users/testimonies
+
+- settings
+    - POST /api/settings (title, subtitle, contentHero, email, abaut, work, redes, usagePolicies, seoMeta)
+    - GET /api/settings/:id
+    - PUT /api/settings/:id (title, subtitle, contentHero, email, abaut, work, redes, usagePolicies)

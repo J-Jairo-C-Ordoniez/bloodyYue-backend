@@ -11,28 +11,28 @@ const settingsRepository = {
                 `INSERT INTO settings (${colums}) VALUES (${placeholders})`,
                 values
             );
-            
+
             return (result.insertId) ? { settingId: result.insertId, ...data } : null;
         } catch (error) {
-            throw ({message: error.message, statusCode: error.code});
+            throw ({ message: error.message, statusCode: 500 });
         }
     },
-    
+
     getSettings: async (id) => {
         try {
             const [result] = await db.query('SELECT * FROM settings WHERE settingId = ?', [id]);
             return (result[0]) ? result[0] : null;
         } catch (error) {
-            throw ({message: error.message, statusCode: error.code});
+            throw ({ message: error.message, statusCode: 500 });
         }
     },
-    
+
     updateSettings: async (id, data) => {
         try {
-            const [result] = await db.query('UPDATE settings SET ? WHERE settingId = ?', [id, data]);
+            const [result] = await db.query('UPDATE settings SET ? WHERE settingId = ?', [data, id]);
             return (result.affectedRows > 0) ? result : null;
         } catch (error) {
-            throw ({message: error.message, statusCode: error.code});
+            throw ({ message: error.message, statusCode: 500 });
         }
     },
 };

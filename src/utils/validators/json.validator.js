@@ -1,6 +1,6 @@
 export default function isJson(value) {
     try {
-        JSON.parse(value)
+        JSON.stringify(value)
     } catch (error) {
         return false
     }

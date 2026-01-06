@@ -31,9 +31,9 @@ const settingsService = {
             email,
             abaut,
             work,
-            redes: JSON.parse(redes),
+            redes: JSON.stringify(redes),
             usagePolicies,
-            seoMeta: JSON.parse(seoMeta)
+            seoMeta: JSON.stringify(seoMeta)
         });
         
         if(!settings){
@@ -76,9 +76,9 @@ const settingsService = {
             throw ({message: 'Settings not found', statusCode: 404});
         }
 
-        const errors = validator.updateSettings(data);
-        if(errors){
-            throw ({message: 'Invalid Inputs', statusCode: 400});
+        const errors = validator.validateUpdate(data);
+        if(errors.length > 0){
+            throw ({message: errors, statusCode: 400});
         }
 
         const updatedSettings = await settingsRepository.updateSettings(id, data);
