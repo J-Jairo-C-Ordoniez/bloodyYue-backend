@@ -8,6 +8,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import socketConfig from './config/socket.config.js';
 import notFound from './middlewares/errors/notFound.middleware.js';
+import rateLimit from 'express-rate-limit';
 
 import authRoutes from './modules/auth/auth.routes.js';
 import userRoutes from './modules/users/user.routes.js';
@@ -31,10 +32,16 @@ const io = socketConfig(server);
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors());
-app.use(helmet());
+app.use(helmet({crossOriginResourcePolicy: { policy: 'cross-origin' }}));
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+}));
 app.use(morgan('dev'));
 
-// Routes
+// Routescl
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/settings', settingsRoutes);
@@ -48,10 +55,10 @@ app.use('/api/labels', labelsRoutes);
 app.use('/api/roles', rolesRoutes);
 app.use('/api/notifications', notificationsRoutes);
 
-app.use(notFound);
-
 app.get('/', (req, res) => {
   res.send('BloodyYue Backend API is running');
 });
+
+app.use(notFound);
 
 server.listen(PORT, () => { console.log(`Server running at http://localhost:${PORT}`) });
