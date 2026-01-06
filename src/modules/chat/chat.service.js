@@ -3,10 +3,39 @@ import notificationService from '../notification/notification.service.js';
 import userService from '../user/user.service.js';
 
 const chatService = {
-    createChat: async (userId) => {
-        const chat = await chatRepository.createChat(userId);
+    createChat: async (userId, participantId) => {
+        if ((!userId) || (!participantId)) {
+            throw ({ message: 'Missing parameters', statusCode: 400 });
+        }
+        const existChat = await chatRepository.getChatByParticipants(userId, participantId);
+        if (existChat) {
+            throw ({ message: 'Chat already exists', statusCode: 400 });
+        }
+
+        const chat = await chatRepository.createChat();
         if (!chat) {
-            throw ({ message: 'Not Found Chat', statusCode: 404 });
+            throw ({ message: 'Chat creation failed', statusCode: 500 });
+        }
+
+        const addParticipants = await chatRepository.addParticipants(chat.chatId, [userId, participantId]);
+        if (!addParticipants) {
+            throw ({ message: 'Participants addition failed', statusCode: 500 });
+        }
+
+        return {
+            chat,
+            addParticipants
+        };
+    },
+
+    changeStatusChat: async (chatId, status) => {
+        if ((!chatId) || (!status)) {
+            throw ({ message: 'Missing parameters', statusCode: 400 });
+        }
+
+        const chat = await chatRepository.changeStatusChat(chatId, status);
+        if (!chat) {
+            throw ({ message: 'Chat not found', statusCode: 404 });
         }
 
         return chat;
@@ -67,6 +96,19 @@ const chatService = {
             ...newMessage,
             receiverId
         };
+    },
+
+    changeStatusChat: async (chatId, status) => {
+        if (!chatId || !status) {
+            throw ({ message: 'Input invalid data', statusCode: 400 });
+        }
+
+        const newStatusChat = await chatRepository.changeStatusChat(chatId, status);
+        if (!newStatusChat) {
+            throw ({ message: 'Not Found Chat', statusCode: 404 });
+        }
+
+        return newStatusChat;
     }
 }
 

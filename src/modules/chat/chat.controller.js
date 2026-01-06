@@ -2,6 +2,16 @@ import chatService from './chat.service.js';
 import { success, error } from '../../utils/response/response.js';
 
 const chatController = {
+    createChat: async (req, res) => {
+        try {
+            const {userId} = req.user;
+            const messages = await chatService.getMessages(userId, req.body.participantId);
+            success(req, res, messages, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
     getChatsRoom: async (req, res) => {
         try {
             const {userId} = req.user;

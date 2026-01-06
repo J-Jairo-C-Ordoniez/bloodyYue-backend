@@ -1,6 +1,53 @@
 import db from '../../config/db.config.js';
 
 const chatRepository = {
+    createChat: async () => {
+        try {
+            const [result] = await db.query(
+                `INSERT INTO chats ()
+                VALUES ();`
+            );
+
+            return (result.insertId) ? result.insertId : null;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code });
+        }
+    },
+
+    addParticipants: async (chatId, participants) => {
+        try {
+            const values = participants.map(participant => [chatId, participant]);
+            const [result] = await db.query(
+                `INSERT INTO chatParticipants (chatId, userId)
+                VALUES ?;`,
+                [values]
+            );
+
+            return (result.insertId) ? result.insertId : null;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code });
+        }
+    },
+
+    getChatByParticipants: async (participantOneId, participantTwoId) => {
+        try {
+            const [result] = await db.query(
+                `SELECT
+                    c.chatId
+                    FROM chats c
+                    JOIN chatParticipants cp1 ON c.chatId = cp1.chatId
+                    JOIN chatParticipants cp2 ON c.chatId = cp2.chatId
+                    WHERE cp1.userId = ?
+                    AND cp2.userId = ?;`,
+                [participantOneId, participantTwoId]
+            );
+
+            return (result.length > 0) ? result.rows[0] : null;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code });
+        }
+    },
+
     getChatsRoom: async (userId) => {
         try {
             const [result] = await db.query(
