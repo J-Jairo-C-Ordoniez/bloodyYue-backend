@@ -75,7 +75,7 @@ const authService = {
         const isActiveUser = await authRepository.isActiveUser(user.userId, true);
 
         if (!isActiveUser) {
-            throw ({ message: "User status change failed", statusCode: 500 });
+            throw ({ message: "User not active", statusCode: 401 });
         }
 
         const accessToken = createToken.accesToken({ userId: user.userId, rolId: user.rolId });

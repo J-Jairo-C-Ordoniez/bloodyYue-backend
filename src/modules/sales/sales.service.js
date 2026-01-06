@@ -5,8 +5,6 @@ import notificationsService from '../notifications/notifications.service.js';
 import usersRepository from '../users/users.repository.js';
 import chatService from '../chat/chat.service.js';
 
-/* readNeWSales || readUpdatedSales = permit */
-
 const salesService = {
     createSale: async (userId, data) => {
         const { cartItemId, total, paymentMethod } = data;
@@ -218,7 +216,7 @@ const salesService = {
         });
 
         return salesService.getSalesById(id);
-    },
+    }
 };
 
 export default salesService;

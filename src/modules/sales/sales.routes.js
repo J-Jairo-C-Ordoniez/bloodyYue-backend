@@ -53,6 +53,7 @@ router.get(
 router.patch(
     '/details/:id/status', 
     authenticate,
+    authorizePermission('updateSalesDetails'),
     salesController.updateDetailsSaleStatus
 );
 

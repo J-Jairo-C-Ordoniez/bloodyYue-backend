@@ -16,15 +16,18 @@ router.get(
     cartController.getAllItemsCart
 );
 router.get(
-    '/items/:cartItemId', 
+    '/items/:cartItemId',
+    authenticate,
     cartController.getItemById
 );
 router.put(
     '/items/:cartItemId', 
+    authenticate,
     cartController.updateItem
 );
 router.patch(
     '/items/:cartItemId/discarded', 
+    authenticate,
     cartController.changeItemStatus
 );
 
