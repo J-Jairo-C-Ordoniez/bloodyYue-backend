@@ -48,7 +48,7 @@ router.post(
 );
 
 router.patch(
-    '/changeStatus/:userId',
+    '/changeStatus',
     authenticate,
     authorizePermission('changeUserStatus'),
     authController.changeStatus

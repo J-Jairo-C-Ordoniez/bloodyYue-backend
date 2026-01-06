@@ -13,7 +13,7 @@ const authRepository = {
             );
             return (result.insertId) ? { id: result.insertId, ...data } : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -29,7 +29,7 @@ const authRepository = {
             );
             return (result.insertId) ? { id: result.insertId, ...data } : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -41,7 +41,7 @@ const authRepository = {
             );
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -53,7 +53,7 @@ const authRepository = {
             );
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -66,7 +66,7 @@ const authRepository = {
 
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -83,7 +83,7 @@ const authRepository = {
 
             return (result.insertId) ? { refreshTokenId: result.insertId } : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -114,7 +114,7 @@ const authRepository = {
 
             return (result.insertId) ? result.insertId : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -126,7 +126,7 @@ const authRepository = {
             );
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -138,7 +138,7 @@ const authRepository = {
             );
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -150,7 +150,7 @@ const authRepository = {
             );
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -162,7 +162,7 @@ const authRepository = {
             );
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -174,7 +174,7 @@ const authRepository = {
             );
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -204,7 +204,7 @@ const authRepository = {
 
             return result.length > 0;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -215,7 +215,7 @@ const authRepository = {
 
             return result.affectedRows > 0;
         } catch (err) {
-            throw new AppError(err.message, err.code)
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 }

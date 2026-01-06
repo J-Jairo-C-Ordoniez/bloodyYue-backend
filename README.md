@@ -77,3 +77,16 @@ src/
  ├── utils/
  ├── app.js
 ``
+
+## Routes
+- auth
+    - POST /api/auth/register (name, email, password)
+    - POST /api/auth/login (email, password)
+    - POST /api/auth/logout
+    - POST /api/auth/code (email, type: verify | restartPassword)
+    - POST /api/auth/verify (email, code)
+    - POST /api/auth/resetPassword (email, password)
+    - POST /api/auth/changeRole (userId, rolId)
+    - POST /api/auth/refreshToken
+    - PATCH /api/auth/changeStatus (userId, status)
+    

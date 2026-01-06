@@ -266,18 +266,18 @@ const authService = {
         return { accessToken: newAccessToken };
     },
 
-    changeStatus: async (id, data) => {
-        if (!id) {
-            throw ({ message: "Invalid user", statusCode: 400 });
+    changeStatus: async (data) => {
+        if ((!data.userId) || (!data.status && validators.isString(data.status))) {
+            throw ({ message: "Input invalid data", statusCode: 400 });
         }
 
-        const updateStatus = await userRepository.changeStatus(id, data.status);
+        const updateStatus = await authRepository.changeStatus(data.userId, data.status);
 
         if (!updateStatus) {
             throw ({ message: "Field Not Updated", statusCode: 404 });
         }
 
-        return usersService.getMyProfile(id);
+        return { message: "Status changed" };
     },
 };
 
