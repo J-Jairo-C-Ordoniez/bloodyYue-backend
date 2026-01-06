@@ -1,8 +1,9 @@
 import salesRepository from './sales.repository.js';
 import cartRepository from '../cart/cart.repository.js';
 import validators from '../../utils/validators/index.js'
-import userRepository from '../users/user.repository.js';
 import notificationsService from '../notifications/notifications.service.js';
+import usersRepository from '../users/users.repository.js';
+import chatService from '../chat/chat.service.js';
 
 /* readNeWSales || readUpdatedSales = permit */
 
@@ -136,6 +137,7 @@ const salesService = {
 
         const user = await usersRepository.getUserById(userId);
         const userSale = await usersRepository.getUserSaleDetails(id);
+
         if (!user || !userSale) {
             throw ({ message: "User not found", statusCode: 404 });
         }
@@ -149,6 +151,19 @@ const salesService = {
                 detailsSaleId: detailsSale.detailsSaleId,
             }
         });
+
+        if (status === 'done') {
+            const usersDesactiveChat = await usersRepository.getUsersPermitNotification('readUpdatedSales');
+            usersDesactiveChat.forEach(async (user) => {
+                await chatService.changeStatusChat({
+                    participantOneId: userSale.userId,
+                    participantTwoId: user.userId
+                }, false);
+            });
+        }
+
+
+
 
         return salesService.getDetailsSale(id);
     },
@@ -182,20 +197,25 @@ const salesService = {
         );
 
         const users = await usersRepository.getUsersPermitNotification('readUpdatedSales');
+        const userSale = await usersRepository.getUserById(userId);
 
         users.forEach(async (user) => {
             await notificationsService.createNotification({
                 userId,
                 userIdNotify: user.userId,
                 type: 'sale',
-                message: `${user.name} ha completado una compra`,
+                message: `${userSale.name} ha completado una compra`,
                 body: {
                     saleId: sale.saleId,
                 }
             });
-        });
 
-        /* add: status chat to 'active' */
+            await chatService.changeStatusChat({
+                participantOneId: userId,
+                participantTwoId: user.userId
+            }, true);
+
+        });
 
         return salesService.getSalesById(id);
     },

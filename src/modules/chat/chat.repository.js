@@ -106,6 +106,21 @@ const chatRepository = {
             throw ({ message: err.message, statusCode: err.status });
         }
     },
+
+    changeStatusChat: async (chatId, status) => {
+        try {
+            const [result] = await db.query(
+                `UPDATE chats
+                SET isActive = ?
+                WHERE chatId = ?;`,
+                [status, chatId]
+            );
+
+            return (result.affectedRows > 0) ? result : null;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.status });
+        }
+    }
 }
 
 export default chatRepository;
