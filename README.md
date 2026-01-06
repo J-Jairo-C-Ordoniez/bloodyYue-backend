@@ -103,3 +103,25 @@ src/
     - POST /api/settings (title, subtitle, contentHero, email, abaut, work, redes, usagePolicies, seoMeta)
     - GET /api/settings/:id
     - PUT /api/settings/:id (title, subtitle, contentHero, email, abaut, work, redes, usagePolicies)
+
+- media 
+    - POST /api/media/images/user (file, context)
+    - POST /api/media/images/post (file, context)
+    - POST /api/media/shorts/post (file, context)
+    - POST /api/media/images/commission (file, context)
+    - POST /api/media/images/hero (file, context)
+
+
+- labels
+    - POST /api/labels (name, color)
+    - GET /api/labels
+    - GET /api/labels/:id
+    - PUT /api/labels/:id (name, color)
+    - DELETE /api/labels/:id
+
+- posts
+    - POST /api/posts (title, content, mediaId)
+    - GET /api/posts
+    - GET /api/posts/:id
+    - PUT /api/posts/:id (title, content, mediaId)
+    - DELETE /api/posts/:id

@@ -47,7 +47,7 @@ const labelsService = {
         }
 
         const errors = validators.validateUpdate(data);
-        if (errors) {
+        if (errors.length > 0) {
             throw ({message: 'Invalid input data', statusCode: 400});
         }
 
