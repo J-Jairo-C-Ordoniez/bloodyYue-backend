@@ -20,9 +20,10 @@ const notificationsRepository = {
     getByUserId: async (userId) => {
         try {
             const [result] = await db.query(
-                'SELECT notificationId, title, message, isRead, createdAt FROM notifications WHERE userId = ? AND isRead = false ORDER BY createdAt DESC',
+                'SELECT notificationId, userId, type, message, isRead, createdAt FROM notifications WHERE userId = ? AND isRead = false ORDER BY createdAt DESC',
                 [userId]
             );
+
             return (result.length > 0) ? result : null;
         } catch (err) {
             throw {message: err.message, statusCode: err.statusCode};
@@ -32,7 +33,7 @@ const notificationsRepository = {
     getById: async (notificationId) => {
         try {
             const [result] = await db.query(
-                'SELECT notificationId, title, message, isRead, createdAt FROM notifications WHERE notificationId = ? AND isRead = false',
+                'SELECT notificationId, userId, type, message, isRead, createdAt FROM notifications WHERE notificationId = ? AND isRead = false',
                 [notificationId]
             );
             return (result.length > 0) ? result[0] : null;

@@ -5,7 +5,7 @@ import { success, error } from '../../utils/response/response.js';
 const notificationsController = {
     getNotificationsNotRead: async (req, res) => {
         try {
-            const {userId} = req.user.userId
+            const {userId} = req.user
             const notifications = await notificationsService.getNotificationsNotRead(userId);
             success(req, res, notifications, 200);
         } catch (err) {
@@ -15,9 +15,8 @@ const notificationsController = {
 
     markAsRead: async (req, res) => {
         try {
-            const {userId} = req.user.userId
             const {notificationId} = req.params
-            const result = await notificationsService.markAsRead(userId, notificationId);
+            const result = await notificationsService.markAsRead(notificationId);
             success(req, res, result, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);

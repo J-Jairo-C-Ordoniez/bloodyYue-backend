@@ -118,7 +118,7 @@ const notificationsService = {
             throw ({message: 'Notification not found', statusCode: 404});
         }
 
-        return notificationsService.getNotificationsNotReadById(notificationId);
+        return {message: 'Notification marked as read'};
     },
 
     markAllAsRead: async (userId) => {
@@ -127,7 +127,7 @@ const notificationsService = {
             throw ({message: 'Notifications not found', statusCode: 404});
         }
 
-        return notificationsService.getNotificationsNotRead(userId);
+        return {message: 'Notifications marked as read'};
     },
 };
 
