@@ -30,29 +30,18 @@ const rolesRepository = {
     getRoleById: async (rolId) => {
         try {
             const [result] = await db.query(`
-                SELECT r.rolId, r.name, r.description p.permitId, p.name, p.description
-                FROM roles r 
-                INNER JOIN rolXpermits rxp ON r.rolId = rxp.rolId 
-                INNER JOIN permits p ON rxp.permitId = p.permitId 
-                WHERE r.rolId = ?`, 
+                SELECT rolId, name, description
+                FROM roles 
+                WHERE rolId = ?;`, 
             [rolId]);
 
-            return (result.length > 0) ? result[0] : null;
+            return (result[0]) ? result[0] : null;
         } catch (err) {
             throw {message: err.message, statusCode: err.statusCode};
         }
     },
 
-    getAllPermits: async () => {
-        try {
-            const [result] = await db.query('SELECT permitId, name, description FROM permits');
-            return (result.length > 0) ? result : null;
-        } catch (err) {
-            throw {message: err.message, statusCode: err.statusCode};
-        }
-    },
-
-    getPermitsByRoleId: async (rolId) => {
+    getPermitsByRole: async (rolId) => {
         try {
             const [result] = await db.query(
                 `SELECT p.permitId, p.name, p.description, rxp.rolId
@@ -67,13 +56,23 @@ const rolesRepository = {
         }
     },
 
-    assignPermitToRole: async (rolId, permitId) => {
+    getAllPermits: async () => {
         try {
+            const [result] = await db.query('SELECT permitId, name, description FROM permits');
+            return (result.length > 0) ? result : null;
+        } catch (err) {
+            throw {message: err.message, statusCode: err.statusCode};
+        }
+    },
+
+    assignPermitToRole: async (rolId, permitsId) => {
+        try {
+            const values = permitsId.map(permitId => [rolId, permitId]);
             const [result] = await db.query(
-                'INSERT INTO rolXpermits (rolId, permitId) VALUES (?, ?)',
-                [rolId, permitId]
+                'INSERT INTO rolXpermits (rolId, permitId) VALUES ?',
+                [values]
             );
-            return (result.insertId) ? { rolId, permitId } : null;
+            return (result.insertId) ? result : null;
         } catch (err) {
             throw {message: err.message, statusCode: err.statusCode};
         }

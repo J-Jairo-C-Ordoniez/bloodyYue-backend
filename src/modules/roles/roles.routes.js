@@ -33,13 +33,6 @@ router.get(
     rolesController.getAllPermits
 );
 
-router.get(
-    '/permits/:rolId',
-    authenticate,
-    authorizePermission('readPermit'), 
-    rolesController.getPermitsByRoleId
-);
-
 router.post(
     '/permits/assign', 
     authenticate,
@@ -47,7 +40,7 @@ router.post(
     rolesController.assignPermit
 );
 
-router.post(
+router.delete(
     '/permits/remove', 
     authenticate,
     authorizePermission('removePermit'), 

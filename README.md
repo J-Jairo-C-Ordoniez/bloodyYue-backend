@@ -131,3 +131,18 @@ src/
     - GET /api/posts/:id/reactions
     - POST /api/posts/:id/reactions
     - DELETE /api/posts/:id/reactions
+
+
+- roles
+    - POST /api/roles (rol: name, description || rolXPermits: permitId)
+    - GET /api/roles
+    - GET /api/roles/:rolId
+    - GET /api/roles/permits/all
+    - POST /api/roles/permits/assign (rolId, permitId)
+    - DELETE /api/roles/permits/remove (rolId, permitId)
+
+- commissions
+- cart
+- sales
+- chat
+- notifications

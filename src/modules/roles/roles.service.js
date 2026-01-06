@@ -1,4 +1,5 @@
 import rolesRepository from './roles.repository.js';
+import validators from '../../utils/validators/index.js';
 
 const rolesService = {
     createRole: async (data) => {
@@ -41,8 +42,10 @@ const rolesService = {
         if (!role) {
             throw ({message: 'Role not found', statusCode: 404});
         }
+
+        const permitsByRol = await rolesRepository.getPermitsByRole(rolId);
         
-        return role;
+        return { role, permits: permitsByRol };
     },
 
     getAllPermits: async () => {
@@ -54,22 +57,14 @@ const rolesService = {
         return permits;
     },
 
-    getPermitsByRoleId: async (rolId) => {
-        const permits = await rolesRepository.getPermitsByRoleId(rolId);
-        if (!permits) {
-            throw ({message: 'Permits not found', statusCode: 404});
-        }
-        
-        return permits;
-    },
-
     assignPermitToRole: async (rolId, permitId) => {
-        const role = await rolesRepository.getPermitsByRoleId(rolId);
+        const role = await rolesRepository.getRoleById(rolId);
         if (!role) {
             throw ({message: 'Role not found', statusCode: 404});
         }
 
-        if (role.some(permit => permit.permitId === permitId)) {
+        const permitsByRol = await rolesRepository.getPermitsByRole(rolId);
+        if (permitsByRol && permitsByRol.some(permit => permit.permitId === permitId)) {
             throw ({message: 'Permit already assigned to role', statusCode: 400});
         }
 
@@ -82,15 +77,15 @@ const rolesService = {
     },
 
     removePermitFromRole: async (rolId, permitId) => {
-        const role = await rolesRepository.getPermitsByRoleId(rolId);
+        const role = await rolesRepository.getRoleById(rolId);
         if (!role) {
             throw ({message: 'Role not found', statusCode: 404});
         }
 
-        if (!role.some(permit => permit.permitId === permitId)) {
+        const permitsByRol = await rolesRepository.getPermitsByRole(rolId);
+        if (!permitsByRol || !permitsByRol.some(permit => permit.permitId === permitId)) {
             throw ({message: 'Permit not assigned to role', statusCode: 400});
         }
-
         const updatedRole = await rolesRepository.removePermitFromRole(rolId, permitId);
         if (!updatedRole) {
             throw ({message: 'Permit removal failed', statusCode: 500});

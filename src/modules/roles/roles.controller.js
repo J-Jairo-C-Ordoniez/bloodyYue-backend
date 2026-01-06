@@ -39,16 +39,6 @@ const rolesController = {
         }
     },
 
-    getPermitsByRoleId: async (req, res) => {
-        try {
-            const { rolId } = req.params;
-            const permits = await rolesService.getPermitsByRoleId(rolId);
-            success(req, res, permits, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
-
     assignPermit: async (req, res) => {
         try {
             const { rolId, permitId } = req.body;
