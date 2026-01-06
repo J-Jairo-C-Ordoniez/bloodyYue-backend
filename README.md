@@ -120,8 +120,14 @@ src/
     - DELETE /api/labels/:id
 
 - posts
-    - POST /api/posts (title, content, mediaId)
-    - GET /api/posts
+    - POST /api/posts (title, description, content, typePost (image, short))
+    - GET /api/posts/list/:id
     - GET /api/posts/:id
-    - PUT /api/posts/:id (title, content, mediaId)
+    - GET /api/posts/filter/label/:labelId
+    - GET /api/posts/filter/title/:title
+    - PUT /api/posts/:id (title, description)
+    - PUT /api/posts/:id/labels (labelIds)
     - DELETE /api/posts/:id
+    - GET /api/posts/:id/reactions
+    - POST /api/posts/:id/reactions
+    - DELETE /api/posts/:id/reactions

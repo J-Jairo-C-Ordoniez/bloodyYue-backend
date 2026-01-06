@@ -17,7 +17,7 @@ const postsService = {
             throw ({ message: "Invalid Inputs", statusCode: 400 });
         }
 
-        const user = await usersRepository.getUserById(userId);
+        const user = await userRepository.getUserById(userId);
         if (!user) {
             throw ({ message: "User not found", statusCode: 404 });
         }
@@ -179,7 +179,7 @@ const postsService = {
             throw ({ message: "Invalid data", statusCode: 400 });
         }
 
-        const user = await usersRepository.getUserById(userId);
+        const user = await userRepository.getUserById(userId);
         if (!user) {
             throw ({ message: "User not found", statusCode: 404 });
         }
@@ -216,7 +216,6 @@ const postsService = {
         }
 
         const deleted = await postsRepository.removeReaction({ postId, userId });
-        console.log(deleted);
         if (!deleted) {
             throw ({ message: "Reaction not found", statusCode: 404 });
         }

@@ -6,10 +6,9 @@ const notificationsService = {
     createNotificationGlobal: async (data) => {
         const {userId, type, message, body} = data;
         const io = getIO();
-
         if (
             (!userId) ||
-            (!type && validators.isString(type))
+            (!type && validators.isString(type)) ||
             (!message && validators.isString(message))
         ) {
             throw ({message: 'Input invalid data', statusCode: 400});
@@ -23,7 +22,7 @@ const notificationsService = {
             body
         });
 
-        return newNotification;
+        return {message: 'Notification created successfully'};
     },
 
     createNotification: async (data) => {
