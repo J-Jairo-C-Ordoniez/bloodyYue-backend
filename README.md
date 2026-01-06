@@ -170,12 +170,9 @@ src/
     - PATCH /api/sales/details/:id/status
 
 - chat
-    - POST /api/chat/messages (userId, commissionId, message)
-    - GET /api/chat/messages/:userId/:commissionId
-    - GET /api/chat/messages/:userId
-    - GET /api/chat/messages/:commissionId
-    - GET /api/chat/messages/:userId/:commissionId/:messageId
-    - GET /api/chat/messages/:userId/:commissionId/:messageId/:messageId
+    - POST /api/chat/ (userId, commissionId, message)
+    - GET /api/chat/
+    - GET /api/chat/:chatId
 
 - notifications
     - GET /api/notifications

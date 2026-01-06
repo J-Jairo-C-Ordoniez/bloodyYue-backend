@@ -1,6 +1,5 @@
 import chatRepository from './chat.repository.js';
 import notificationService from '../notifications/notifications.service.js';
-import usersService from '../users/user.service.js';
 
 const chatService = {
     createChat: async (userId, participantId) => {
@@ -17,7 +16,7 @@ const chatService = {
             throw ({ message: 'Chat creation failed', statusCode: 500 });
         }
 
-        const addParticipants = await chatRepository.addParticipants(chat.chatId, [userId, participantId]);
+        const addParticipants = await chatRepository.addParticipants(chat, [userId, participantId]);
         if (!addParticipants) {
             throw ({ message: 'Participants addition failed', statusCode: 500 });
         }

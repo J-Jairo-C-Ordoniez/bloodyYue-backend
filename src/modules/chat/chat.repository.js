@@ -50,24 +50,25 @@ const chatRepository = {
 
     getChatsRoom: async (userId) => {
         try {
+            console.log(userId)
             const [result] = await db.query(
                 `SELECT
-                c.chatId,
-                u.userId,
-                u.username,
-                u.avatarUrl
-            FROM chats c
-            JOIN chatParticipants cp1 ON c.chatId = cp1.chatId
-            JOIN chatParticipants cp2 ON c.chatId = cp2.chatId
-            JOIN users u ON u.userId = cp2.userId
-            WHERE cp1.userId = ?
-            AND cp2.userId != ?;`,
-                [userId, userId]
+                    c.chatId,
+                    u.userId,
+                    u.name,
+                    u.avatar
+                FROM chats c
+                INNER JOIN chatParticipants cp1 ON c.chatId = cp1.chatId
+                INNER JOIN chatParticipants cp2 ON c.chatId = cp2.chatId
+                INNER JOIN users u ON u.userId = cp2.userId
+                WHERE cp1.userId = ?
+                AND cp2.userId != ?;`,
+                    [userId, userId]
             );
 
-            return (result.length > 0) ? result.rows : null;
+            return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({ message: 'No se encontraron chats', statusCode: 404 });
+            throw ({ message: err.message, statusCode: 404 });
         }
     },
 
@@ -85,9 +86,9 @@ const chatRepository = {
                 [chatId]
             );
 
-            return (result.length > 0) ? result.rows : null;
+            return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({ message: 'No se encontraron mensajes', statusCode: 404 });
+            throw ({ message: err.message, statusCode: err.code });
         }
     },
 

@@ -5,8 +5,8 @@ const chatController = {
     createChat: async (req, res) => {
         try {
             const {userId} = req.user;
-            const messages = await chatService.getMessages(userId, req.body.participantId);
-            success(req, res, messages, 200);
+            const chat = await chatService.createChat(userId, req.body.participantId);
+            success(req, res, chat, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
         }

@@ -15,8 +15,9 @@ router.get(
     authenticate,
     chatController.getChatsRoom
 );
-router.put(
-    '/chatId/:chatId/:userId',
+
+router.get(
+    '/:chatId',
     authenticate,
     chatController.getMessages
 );
