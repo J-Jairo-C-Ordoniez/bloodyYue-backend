@@ -102,7 +102,7 @@ const commissionsRepository = {
 
     updateCommission: async (id, commission) => {
         try {
-            const [result] = await db('UPDATE commissions SET ? WHERE commissionId = ?', [commission, id]);
+            const [result] = await db.query('UPDATE commissions SET ? WHERE commissionId = ?', [commission, id]);
             return (result) ? result : null;
         } catch (err) {
             throw ({message: err.message, statusCode: err.code || 500});
@@ -111,7 +111,7 @@ const commissionsRepository = {
 
     removeLabels: async (id) => {
         try {
-            const result = await db('DELETE FROM commissionsXlabels WHERE commissionId = ?', [id]);
+            const result = await db.query('DELETE FROM commissionsXlabels WHERE commissionId = ?', [id]);
             return result.affectedRows > 0;
         } catch (err) {
             throw ({message: err.message, statusCode: err.code || 500});

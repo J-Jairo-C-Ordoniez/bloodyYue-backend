@@ -142,6 +142,15 @@ src/
     - DELETE /api/roles/permits/remove (rolId, permitId)
 
 - commissions
+    - POST /api/commissions (userId, title, content, exampleId, description, price, terms)
+    - GET /api/commissions/list/:id
+    - GET /api/commissions/:id
+    - GET /api/commissions/filter/label/:labelId
+    - GET /api/commissions/filter/title/:title
+    - GET /api/commissions/filter/price/:price
+    - PUT /api/commissions/:id (title, description, price, terms)
+    - PUT /api/commissions/:id/labels (labelIds)
+    
 - cart
 - sales
 - chat

@@ -6,7 +6,7 @@ import authorizePermission from '../../middlewares/auth/authorize.middleware.js'
 const router = Router();
 
 router.post(
-    '/create',
+    '/',
     authenticate,
     authorizePermission('createCommission'),
     commissionsController.createCommission

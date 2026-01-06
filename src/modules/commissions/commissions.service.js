@@ -134,12 +134,12 @@ const commissionsService = {
             throw ({ message: "Commission update failed", statusCode: 500 });
         }
 
-        const user = await usersRepository.getUserById(userId);
+        const user = await userRepository.getUserById(userId);
         if (!user) {
             throw ({ message: 'User not found', statusCode: 404 });
         }
 
-        await notificationsService.createNotification({
+        await notificationsService.createNotificationGlobal({
             userId,
             type: 'commission',
             message: `${user.name} ha actualizado la comisión ${commission.title}`
@@ -158,11 +158,7 @@ const commissionsService = {
             throw ({ message: "Invalid labels", statusCode: 400 });
         }
 
-        const removed = await commissionsRepository.removeLabels(id);
-
-        if (!removed) {
-            throw ({ message: "Labels not removed", statusCode: 500 });
-        }
+        await commissionsRepository.removeLabels(id);
 
         const added = await commissionsRepository.addLabels(id, labels);
 
@@ -172,7 +168,7 @@ const commissionsService = {
 
         const newLabels = await commissionsRepository.getLabelsByCommissionId(id);
 
-        const user = await usersRepository.getUserById(userId);
+        const user = await userRepository.getUserById(userId);
         if (!user) {
             throw ({ message: 'User not found', statusCode: 404 });
         }
