@@ -11,25 +11,23 @@ export default function socketConfig(server) {
     });
 
     io.on('connection', (socket) => {
-        console.log('a user connected');
-
         const userId = socket.handshake.auth.userId || 1;
 
         if (userId) {
             socket.join(`notificationUser-${userId}`);
         }
 
-        socket.on('joinChat', async (chatId) => {
+        socket.on('joinChat', async (data) => {
             const isParticipant = await chatService.userBelongsToChat(
-                userId,
-                chatId
+                data.chatId,
+                userId
             );
 
             if (!isParticipant) {
                 return;
             }
 
-            socket.join(`chatRoom-${chatId}`);
+            socket.join(`chatRoom-${data.chatId}`);
         });
 
 
@@ -41,10 +39,6 @@ export default function socketConfig(server) {
             });
 
             socket.to(`chatRoom-${chatId}`).emit('newMessage', message);
-        });
-
-        socket.on('disconnect', () => {
-            console.log('user disconnected');
         });
     });
 

@@ -1,4 +1,5 @@
 import chatRepository from './chat.repository.js';
+import userRepository from '../users/user.repository.js';
 import notificationService from '../notifications/notifications.service.js';
 
 const chatService = {
@@ -58,7 +59,7 @@ const chatService = {
         return messages;
     },
 
-    userBelongsToChat: async (userId, chatId) => {
+    userBelongsToChat: async (chatId, userId) => {
         return await chatRepository.userBelongsToChat(chatId, userId);
     },
 
@@ -68,20 +69,22 @@ const chatService = {
             throw ({ message: 'Not Found Participant', statusCode: 404 });
         }
 
-        const participants = await chatRepository.getChatParticipants(data.chatId);
-        const receiverId = participants.find(id => id !== data.senderId);
+        const participants = await chatRepository.getParticipants(data.chatId);
+        const receiverId = participants.find(id => id.userId !== data.senderId);
 
-        const newMessage = await chatRepository.createChatItem({
+        const newMessage = await chatRepository.createMessage({
             chatId: data.chatId,
-            userId: data.senderId,
+            senderId: data.senderId,
             content: data.content
         });
+
 
         if (!newMessage) {
             throw ({ message: 'Post creation failed', statusCode: 500 });
         }
 
-        const user = await userService.getUserById(data.senderId);
+
+        const user = await userRepository.getUserById(data.senderId);
 
         await notificationService.createNotification({
             userId: user.userId, 

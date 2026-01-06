@@ -14,6 +14,25 @@ const chatRepository = {
         }
     },
 
+    createMessage: async (data) => {
+        try {
+            const columns = Object.keys(data).join(', ');
+            const placeholders = Object.keys(data).map(() => '?').join(', ');
+            const values = Object.values(data);
+
+            const [result] = await db.query(
+                `INSERT INTO messages (${columns})
+                VALUES (${placeholders});`,
+                values
+            );
+
+            return (result.insertId) ? result.insertId : null;
+        } catch (err) {
+            console.log(err)
+            throw ({ message: err.message, statusCode: 500 });
+        }
+    },
+
     addParticipants: async (chatId, participants) => {
         try {
             const values = participants.map(participant => [chatId, participant]);
@@ -43,6 +62,22 @@ const chatRepository = {
             );
 
             return (result.length > 0) ? result.rows[0] : null;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code });
+        }
+    },
+
+    getParticipants: async (chatId) => {
+        try {
+            const [result] = await db.query(
+                `SELECT
+                    cp.userId
+                FROM chatParticipants cp
+                WHERE cp.chatId = ?;`,
+                [chatId]
+            );
+
+            return (result.length > 0) ? result : null;
         } catch (err) {
             throw ({ message: err.message, statusCode: err.code });
         }
