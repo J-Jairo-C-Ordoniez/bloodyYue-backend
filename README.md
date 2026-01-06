@@ -76,31 +76,4 @@ src/
  ├── config/
  ├── utils/
  ├── app.js
-```
-
-<!-- 
-list permits 
-- readNewsales
-- readUpdatedSales
-- changeRole
-- changeUserStatus
-- createCommission
-- updateCommission
-- createLabels
-- updateLabels
-- deleteLabels
-- createPost
-- updatePost
-- deletePost
-- createRole
-- readRole
-- readPermit
-- assignPermit
-- removePermit
-- readSales
-- updateSalesDetails
-- createSetting
-- updateSetting
-- deleteUserTestimony
-
- -->
+``
