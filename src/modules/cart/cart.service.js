@@ -18,7 +18,7 @@ const cartService = {
             throw ({ message: 'Invalid input data', statusCode: 400 });
         }
 
-        const commission = await commissionRepository.getCommissionById(data.commissionId);
+        const commission = await commissionRepository.getCommissionsById(data.commissionId);
         if (!commission) {
             throw ({ message: 'Commission not found', statusCode: 404 });
         }
@@ -58,7 +58,12 @@ const cartService = {
             throw ({ message: 'Cart item not found', statusCode: 404 });
         }
 
-        return cartItem;
+        const commission = await commissionRepository.getCommissionsById(cartItem.commissionId);
+        if (!commission) {
+            throw ({ message: 'Commission not found', statusCode: 404 });
+        }
+
+        return {cartItem, commission};
     },
 
     updateItem: async (cartItemId, data) => {

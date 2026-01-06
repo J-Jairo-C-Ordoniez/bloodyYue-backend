@@ -150,8 +150,15 @@ src/
     - GET /api/commissions/filter/price/:price
     - PUT /api/commissions/:id (title, description, price, terms)
     - PUT /api/commissions/:id/labels (labelIds)
-    
+
 - cart
+    - POST /api/cart/items (commissionId, quantity, priceAtMoment, details)
+    - GET /api/cart/items
+    - GET /api/cart/items/:cartItemId
+    - PUT /api/cart/items/:cartItemId (quantity, details)
+    - PATCH /api/cart/items/:cartItemId/discarded
+
 - sales
 - chat
 - notifications
+

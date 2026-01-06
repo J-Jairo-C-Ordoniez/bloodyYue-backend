@@ -6,6 +6,7 @@ const cartRepository = {
             const columns = Object.keys(data);
             const placeholders = columns.map(() => '?').join(', ');
             const values = Object.values(data);
+
             const [result] = await db.query(
                 `INSERT INTO cartItems (${columns.join(', ')}) 
                  VALUES (${placeholders})`,
@@ -20,7 +21,7 @@ const cartRepository = {
     getCartByUserId: async (userId) => {
         try {
             const [result] = await db.query(
-                `SELECT cartId FROM cartItems WHERE userId = ?`,
+                `SELECT cartId FROM carts WHERE userId = ?`,
                 [userId]
             );
             return (result[0]) ? result[0] : null;
@@ -44,10 +45,8 @@ const cartRepository = {
     getCartItemById: async (cartItemId) => {
         try {
             const [result] = await db.query(
-                `SELECT ci.cartItemId, ci.commissionId, ci.quantity, ci.status, ci.priceAtMoment, ci.details, c.title, c.content, c.description, c.terms 
-                FROM cartItems ci
-                INNER JOIN commissions c ON ci.commissionId = c.commissionId
-                WHERE ci.cartItemId = ?`,
+                `SELECT cartItemId, commissionId, quantity, status, priceAtMoment, details 
+                FROM cartItems WHERE cartItemId = ?`,
                 [cartItemId]
             );
             return (result[0]) ? result[0] : null;
