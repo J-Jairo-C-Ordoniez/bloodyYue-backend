@@ -22,6 +22,15 @@ const postsController = {
         }
     },
 
+    getPostRandom: async (req, res) => {
+        try {
+            const post = await postsService.getPostRandom();
+            success(req, res, post, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
     getPost: async (req, res) => {
         try {
             const { id } = req.params;

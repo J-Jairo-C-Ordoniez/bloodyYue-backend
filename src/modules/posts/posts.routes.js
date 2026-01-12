@@ -18,6 +18,11 @@ router.get(
 );
 
 router.get(
+    '/random',
+    postsController.getPostRandom
+);
+
+router.get(
     '/:id',
     authenticate,
     postsController.getPost

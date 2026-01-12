@@ -23,7 +23,7 @@ import labelsRoutes from './modules/labels/labels.routes.js';
 import rolesRoutes from './modules/roles/roles.routes.js';
 import notificationsRoutes from './modules/notifications/notifications.routes.js';
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 const server = http.createServer(app);

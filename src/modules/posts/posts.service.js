@@ -57,6 +57,17 @@ const postsService = {
         return posts;
     },
 
+    getPostRandom: async () => {
+        const post = await postsRepository.getPostRandom();
+
+        if (!post) {
+            throw ({ message: "Post not found", statusCode: 404 });
+        }
+
+        const labels = await postsRepository.getLabelsByPostId(post.postId);
+        return { ...post, labels };
+    },
+
     getPost: async (id) => {
         const post = await postsRepository.getPostById(id);
 

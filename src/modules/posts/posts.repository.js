@@ -43,6 +43,17 @@ const postsRepository = {
         }
     },
 
+    async getPostRandom() {
+        try {
+            const [result] = await db.query(
+                'SELECT postId, userId, title, description, content, typePost FROM posts ORDER BY postId ASC LIMIT 1',
+            );
+            return (result[0]) ? result[0] : null;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: err.code || 500 });
+        }
+    },
+
     async getPostById(postId) {
         try {
             const [result] = await db.query(
