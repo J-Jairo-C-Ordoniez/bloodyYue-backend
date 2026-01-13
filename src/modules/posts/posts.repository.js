@@ -163,7 +163,7 @@ const postsRepository = {
                 'SELECT postId, userId FROM postsReactions WHERE postId = ?',
                 [postId]
             );
-            return (result.length > 0) ? result : null;
+            return result;
         } catch (err) {
             throw ({ message: err.message, statusCode: err.code || 500 });
         }

@@ -178,9 +178,6 @@ const postsService = {
             throw ({ message: "Post not found", statusCode: 404 });
         }
         const reactions = await postsRepository.getPostReactions(id);
-        if (!reactions) {
-            throw ({ message: "Reactions not found", statusCode: 404 });
-        }
         return reactions;
     },
 
