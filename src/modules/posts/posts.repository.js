@@ -34,7 +34,7 @@ const postsRepository = {
     async getPosts(id) {
         try {
             const [result] = await db.query(
-                'SELECT postId, userId, title, description, content, typePost FROM posts WHERE postId > ? ORDER BY postId ASC LIMIT 10',
+                'SELECT postId, userId, title, description, content, typePost, createdAt FROM posts WHERE postId > ? ORDER BY postId ASC LIMIT 10',
                 [id]
             );
             return (result.length > 0) ? result : null;
@@ -46,7 +46,7 @@ const postsRepository = {
     async getPostRandom() {
         try {
             const [result] = await db.query(
-                'SELECT postId, userId, title, description, content, typePost FROM posts ORDER BY postId ASC LIMIT 1',
+                'SELECT postId, userId, title, description, content, typePost, createdAt FROM posts ORDER BY postId ASC LIMIT 1',
             );
             return (result[0]) ? result[0] : null;
         } catch (err) {
@@ -57,7 +57,7 @@ const postsRepository = {
     async getPostById(postId) {
         try {
             const [result] = await db.query(
-                'SELECT postId, userId, title, description, content, typePost FROM posts WHERE postId = ?',
+                'SELECT postId, userId, title, description, content, typePost, createdAt FROM posts WHERE postId = ?',
                 [postId]
             );
             return (result[0]) ? result[0] : null;
@@ -84,7 +84,7 @@ const postsRepository = {
     async getPostsByLabel(labelId) {
         try {
             const [result] = await db.query(
-                `SELECT p.postId, p.userId, p.title, p.description, p.content, p.typePost 
+                `SELECT p.postId, p.userId, p.title, p.description, p.content, p.typePost, p.createdAt 
                  FROM posts p
                  INNER JOIN labelsXposts lx ON p.postId = lx.postId
                  WHERE lx.labelId = ?`,
@@ -99,7 +99,7 @@ const postsRepository = {
     async getPostsByTitle(title) {
         try {
             const [result] = await db.query(
-                `SELECT postId, userId, title, description, content, typePost FROM posts WHERE title LIKE ?`,
+                `SELECT postId, userId, title, description, content, typePost, createdAt FROM posts WHERE title LIKE ?`,
                 [`%${title}%`]
             );
 
