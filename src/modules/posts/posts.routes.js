@@ -63,7 +63,6 @@ router.delete(
 
 router.get(
     '/:id/reactions',
-    authenticate,
     postsController.getPostReactions
 );
 
