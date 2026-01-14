@@ -44,7 +44,6 @@ router.delete(
 
 router.get(
     '/testimonies',
-    authenticate,
     usersController.getTestimonies
 );
 
