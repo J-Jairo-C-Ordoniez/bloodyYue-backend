@@ -45,6 +45,8 @@ const authService = {
             throw ({ message: "Cart creation failed", statusCode: 500 });
         }
 
+
+
         return {
             userId: user.userId,
             email: user.email,
@@ -263,7 +265,7 @@ const authService = {
             rolId: user.rolId,
         });
 
-        return { accessToken: newAccessToken };
+        return { accessToken: newAccessToken, user };
     },
 
     changeStatus: async (data) => {

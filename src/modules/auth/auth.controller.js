@@ -85,8 +85,8 @@ const authController = {
     refreshToken: async (req, res) => { 
         try {
             const refreshToken = req.cookies?.refreshToken;
-            const user = await authService.refreshToken(refreshToken);
-            success(req, res, user, 201);
+            const {accessToken, user} = await authService.refreshToken(refreshToken);
+            success(req, res, {accessToken, user}, 201);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
         }
