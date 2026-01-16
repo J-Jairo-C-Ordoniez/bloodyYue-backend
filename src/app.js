@@ -29,9 +29,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socketConfig(server);
 
+app.use(cors({origin: 'http://localhost:3000', credentials: true}));
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
 app.use(helmet({crossOriginResourcePolicy: { policy: 'cross-origin' }}));
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
