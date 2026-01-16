@@ -1,6 +1,7 @@
 import 'dotenv/config';
 
-import http from 'http';
+import https from 'https';
+import fs from 'fs';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -26,13 +27,20 @@ import notificationsRoutes from './modules/notifications/notifications.routes.js
 const PORT = process.env.PORT || 5000;
 
 const app = express();
-const server = http.createServer(app);
+const server = https.createServer(
+  {
+    key: fs.readFileSync('./certs/localhost+2-key.pem'),
+    cert: fs.readFileSync('./certs/localhost+2.pem')
+  },
+  app
+);
+
 const io = socketConfig(server);
 
-app.use(cors({origin: 'http://localhost:3000', credentials: true}));
+app.use(cors({ origin: 'https://localhost:3000', credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
-app.use(helmet({crossOriginResourcePolicy: { policy: 'cross-origin' }}));
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 300,
@@ -61,4 +69,4 @@ app.get('/', (req, res) => {
 
 app.use(notFound);
 
-server.listen(PORT, () => { console.log(`Server running at http://localhost:${PORT}`) });
+server.listen(PORT, () => { console.log(`Server running at https://localhost:${PORT}`) });

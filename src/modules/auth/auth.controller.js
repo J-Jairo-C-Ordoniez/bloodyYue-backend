@@ -14,12 +14,13 @@ const authController = {
     login: async (req, res) => {
         try {
             const { accessToken, refreshToken, user } = await authService.login(req.body);
-            res.cookie("refreshToken", refreshToken, {
+
+            res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
-                secure: process.env.NODEENV === "production",
-                sameSite: "lax",
-                path: "/",
-                maxAge: 7 * 24 * 60 * 60 * 1000
+                secure: true,
+                sameSite: 'none',
+                path: '/',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
             });
 
             success(req, res, { user, accessToken }, 200);
@@ -86,7 +87,6 @@ const authController = {
     refreshToken: async (req, res) => {
         try {
             const refreshToken = req.cookies?.refreshToken;
-            console.log(req.cookies, 'hola');
             const { accessToken, user } = await authService.refreshToken(refreshToken);
             success(req, res, { accessToken, user }, 201);
         } catch (err) {
