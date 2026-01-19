@@ -11,3 +11,5 @@
 # environment variables
 .env
 .env.example
+
+certificates

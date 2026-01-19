@@ -198,7 +198,7 @@ const postsService = {
         }
 
         const reaction = await postsRepository.getPostReactions(postId);
-        if (reaction) {
+        if (reaction && reaction.some(r => r.userId === userId)) {
             throw ({ message: "Reaction already exists", statusCode: 400 });
         }
 
@@ -214,7 +214,7 @@ const postsService = {
             message: `${user.name} ha reaccionado a tu post`
         });
 
-        return postsService.getPostReactions(postId);
+        return { message: "Reaction added successfully", reactionId };
     },
 
     deletePostReaction: async (data) => {
@@ -228,7 +228,7 @@ const postsService = {
             throw ({ message: "Reaction not found", statusCode: 404 });
         }
 
-        return postsService.getPostReactions(postId);
+        return { message: "Reaction removed successfully", reactionId: deleted };
     }
 };
 

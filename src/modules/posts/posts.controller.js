@@ -118,7 +118,7 @@ const postsController = {
             const { id } = req.params;
             const { userId } = req.user;
             const result = await postsService.deletePostReaction({ postId: id, userId });
-            success(req, res, result, 200);
+            success(req, res, result, 201);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
         }
