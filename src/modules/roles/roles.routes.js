@@ -20,9 +20,7 @@ router.get(
 );
 
 router.get(
-    '/:rolId', 
-    authenticate,
-    authorizePermission('readRole'),
+    '/:rolId',
     rolesController.getRoleById
 );
 

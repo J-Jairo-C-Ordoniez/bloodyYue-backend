@@ -25,7 +25,7 @@ const notificationsController = {
 
     markAllAsRead: async (req, res) => {
         try {
-            const {userId} = req.user.userId
+            const {userId} = req.user
             const result = await notificationsService.markAllAsRead(userId);
             success(req, res, result, 200);
         } catch (err) {
