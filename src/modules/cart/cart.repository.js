@@ -24,6 +24,7 @@ const cartRepository = {
                 `SELECT cartId FROM carts WHERE userId = ?`,
                 [userId]
             );
+
             return (result[0]) ? result[0] : null;
         } catch (err) {
             throw ({message: err.message, statusCode: err.statusCode});
