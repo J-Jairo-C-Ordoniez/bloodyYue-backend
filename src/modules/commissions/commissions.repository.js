@@ -17,7 +17,7 @@ const commissionsRepository = {
 
     addLabels: async (commissionId, labels) => {
         try {
-            const values = labels.map(l => [commissionId, l.labelId]);
+            const values = labels.map(l => [commissionId, l]);
             const [result] = await db.query(
                 `INSERT INTO commissionsXlabels (commissionId, labelId) VALUES ?`,
                 [values]
@@ -30,7 +30,7 @@ const commissionsRepository = {
 
     getCommissions: async (id) => {
         try {
-            const [result] = await db.query('SELECT commissionId, userId, title, content, price FROM commissions WHERE commissionId > ? ORDER BY commissionId ASC LIMIT 10', [id]);
+            const [result] = await db.query('SELECT commissionId, userId, title, description, terms, content, price FROM commissions WHERE commissionId > ? ORDER BY commissionId ASC LIMIT 10', [id]);
             
             return (result.length > 0) ? result : null;
         } catch (err) {

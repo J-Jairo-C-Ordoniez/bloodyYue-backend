@@ -6,6 +6,13 @@ import authorizePermission from '../../middlewares/auth/authorize.middleware.js'
 const router = Router();
 
 router.get(
+    '/',
+    authenticate,
+    authorizePermission('getUsers'),
+    usersController.getUsers
+);
+
+router.get(
     '/me',
     authenticate,
     usersController.getMyProfile

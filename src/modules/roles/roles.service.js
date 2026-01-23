@@ -3,29 +3,23 @@ import validators from '../../utils/validators/index.js';
 
 const rolesService = {
     createRole: async (data) => {
-        const { rol, permits } = data;
-
         if (
-            (!rol.name || !validators.isString(rol.name)) ||
-            (!rol.description || !validators.isString(rol.description))
+            (!data.name || !validators.isString(data.name)) ||
+            (!data.description || !validators.isString(data.description))
         ) {
             throw ({ message: "Invalid Inputs", statusCode: 400 });
         }
 
         const newRole = await rolesRepository.createRole({
-            name: rol.name,
-            description: rol.description,
+            name: data.name,
+            description: data.description,
         });
 
         if (!newRole) {
             throw ({ message: "Role creation failed", statusCode: 500 });
         }
 
-        if (permits && permits.length > 0) {
-            await rolesRepository.assignPermitToRole(newRole.rolId, permits);
-        }
-
-        return { ...newRole, permits };
+        return { ...newRole };
     },
 
     getAllRoles: async () => {

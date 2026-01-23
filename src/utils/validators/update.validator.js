@@ -32,7 +32,8 @@ const validationRules = {
 export default function validateUpdate(data) {
     const errors = [];
 
-    for (const key in data) {        
+    for (const key in data) {   
+        if (key === 'labels') continue;
         const field = validationRules[key];
         
         if (!field) {

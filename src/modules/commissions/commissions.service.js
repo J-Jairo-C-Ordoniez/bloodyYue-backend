@@ -125,13 +125,25 @@ const commissionsService = {
         }
 
         const errors = validators.validateUpdate(commissionData);
+        
         if (errors.length > 0) {
             throw ({ message: errors, statusCode: 400 });
+        }
+
+        let labels = [];
+        if (commissionData.labels) {
+            labels = commissionData.labels;
+            delete commissionData.labels;
         }
 
         const updated = await commissionsRepository.updateCommission(id, commissionData);
         if (!updated) {
             throw ({ message: "Commission update failed", statusCode: 500 });
+        }
+
+        if (labels.length > 0) {
+            await commissionsRepository.removeLabels(id);
+            await commissionsRepository.addLabels(id, labels);
         }
 
         const user = await userRepository.getUserById(userId);

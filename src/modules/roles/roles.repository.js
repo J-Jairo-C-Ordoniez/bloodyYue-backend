@@ -3,6 +3,7 @@ import db from '../../config/db.config.js';
 const rolesRepository = {
     createRole: async (roleData) => {
         try {
+            console.log(roleData)
             const columns = Object.keys(roleData).join(', ');
             const placeholders = Object.values(roleData).map(() => '?').join(', ');
             const values = Object.values(roleData);
@@ -67,10 +68,9 @@ const rolesRepository = {
 
     assignPermitToRole: async (rolId, permitsId) => {
         try {
-            const values = permitsId.map(permitId => [rolId, permitId]);
             const [result] = await db.query(
-                'INSERT INTO rolXpermits (rolId, permitId) VALUES ?',
-                [values]
+                'INSERT INTO rolXpermits (rolId, permitId) VALUES (?, ?)',
+                [rolId, permitsId]
             );
             return (result.insertId) ? result : null;
         } catch (err) {

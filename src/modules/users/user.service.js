@@ -13,6 +13,16 @@ const usersService = {
         return user;
     },
 
+    getUsers: async () => {
+        const users = await userRepository.getUsers();
+
+        if (!users) {
+            throw new AppError('Users not found', 404);
+        }
+
+        return users;
+    },
+
     updateMyProfile: async (userId, data) => {
         if (!userId) {
             throw ({ message: "Invalid user", statusCode: 400 });

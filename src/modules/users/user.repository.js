@@ -12,6 +12,17 @@ const userRepository = {
         }
     },
 
+    getUsers: async () => {
+        try {
+            const [result] = await db.query(
+                'SELECT userId, name, email, birthday, avatar, poster, isActive, isVerified, status FROM users');
+
+            return (result.length > 0) ? result : null;
+        } catch (err) {
+            throw ({ message: err.message, statusCode: 500 })
+        }
+    },
+
     updateMyProfile: async (id, data) => {
         try {
             const [result] = await db.query(

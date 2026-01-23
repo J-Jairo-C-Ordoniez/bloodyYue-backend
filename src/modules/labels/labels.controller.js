@@ -14,6 +14,7 @@ const labelsController = {
     getLabels: async (req, res) => {
         try {
             const labels = await labelsService.getLabels();
+            console.log(labels)
             success(req, res, labels, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);

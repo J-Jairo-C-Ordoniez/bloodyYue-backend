@@ -2,6 +2,15 @@ import userService from './user.service.js';
 import { success, error } from '../../utils/response/response.js';
 
 const usersController = {
+    getUsers: async (req, res) => {
+        try {
+            const users = await userService.getUsers();
+            success(req, res, users, 200);
+        } catch (err) {
+            error(req, res, err.message, err.statusCode);
+        }
+    },
+
     getMyProfile: async (req, res) => {
         try {
             const user = await userService.getMyProfile(req.user.userId);
