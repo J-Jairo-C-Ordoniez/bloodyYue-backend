@@ -77,6 +77,7 @@ const authController = {
 
     changeRole: async (req, res) => {
         try {
+            console.log(req.body);
             const user = await authService.changeRole(req.body);
             success(req, res, user, 201);
         } catch (err) {

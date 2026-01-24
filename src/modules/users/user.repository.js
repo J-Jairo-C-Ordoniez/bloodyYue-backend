@@ -15,7 +15,7 @@ const userRepository = {
     getUsers: async () => {
         try {
             const [result] = await db.query(
-                'SELECT userId, name, email, birthday, avatar, poster, isActive, isVerified, status FROM users');
+                'SELECT userId, name, email, rolId, birthday, avatar, poster, isActive, isVerified, status FROM users');
 
             return (result.length > 0) ? result : null;
         } catch (err) {
