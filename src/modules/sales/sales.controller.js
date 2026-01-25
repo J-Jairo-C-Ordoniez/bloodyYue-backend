@@ -17,6 +17,7 @@ const salesController = {
         try {
             const { id } = req.params;
             const sales = await salesService.getSales(id);
+            console.log(sales);
             success(req, res, sales, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
