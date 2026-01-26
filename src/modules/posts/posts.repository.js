@@ -13,7 +13,7 @@ const postsRepository = {
             );
             return (result.insertId) ? { postId: result.insertId, ...data } : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -27,7 +27,7 @@ const postsRepository = {
 
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -39,7 +39,7 @@ const postsRepository = {
             );
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -50,7 +50,7 @@ const postsRepository = {
             );
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -62,7 +62,7 @@ const postsRepository = {
             );
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -77,7 +77,7 @@ const postsRepository = {
             );
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -92,7 +92,7 @@ const postsRepository = {
             );
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -105,7 +105,7 @@ const postsRepository = {
 
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -117,7 +117,7 @@ const postsRepository = {
             );
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -129,7 +129,7 @@ const postsRepository = {
             );
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -141,7 +141,7 @@ const postsRepository = {
             );
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -153,7 +153,7 @@ const postsRepository = {
             );
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -165,7 +165,7 @@ const postsRepository = {
             );
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -178,7 +178,7 @@ const postsRepository = {
             );
             return (result.insertId) ? result.insertId : null;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -192,7 +192,7 @@ const postsRepository = {
 
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({ message: err.message, statusCode: err.code || 500 });
+            throw ({ message: err.message, statusCode: 500 });
         }
     }
 }

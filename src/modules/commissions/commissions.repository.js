@@ -8,10 +8,10 @@ const commissionsRepository = {
             const values = Object.values(commission);
 
             const [result] = await db.query(`INSERT INTO commissions (${columns}) VALUES (${placeholders})`, values);
-        
-            return (result.insertId) ? {commissionId: result.insertId} : null;
+
+            return (result.insertId) ? { commissionId: result.insertId } : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: 500});
+            throw ({ message: err.message, statusCode: 500 });
         }
     },
 
@@ -30,21 +30,21 @@ const commissionsRepository = {
 
     getCommissions: async (id) => {
         try {
-            const [result] = await db.query('SELECT commissionId, userId, title, description, terms, content, price FROM commissions WHERE commissionId > ? ORDER BY commissionId ASC LIMIT 10', [id]);
-            
+            const [result] = await db.query('SELECT commissionId, userId, title, description, terms, content, price, exampleId FROM commissions WHERE commissionId > ? ORDER BY commissionId ASC LIMIT 10', [id]);
+
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code || 500});
+            throw ({ message: err.message, statusCode: err.code || 500 });
         }
     },
 
     getCommissionsById: async (id) => {
         try {
             const [result] = await db.query('SELECT commissionId, userId, title, content, exampleId, description, price, terms FROM commissions WHERE commissionId = ?', [id]);
-            
+
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code || 500});
+            throw ({ message: err.message, statusCode: err.code || 500 });
         }
     },
 
@@ -57,10 +57,10 @@ const commissionsRepository = {
                  WHERE cxl.commissionId = ?`,
                 [id]
             );
-            
+
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code || 500});
+            throw ({ message: err.message, statusCode: err.code || 500 });
         }
     },
 
@@ -73,39 +73,40 @@ const commissionsRepository = {
                  WHERE cxl.labelId = ?`,
                 [labelId]
             );
-            
+
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code || 500});
+            throw ({ message: err.message, statusCode: err.code || 500 });
         }
     },
 
     getCommissionsByTitle: async (title) => {
         try {
             const [result] = await db.query('SELECT commissionId, userId, title, content, price FROM commissions WHERE title LIKE ?', [`%${title}%`]);
-            
+
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code || 500});
+            throw ({ message: err.message, statusCode: err.code || 500 });
         }
     },
 
     getCommissionsByPrice: async (price) => {
         try {
             const [result] = await db.query('SELECT commissionId, userId, title, content, price FROM commissions WHERE price <= ?', [price]);
-            
+
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code || 500});
+            throw ({ message: err.message, statusCode: err.code || 500 });
         }
     },
 
     updateCommission: async (id, commission) => {
         try {
+
             const [result] = await db.query('UPDATE commissions SET ? WHERE commissionId = ?', [commission, id]);
             return (result) ? result : null;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code || 500});
+            throw ({ message: err.message, statusCode: err.code || 500 });
         }
     },
 
@@ -114,7 +115,7 @@ const commissionsRepository = {
             const result = await db.query('DELETE FROM commissionsXlabels WHERE commissionId = ?', [id]);
             return result.affectedRows > 0;
         } catch (err) {
-            throw ({message: err.message, statusCode: err.code || 500});
+            throw ({ message: err.message, statusCode: err.code || 500 });
         }
     }
 }

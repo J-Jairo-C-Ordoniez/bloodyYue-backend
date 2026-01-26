@@ -6,6 +6,7 @@ import userRepository from "../../modules/users/user.repository.js";
 
 const commissionsService = {
     createCommission: async (userId, commissionData) => {
+
         const { commission, labels } = commissionData;
 
         if (
@@ -38,6 +39,7 @@ const commissionsService = {
             price: commission.price,
             terms: commission.terms
         });
+
 
         if (!newCommission) {
             throw ({ message: 'Commission creation failed', statusCode: 500 });
@@ -125,7 +127,6 @@ const commissionsService = {
         }
 
         const errors = validators.validateUpdate(commissionData);
-        
         if (errors.length > 0) {
             throw ({ message: errors, statusCode: 400 });
         }
@@ -160,7 +161,7 @@ const commissionsService = {
         return commissionsService.getCommissionsById(id);
     },
 
-    updateCommissionLabels: async (userId,id, labels) => {
+    updateCommissionLabels: async (userId, id, labels) => {
         const commission = await commissionsRepository.getCommissionsById(id);
         if (!commission) {
             throw ({ message: "Commission not found", statusCode: 404 });

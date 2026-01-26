@@ -28,7 +28,7 @@ const chatRepository = {
 
             return (result.insertId) ? result.insertId : null;
         } catch (err) {
-            console.log(err)
+
             throw ({ message: err.message, statusCode: 500 });
         }
     },
@@ -85,7 +85,7 @@ const chatRepository = {
 
     getChatsRoom: async (userId) => {
         try {
-            console.log(userId)
+
             const [result] = await db.query(
                 `SELECT
                     c.chatId,
@@ -98,7 +98,7 @@ const chatRepository = {
                 INNER JOIN users u ON u.userId = cp2.userId
                 WHERE cp1.userId = ?
                 AND cp2.userId != ?;`,
-                    [userId, userId]
+                [userId, userId]
             );
 
             return (result.length > 0) ? result : null;

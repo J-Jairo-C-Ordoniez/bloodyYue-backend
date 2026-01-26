@@ -77,7 +77,7 @@ const authController = {
 
     changeRole: async (req, res) => {
         try {
-            console.log(req.body);
+
             const user = await authService.changeRole(req.body);
             success(req, res, user, 201);
         } catch (err) {
@@ -89,6 +89,7 @@ const authController = {
         try {
             const refreshToken = req.cookies?.refreshToken;
             const { accessToken, user } = await authService.refreshToken(refreshToken);
+
             success(req, res, { accessToken, user }, 201);
         } catch (err) {
             error(req, res, err.message, err.statusCode);

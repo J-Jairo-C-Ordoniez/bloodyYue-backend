@@ -86,6 +86,7 @@ const postsController = {
         try {
             const { id } = req.params;
             const result = await postsService.deletePost(id);
+
             success(req, res, result, 200);
         } catch (err) {
             error(req, res, err.message, err.statusCode);

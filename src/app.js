@@ -49,7 +49,7 @@ app.use(rateLimit({
 }));
 app.use(morgan('dev'));
 
-// Routescl
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/settings', settingsRoutes);

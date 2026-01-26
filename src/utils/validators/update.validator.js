@@ -26,14 +26,16 @@ const validationRules = {
     price: isPrice,
     terms: isString,
     quantity: isNumber,
-    details: isString
+    details: isString,
+    content: isLink,
+    exampleId: isNumber
 }
 
 export default function validateUpdate(data) {
     const errors = [];
 
     for (const key in data) {   
-        if (key === 'labels') continue;
+        if (key === 'labels' || key === 'typePost') continue;
         const field = validationRules[key];
         
         if (!field) {

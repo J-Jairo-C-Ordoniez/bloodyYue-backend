@@ -101,6 +101,7 @@ const authService = {
                 email: user.email,
                 avatar: user.avatar,
                 rolId: user.rolId,
+                status: user.status,
                 isVerified: user.isVerified,
                 isActive: isActiveUser.isActive
             }

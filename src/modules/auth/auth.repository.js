@@ -36,7 +36,7 @@ const authRepository = {
     async getByEmail(email) {
         try {
             const [result] = await db.query(
-                'SELECT * FROM users WHERE email = ?',
+                'SELECT userId, email, password, isActive, status, isVerified, rolId FROM users WHERE email = ?',
                 [email]
             );
             return (result[0]) ? result[0] : null;
@@ -48,7 +48,7 @@ const authRepository = {
     async getByUserId(userId) {
         try {
             const [result] = await db.query(
-                'SELECT * FROM users WHERE userId = ?',
+                'SELECT userId, name, birthday, email, password, avatar, poster, isActive, isVerified, rolId, status FROM users WHERE userId = ?',
                 [userId]
             );
             return (result[0]) ? result[0] : null;
@@ -96,7 +96,7 @@ const authRepository = {
 
             return result.affectedRows > 0;
         } catch (err) {
-            console.log(err);
+
             throw ({ message: err.message, statusCode: err.code });
         }
     },

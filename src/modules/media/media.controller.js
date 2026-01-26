@@ -22,7 +22,7 @@ const mediaController = {
 
             const url = await mediaService.uploadImage(file, folder, publicId);
 
-            success(req, res, { url }, 201);
+            success(req, res, url, 201);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
         }
@@ -42,7 +42,7 @@ const mediaController = {
 
             const url = await mediaService.uploadImage(file, folder, publicId);
 
-            success(req, res, { url }, 201);
+            success(req, res, url, 201);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
         }
@@ -67,7 +67,7 @@ const mediaController = {
 
             const url = await mediaService.uploadShorts(file, folder, publicId);
 
-            success(req, res, { url }, 201);
+            success(req, res, url, 201);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
         }
@@ -87,7 +87,7 @@ const mediaController = {
 
             const url = await mediaService.uploadImage(file, folder, publicId);
 
-            success(req, res, { url }, 201);
+            success(req, res, url, 201);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
         }
@@ -107,7 +107,7 @@ const mediaController = {
 
             const url = await mediaService.uploadImage(file, folder, publicId);
 
-            success(req, res, { url }, 201);
+            success(req, res, url, 201);
         } catch (err) {
             error(req, res, err.message, err.statusCode);
         }

@@ -3,7 +3,7 @@ import db from '../../config/db.config.js';
 const rolesRepository = {
     createRole: async (roleData) => {
         try {
-            console.log(roleData)
+
             const columns = Object.keys(roleData).join(', ');
             const placeholders = Object.values(roleData).map(() => '?').join(', ');
             const values = Object.values(roleData);
@@ -15,7 +15,7 @@ const rolesRepository = {
 
             return (result.insertId) ? { rolId: result.insertId, ...roleData } : null;
         } catch (err) {
-            throw {message: err.message, statusCode: err.statusCode};
+            throw { message: err.message, statusCode: err.statusCode };
         }
     },
 
@@ -24,7 +24,7 @@ const rolesRepository = {
             const [result] = await db.query('SELECT rolId, name, description FROM roles');
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw {message: err.message, statusCode: err.statusCode};
+            throw { message: err.message, statusCode: err.statusCode };
         }
     },
 
@@ -33,12 +33,12 @@ const rolesRepository = {
             const [result] = await db.query(`
                 SELECT rolId, name, description
                 FROM roles 
-                WHERE rolId = ?;`, 
-            [rolId]);
+                WHERE rolId = ?;`,
+                [rolId]);
 
             return (result[0]) ? result[0] : null;
         } catch (err) {
-            throw {message: err.message, statusCode: err.statusCode};
+            throw { message: err.message, statusCode: err.statusCode };
         }
     },
 
@@ -53,7 +53,7 @@ const rolesRepository = {
             );
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw {message: err.message, statusCode: err.statusCode};
+            throw { message: err.message, statusCode: err.statusCode };
         }
     },
 
@@ -62,7 +62,7 @@ const rolesRepository = {
             const [result] = await db.query('SELECT permitId, name, description FROM permits');
             return (result.length > 0) ? result : null;
         } catch (err) {
-            throw {message: err.message, statusCode: err.statusCode};
+            throw { message: err.message, statusCode: err.statusCode };
         }
     },
 
@@ -74,7 +74,7 @@ const rolesRepository = {
             );
             return (result.insertId) ? result : null;
         } catch (err) {
-            throw {message: err.message, statusCode: err.statusCode};
+            throw { message: err.message, statusCode: err.statusCode };
         }
     },
 
@@ -86,7 +86,7 @@ const rolesRepository = {
             );
             return (result.affectedRows > 0) ? { rolId, permitId } : null;
         } catch (err) {
-            throw {message: err.message, statusCode: err.statusCode};
+            throw { message: err.message, statusCode: err.statusCode };
         }
     }
 };
