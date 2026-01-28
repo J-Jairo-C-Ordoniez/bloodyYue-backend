@@ -114,7 +114,12 @@ const salesRepository = {
     getDetailsSale: async (id) => {
         try {
             const [result] = await db.query(
-                `SELECT * FROM detailsSale WHERE saleId = ?`,
+                `SELECT ds.status, ca.userId
+                 FROM detailsSale ds
+                 INNER JOIN sales s ON ds.saleId = s.saleId
+                 INNER JOIN cartItems ci ON s.cartItemId = ci.cartItemId
+                 INNER JOIN carts ca ON ci.cartId = ca.cartId
+                 WHERE s.saleId = ?`,
                 [id]
             );
             return (result[0]) ? result[0] : null;

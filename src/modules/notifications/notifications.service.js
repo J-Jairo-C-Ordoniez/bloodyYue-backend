@@ -56,7 +56,6 @@ const notificationsService = {
             type,
             body
         });
-
         return newNotification;
     },
 

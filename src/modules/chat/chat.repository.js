@@ -26,7 +26,10 @@ const chatRepository = {
                 values
             );
 
-            return (result.insertId) ? result.insertId : null;
+            return (result.insertId) ? {
+                messageId: result.insertId,
+                ...data
+            } : null;
         } catch (err) {
 
             throw ({ message: err.message, statusCode: 500 });
@@ -60,8 +63,7 @@ const chatRepository = {
                     AND cp2.userId = ?;`,
                 [participantOneId, participantTwoId]
             );
-
-            return (result.length > 0) ? result.rows[0] : null;
+            return (result[0]) ? result[0] : null;
         } catch (err) {
             throw ({ message: err.message, statusCode: err.code });
         }

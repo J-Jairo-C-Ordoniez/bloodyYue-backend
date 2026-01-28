@@ -9,7 +9,7 @@ const chatService = {
         }
         const existChat = await chatRepository.getChatByParticipants(userId, participantId);
         if (existChat) {
-            throw ({ message: 'Chat already exists', statusCode: 400 });
+           return { chatId: existChat.chatId }
         }
 
         const chat = await chatRepository.createChat();
@@ -22,10 +22,7 @@ const chatService = {
             throw ({ message: 'Participants addition failed', statusCode: 500 });
         }
 
-        return {
-            chat,
-            addParticipants
-        };
+        return {chatId: chat.chatId}
     },
 
     changeStatusChat: async (chatId, status) => {
@@ -71,6 +68,7 @@ const chatService = {
 
         const participants = await chatRepository.getParticipants(data.chatId);
         const receiverId = participants.find(id => id.userId !== data.senderId);
+
 
         const newMessage = await chatRepository.createMessage({
             chatId: data.chatId,

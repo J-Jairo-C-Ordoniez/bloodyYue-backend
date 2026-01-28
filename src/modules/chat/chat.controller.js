@@ -24,7 +24,6 @@ const chatController = {
 
     getMessages: async (req, res) => {
         try {
-            const {userId} = req.user;
             const chatId = req.params.chatId;
             const messages = await chatService.getMessages(chatId);
             success(req, res, messages, 200);
