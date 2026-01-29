@@ -1,17 +1,18 @@
 import notificationsRepository from './notifications.repository.js';
 import validators from '../../utils/validators/index.js';
 import { getIO } from '../../config/socket.config.js';
+import AppError from '../../utils/errors/AppError.js';
 
 const notificationsService = {
     createNotificationGlobal: async (data) => {
-        const {userId, type, message, body} = data;
+        const { userId, type, message, body } = data;
         const io = getIO();
         if (
             (!userId) ||
             (!type && validators.isString(type)) ||
             (!message && validators.isString(message))
         ) {
-            throw ({message: 'Input invalid data', statusCode: 400});
+            throw new AppError('Input invalid data', 400);
         }
 
         io.emit('newNotification', {
@@ -22,11 +23,11 @@ const notificationsService = {
             body
         });
 
-        return {message: 'Notification created successfully'};
+        return { message: 'Notification created successfully' };
     },
 
     createNotification: async (data) => {
-        const {userId, userIdNotify, type, message, body} = data;
+        const { userId, userIdNotify, type, message, body } = data;
         const io = getIO();
 
         if (
@@ -35,7 +36,7 @@ const notificationsService = {
             (!type && validators.isString(type)) ||
             (!message && validators.isString(message))
         ) {
-            throw ({message: 'Input invalid data', statusCode: 400});
+            throw new AppError('Input invalid data', 400);
         }
 
         const newNotification = await notificationsRepository.create({
@@ -45,7 +46,7 @@ const notificationsService = {
         });
 
         if (!newNotification) {
-            throw ({message: 'Notification creation failed', statusCode: 500});
+            throw new AppError('Notification creation failed', 500);
         }
 
         io.to(`notificationUser-${userIdNotify}`).emit('newNotification', {
@@ -60,7 +61,7 @@ const notificationsService = {
     },
 
     createNotificationPostReaction: async (data) => {
-        const {userIdNotify, userId, type, message} = data;
+        const { userIdNotify, userId, type, message } = data;
         const io = getIO();
 
         if (
@@ -69,7 +70,7 @@ const notificationsService = {
             (!type && validators.isString(type)) ||
             (!message && validators.isString(message))
         ) {
-            throw ({message: 'Input invalid data', statusCode: 400});
+            throw new AppError('Input invalid data', 400);
         }
 
         const newNotification = await notificationsRepository.create({
@@ -79,7 +80,7 @@ const notificationsService = {
         });
 
         if (!newNotification) {
-            throw ({message: 'Notification creation failed', statusCode: 500});
+            throw new AppError('Notification creation failed', 500);
         }
 
         io.to(`notificationUser-${userIdNotify}`).emit('newNotification', {
@@ -97,7 +98,7 @@ const notificationsService = {
     getNotificationsNotRead: async (userId) => {
         const notifications = await notificationsRepository.getByUserId(userId);
         if (!notifications) {
-            throw ({message: 'Notifications not found', statusCode: 404});
+            throw new AppError('Notifications not found', 404);
         }
         return notifications;
     },
@@ -105,7 +106,7 @@ const notificationsService = {
     getNotificationsNotReadById: async (notificationId) => {
         const notification = await notificationsRepository.getById(notificationId);
         if (!notification) {
-            throw ({message: 'Notification not found', statusCode: 404});
+            throw new AppError('Notification not found', 404);
         }
 
         return notification;
@@ -114,19 +115,19 @@ const notificationsService = {
     markAsRead: async (notificationId) => {
         const notification = await notificationsRepository.markAsRead(notificationId);
         if (!notification) {
-            throw ({message: 'Notification not found', statusCode: 404});
+            throw new AppError('Notification not found', 404);
         }
 
-        return {message: 'Notification marked as read'};
+        return { message: 'Notification marked as read' };
     },
 
     markAllAsRead: async (userId) => {
         const notifications = await notificationsRepository.markAllAsRead(userId);
         if (!notifications) {
-            throw ({message: 'Notifications not found', statusCode: 404});
+            throw new AppError('Notifications not found', 404);
         }
 
-        return {message: 'Notifications marked as read'};
+        return { message: 'Notifications marked as read' };
     },
 };
 

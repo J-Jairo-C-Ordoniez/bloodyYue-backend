@@ -1,12 +1,13 @@
 import cartRepository from "./cart.repository.js";
 import commissionRepository from "../commissions/commissions.repository.js";
 import validators from "../../utils/validators/index.js";
+import AppError from "../../utils/errors/AppError.js";
 
 const cartService = {
     addToCart: async (userId, data) => {
         let cart = await cartRepository.getCartByUserId(userId);
         if (!cart) {
-            throw ({ message: 'Cart not found', statusCode: 404 });
+            throw new AppError('Cart not found', 404);
         }
 
         if (
@@ -15,12 +16,12 @@ const cartService = {
             (!data.priceAtMoment && validators.isPrice(data.priceAtMoment)) ||
             (!data.details && validators.isString(data.details))
         ) {
-            throw ({ message: 'Invalid input data', statusCode: 400 });
+            throw new AppError('Invalid input data', 400);
         }
 
         const commission = await commissionRepository.getCommissionsById(data.commissionId);
         if (!commission) {
-            throw ({ message: 'Commission not found', statusCode: 404 });
+            throw new AppError('Commission not found', 404);
         }
 
         const item = await cartRepository.addItem({
@@ -32,7 +33,7 @@ const cartService = {
         });
 
         if (!item) {
-            throw ({ message: 'Item not found', statusCode: 404 });
+            throw new AppError('Item not found', 404);
         }
 
         return item;
@@ -41,12 +42,12 @@ const cartService = {
     getAllItemsCart: async (userId) => {
         const cart = await cartRepository.getCartByUserId(userId);
         if (!cart) {
-            throw ({ message: 'Cart not found', statusCode: 404 });
+            throw new AppError('Cart not found', 404);
         }
 
         const items = await cartRepository.getItems(cart.cartId);
         if (!items) {
-            throw ({ message: 'Items not found', statusCode: 404 });
+            throw new AppError('Items not found', 404);
         }
 
         return items;
@@ -55,31 +56,31 @@ const cartService = {
     getItemById: async (cartItemId) => {
         const cartItem = await cartRepository.getCartItemById(cartItemId);
         if (!cartItem) {
-            throw ({ message: 'Cart item not found', statusCode: 404 });
+            throw new AppError('Cart item not found', 404);
         }
 
         const commission = await commissionRepository.getCommissionsById(cartItem.commissionId);
         if (!commission) {
-            throw ({ message: 'Commission not found', statusCode: 404 });
+            throw new AppError('Commission not found', 404);
         }
 
-        return {cartItem, commission};
+        return { cartItem, commission };
     },
 
     updateItem: async (cartItemId, data) => {
         const cartItem = await cartRepository.getCartItemById(cartItemId);
         if (!cartItem) {
-            throw ({ message: 'Cart item not found', statusCode: 404 });
+            throw new AppError('Cart item not found', 404);
         }
 
         const errors = validators.validateUpdate(data);
         if (errors.length > 0) {
-            throw ({ message: 'Invalid input data', statusCode: 400 });
+            throw new AppError('Invalid input data', 400);
         }
 
         const updated = await cartRepository.updateItem(cartItemId, data);
         if (!updated) {
-            throw ({ message: 'Details cart item update failed', statusCode: 400 });
+            throw new AppError('Details cart item update failed', 400);
         }
 
         return cartService.getItemById(cartItemId);
@@ -88,12 +89,12 @@ const cartService = {
     changeItemStatus: async (cartItemId) => {
         const cartItem = await cartRepository.getCartItemById(cartItemId);
         if (!cartItem) {
-            throw ({ message: 'Cart item not found', statusCode: 404 });
+            throw new AppError('Cart item not found', 404);
         }
 
         const updated = await cartRepository.changeItemStatus(cartItemId, 'discarded');
         if (!updated) {
-            throw ({ message: 'Status cart item update failed', statusCode: 400 });
+            throw new AppError('Status cart item update failed', 400);
         }
 
         return cartService.getItemById(cartItemId);

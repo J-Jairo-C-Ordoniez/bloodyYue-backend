@@ -1,6 +1,7 @@
 import validators from '../../utils/validators/index.js';
 import userRepository from './user.repository.js';
 import notificationsService from '../notifications/notifications.service.js';
+import AppError from '../../utils/errors/AppError.js';
 
 const usersService = {
     getMyProfile: async (id) => {
@@ -25,13 +26,13 @@ const usersService = {
 
     updateMyProfile: async (userId, data) => {
         if (!userId) {
-            throw ({ message: "Invalid user", statusCode: 400 });
+            throw new AppError("Invalid user", 400);
         }
 
         const errors = validators.validateUpdate(data);
 
         if (errors.length > 0) {
-            throw ({ message: errors, statusCode: 400 });
+            throw new AppError(errors, 400);
         }
 
         const updatedUser = await userRepository.updateMyProfile(userId, data);
@@ -45,13 +46,13 @@ const usersService = {
 
     getMyTestimony: async (id) => {
         if (!id) {
-            throw ({ message: "Invalid user", statusCode: 400 });
+            throw new AppError("Invalid user", 400);
         }
 
         const testimony = await userRepository.getTestimonyByUserId(id);
 
         if (!testimony) {
-            throw ({ message: "Testimony not found", statusCode: 404 });
+            throw new AppError("Testimony not found", 404);
         }
 
         return testimony;
@@ -59,23 +60,23 @@ const usersService = {
 
     createTestimony: async (id, data) => {
         if (!id) {
-            throw ({ message: "Invalid user", statusCode: 400 });
+            throw new AppError("Invalid user", 400);
         }
 
         if (!data.message || !validators.isString(data.message)) {
-            throw ({ message: "No valid fields provided for update", statusCode: 400 });
+            throw new AppError("No valid fields provided for update", 400);
         }
 
         const userTestimony = await userRepository.getTestimonyByUserId(id);
 
         if (userTestimony) {
-            throw ({ message: "User already has a testimony", statusCode: 400 });
+            throw new AppError("User already has a testimony", 400);
         }
 
         const testimony = await userRepository.createTestimony(id, data.message);
 
         if (!testimony) {
-            throw ({ message: "Testimony not created", statusCode: 400 });
+            throw new AppError("Testimony not created", 400);
         }
 
         const users = await userRepository.getUsersPermitNotification('createTestimony');
@@ -101,25 +102,25 @@ const usersService = {
 
     updateTestimony: async (id, data) => {
         if (!id) {
-            throw ({ message: "Invalid user", statusCode: 400 });
+            throw new AppError("Invalid user", 400);
         }
 
         const userTestimony = await userRepository.getTestimonyByUserId(id);
 
         if (!userTestimony) {
-            throw ({ message: "User has no testimony", statusCode: 404 });
+            throw new AppError("User has no testimony", 404);
         }
 
         const errors = validators.validateUpdate(data);
 
         if (errors.length > 0) {
-            throw ({ message: errors, statusCode: 400 });
+            throw new AppError(errors, 400);
         }
 
         const updateTestimony = await userRepository.updateTestimony(id, data.message);
 
         if (!updateTestimony) {
-            throw ({ message: "Testimony not updated", statusCode: 400 });
+            throw new AppError("Testimony not updated", 400);
         }
 
         return {
@@ -135,13 +136,13 @@ const usersService = {
         const testimony = await userRepository.getTestimonyByUserId(userId);
 
         if (!testimony) {
-            throw ({ message: "Testimony not found", statusCode: 404 });
+            throw new AppError("Testimony not found", 404);
         }
 
         const deleteTestimony = await userRepository.deleteTestimony(testimony.testimonyId);
 
         if (!deleteTestimony) {
-            throw ({ message: "Testimony not deleted", statusCode: 400 });
+            throw new AppError("Testimony not deleted", 400);
         }
 
         return {
@@ -154,7 +155,7 @@ const usersService = {
         const testimonies = await userRepository.getTestimonies();
 
         if (!testimonies) {
-            throw ({ message: "Testimonies not found", statusCode: 404 });
+            throw new AppError("Testimonies not found", 404);
         }
 
         return testimonies;

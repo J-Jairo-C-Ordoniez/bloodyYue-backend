@@ -1,5 +1,6 @@
 import settingsRepository from './settings.repository.js';
 import validator from '../../utils/validators/index.js';
+import AppError from '../../utils/errors/AppError.js';
 
 const settingsService = {
     createSettings: async (data) => {
@@ -16,14 +17,14 @@ const settingsService = {
             (!usagePolicies && validator.isString(usagePolicies)) ||
             (!seoMeta && validator.isJson(seoMeta))
         ) {
-            throw ({message: 'Invalid Inputs', statusCode: 400});
+            throw new AppError('Invalid Inputs', 400);
         }
 
         const existingSettings = await settingsRepository.getSettings();
         if (existingSettings) {
-            throw ({message: 'Settings already exists', statusCode: 400});
+            throw new AppError('Settings already exists', 400);
         }
-      
+
         const settings = await settingsRepository.createSettings({
             title,
             subtitle,
@@ -35,21 +36,21 @@ const settingsService = {
             usagePolicies,
             seoMeta: JSON.stringify(seoMeta)
         });
-        
-        if(!settings){
-            throw ({message: 'Settings not created', statusCode: 500});
+
+        if (!settings) {
+            throw new AppError('Settings not created', 500);
         }
-        
+
         return settings;
     },
-    
+
     getSettings: async (id) => {
-        if(!id){
-            throw ({message: 'Invalid Inputs', statusCode: 400});
+        if (!id) {
+            throw new AppError('Invalid Inputs', 400);
         }
         const settings = await settingsRepository.getSettings(id);
-        if(!settings){
-            throw ({message: 'Settings not found', statusCode: 404});
+        if (!settings) {
+            throw new AppError('Settings not found', 404);
         }
 
         return {
@@ -65,25 +66,25 @@ const settingsService = {
             seoMeta: settings.seoMeta
         };
     },
-    
+
     updateSettings: async (id, data) => {
-        if(!id) {
-            throw ({message: 'Invalid Inputs', statusCode: 400});
+        if (!id) {
+            throw new AppError('Invalid Inputs', 400);
         }
 
         const settings = await settingsRepository.getSettings(id);
-        if(!settings){
-            throw ({message: 'Settings not found', statusCode: 404});
+        if (!settings) {
+            throw new AppError('Settings not found', 404);
         }
 
         const errors = validator.validateUpdate(data);
-        if(errors.length > 0){
-            throw ({message: errors, statusCode: 400});
+        if (errors.length > 0) {
+            throw new AppError(errors, 400);
         }
 
         const updatedSettings = await settingsRepository.updateSettings(id, data);
-        if(!updatedSettings){
-            throw ({message: 'Settings not updated', statusCode: 500});
+        if (!updatedSettings) {
+            throw new AppError('Settings not updated', 500);
         }
 
         return settingsService.getSettings(id);

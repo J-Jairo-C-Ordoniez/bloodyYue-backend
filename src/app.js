@@ -24,6 +24,8 @@ import labelsRoutes from './modules/labels/labels.routes.js';
 import rolesRoutes from './modules/roles/roles.routes.js';
 import notificationsRoutes from './modules/notifications/notifications.routes.js';
 
+import globalErrorHandler from './middlewares/errors/error.middleware.js';
+
 const PORT = process.env.PORT || 5000;
 
 const app = express();
@@ -67,6 +69,8 @@ app.get('/', (req, res) => {
   res.send('BloodyYue Backend API is running');
 });
 
+// Middlewares
 app.use(notFound);
+app.use(globalErrorHandler);
 
 server.listen(PORT, () => { console.log(`Server running at https://localhost:${PORT}`) });

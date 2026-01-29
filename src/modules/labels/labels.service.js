@@ -1,20 +1,21 @@
 import labelsRepository from "./labels.repository.js";
 import validators from "../../utils/validators/index.js";
+import AppError from "../../utils/errors/AppError.js";
 
 const labelsService = {
     createLabel: async (data) => {
-        const {name, color} = data;
+        const { name, color } = data;
 
         if (
             (!name && validators.isString(name)) ||
             (!color && validators.isHexadecial(color))
         ) {
-            throw ({message: 'Invalid input data', statusCode: 400});
+            throw new AppError('Invalid input data', 400);
         }
 
-        const label = await labelsRepository.createLabel({name, color});
+        const label = await labelsRepository.createLabel({ name, color });
         if (!label) {
-            throw ({message: 'Label not created', statusCode: 400});
+            throw new AppError('Label not created', 400);
         }
 
         return label;
@@ -23,19 +24,19 @@ const labelsService = {
     getLabels: async () => {
         const labels = await labelsRepository.getLabels();
         if (!labels) {
-            throw ({message: 'Labels not found', statusCode: 404});
+            throw new AppError('Labels not found', 404);
         }
         return labels;
     },
 
     getLabelById: async (id) => {
         if (!id) {
-            throw ({message: 'Invalid input data', statusCode: 400});
+            throw new AppError('Invalid input data', 400);
         }
 
         const label = await labelsRepository.getLabelById(id);
         if (!label) {
-            throw ({message: 'Label not found', statusCode: 404});
+            throw new AppError('Label not found', 404);
         }
 
         return label;
@@ -43,17 +44,17 @@ const labelsService = {
 
     updateLabel: async (id, data) => {
         if (!id) {
-            throw ({message: 'Invalid input data', statusCode: 400});
+            throw new AppError('Invalid input data', 400);
         }
 
         const errors = validators.validateUpdate(data);
         if (errors.length > 0) {
-            throw ({message: 'Invalid input data', statusCode: 400});
+            throw new AppError('Invalid input data', 400);
         }
 
         const label = await labelsRepository.updateLabel(id, data);
         if (!label) {
-            throw ({message: 'Label not updated', statusCode: 400});
+            throw new AppError('Label not updated', 400);
         }
 
         return labelsService.getLabelById(id);
@@ -61,12 +62,12 @@ const labelsService = {
 
     deleteLabel: async (id) => {
         if (!id) {
-            throw ({message: 'Invalid input data', statusCode: 400});
+            throw new AppError('Invalid input data', 400);
         }
 
         const label = await labelsRepository.deleteLabel(id);
         if (!label) {
-            throw ({message: 'Label not deleted', statusCode: 400});
+            throw new AppError('Label not deleted', 400);
         }
 
         return {

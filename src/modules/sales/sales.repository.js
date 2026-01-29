@@ -70,6 +70,7 @@ const salesRepository = {
                  LEFT JOIN commissions c ON ci.commissionId = c.commissionId
                  WHERE s.status = 'paid'`,
             );
+
             return (result.length > 0) ? result : null;
         } catch (error) {
             throw ({ message: error.message, statusCode: 500 });

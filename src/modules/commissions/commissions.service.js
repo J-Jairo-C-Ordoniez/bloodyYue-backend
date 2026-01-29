@@ -3,6 +3,7 @@ import postsRepository from "../posts/posts.repository.js";
 import validators from "../../utils/validators/index.js";
 import notificationsService from "../notifications/notifications.service.js";
 import userRepository from "../../modules/users/user.repository.js";
+import AppError from "../../utils/errors/AppError.js";
 
 const commissionsService = {
     createCommission: async (userId, commissionData) => {
@@ -17,17 +18,17 @@ const commissionsService = {
             (!commission.price && validators.isPrice(commission.price)) ||
             (!commission.terms && validators.isString(commission.terms))
         ) {
-            throw ({ message: 'Input data invalid', statusCode: 400 });
+            throw new AppError('Input data invalid', 400);
         }
 
         const existsExample = await postsRepository.getPostById(commission.exampleId);
         if (!existsExample) {
-            throw ({ message: 'Example not found', statusCode: 404 });
+            throw new AppError('Example not found', 404);
         }
 
         const user = await userRepository.getUserById(userId);
         if (!user) {
-            throw ({ message: 'User not found', statusCode: 404 });
+            throw new AppError('User not found', 404);
         }
 
         const newCommission = await commissionsRepository.createCommission({
@@ -42,7 +43,7 @@ const commissionsService = {
 
 
         if (!newCommission) {
-            throw ({ message: 'Commission creation failed', statusCode: 500 });
+            throw new AppError('Commission creation failed', 500);
         }
 
         if (labels && labels.length > 0) {
@@ -62,7 +63,7 @@ const commissionsService = {
         const commissions = await commissionsRepository.getCommissions(id);
 
         if (!commissions) {
-            throw ({ message: "Commissions not found", statusCode: 404 });
+            throw new AppError("Commissions not found", 404);
         }
 
         return commissions;
@@ -72,7 +73,7 @@ const commissionsService = {
         const commission = await commissionsRepository.getCommissionsById(id);
 
         if (!commission) {
-            throw ({ message: "Commission not found", statusCode: 404 });
+            throw new AppError("Commission not found", 404);
         }
 
         const labels = await commissionsRepository.getLabelsByCommissionId(id);
@@ -81,12 +82,12 @@ const commissionsService = {
 
     getCommissionsByLabel: async (labelId) => {
         if (!labelId) {
-            throw ({ message: "Invalid label", statusCode: 400 });
+            throw new AppError("Invalid label", 400);
         }
         const commissions = await commissionsRepository.getCommissionsByLabel(labelId);
 
         if (!commissions) {
-            throw ({ message: "Commissions not found", statusCode: 404 });
+            throw new AppError("Commissions not found", 404);
         }
 
         return commissions;
@@ -94,13 +95,13 @@ const commissionsService = {
 
     getCommissionsByTitle: async (title) => {
         if (!title) {
-            throw ({ message: "No title provided", statusCode: 400 });
+            throw new AppError("No title provided", 400);
         }
 
         const commissions = await commissionsRepository.getCommissionsByTitle(title);
 
         if (!commissions) {
-            throw ({ message: "Commissions not found", statusCode: 404 });
+            throw new AppError("Commissions not found", 404);
         }
 
         return commissions;
@@ -108,13 +109,13 @@ const commissionsService = {
 
     getCommissionsByPrice: async (price) => {
         if (!price && validators.isPrice(price)) {
-            throw ({ message: "Invalid price", statusCode: 400 });
+            throw new AppError("Invalid price", 400);
         }
 
         const commissions = await commissionsRepository.getCommissionsByPrice(price);
 
         if (!commissions) {
-            throw ({ message: "Commissions not found", statusCode: 404 });
+            throw new AppError("Commissions not found", 404);
         }
 
         return commissions;
@@ -123,12 +124,12 @@ const commissionsService = {
     updateCommission: async (userId, id, commissionData) => {
         const commission = await commissionsRepository.getCommissionsById(id);
         if (!commission) {
-            throw ({ message: "Commission not found", statusCode: 404 });
+            throw new AppError("Commission not found", 404);
         }
 
         const errors = validators.validateUpdate(commissionData);
         if (errors.length > 0) {
-            throw ({ message: errors, statusCode: 400 });
+            throw new AppError(errors, 400);
         }
 
         let labels = [];
@@ -139,7 +140,7 @@ const commissionsService = {
 
         const updated = await commissionsRepository.updateCommission(id, commissionData);
         if (!updated) {
-            throw ({ message: "Commission update failed", statusCode: 500 });
+            throw new AppError("Commission update failed", 500);
         }
 
         if (labels.length > 0) {
@@ -149,7 +150,7 @@ const commissionsService = {
 
         const user = await userRepository.getUserById(userId);
         if (!user) {
-            throw ({ message: 'User not found', statusCode: 404 });
+            throw new AppError('User not found', 404);
         }
 
         await notificationsService.createNotificationGlobal({
@@ -164,11 +165,11 @@ const commissionsService = {
     updateCommissionLabels: async (userId, id, labels) => {
         const commission = await commissionsRepository.getCommissionsById(id);
         if (!commission) {
-            throw ({ message: "Commission not found", statusCode: 404 });
+            throw new AppError("Commission not found", 404);
         }
 
         if (!labels || !labels.length > 0) {
-            throw ({ message: "Invalid labels", statusCode: 400 });
+            throw new AppError("Invalid labels", 400);
         }
 
         await commissionsRepository.removeLabels(id);
@@ -176,14 +177,14 @@ const commissionsService = {
         const added = await commissionsRepository.addLabels(id, labels);
 
         if (!added) {
-            throw ({ message: "Labels not added", statusCode: 500 });
+            throw new AppError("Labels not added", 500);
         }
 
         const newLabels = await commissionsRepository.getLabelsByCommissionId(id);
 
         const user = await userRepository.getUserById(userId);
         if (!user) {
-            throw ({ message: 'User not found', statusCode: 404 });
+            throw new AppError('User not found', 404);
         }
 
         await notificationsService.createNotificationGlobal({

@@ -1,47 +1,35 @@
 import chatRepository from './chat.repository.js';
 import userRepository from '../users/user.repository.js';
 import notificationService from '../notifications/notifications.service.js';
+import AppError from '../../utils/errors/AppError.js';
 
 const chatService = {
     createChat: async (userId, participantId) => {
         if ((!userId) || (!participantId)) {
-            throw ({ message: 'Missing parameters', statusCode: 400 });
+            throw new AppError('Missing parameters', 400);
         }
         const existChat = await chatRepository.getChatByParticipants(userId, participantId);
         if (existChat) {
-           return { chatId: existChat.chatId }
+            return { chatId: existChat.chatId }
         }
 
         const chat = await chatRepository.createChat();
         if (!chat) {
-            throw ({ message: 'Chat creation failed', statusCode: 500 });
+            throw new AppError('Chat creation failed', 500);
         }
 
         const addParticipants = await chatRepository.addParticipants(chat, [userId, participantId]);
         if (!addParticipants) {
-            throw ({ message: 'Participants addition failed', statusCode: 500 });
+            throw new AppError('Participants addition failed', 500);
         }
 
-        return {chatId: chat.chatId}
-    },
-
-    changeStatusChat: async (chatId, status) => {
-        if ((!chatId) || (!status)) {
-            throw ({ message: 'Missing parameters', statusCode: 400 });
-        }
-
-        const chat = await chatRepository.changeStatusChat(chatId, status);
-        if (!chat) {
-            throw ({ message: 'Chat not found', statusCode: 404 });
-        }
-
-        return chat;
+        return { chatId: chat.chatId }
     },
 
     getChatsRoom: async (userId) => {
         const chatsRoom = await chatRepository.getChatsRoom(userId);
         if (!chatsRoom) {
-            throw ({ message: 'Not Found Chats', statusCode: 404 });
+            throw new AppError('Not Found Chats', 404);
         }
 
         return chatsRoom;
@@ -50,7 +38,7 @@ const chatService = {
     getMessages: async (chatId) => {
         const messages = await chatRepository.getMessages(chatId);
         if (!messages) {
-            throw ({ message: 'Not Found Messages', statusCode: 404 });
+            throw new AppError('Not Found Messages', 404);
         }
 
         return messages;
@@ -63,7 +51,7 @@ const chatService = {
     sendMessage: async (data) => {
         const isParticipant = await chatRepository.userBelongsToChat(data.chatId, data.senderId);
         if (!isParticipant) {
-            throw ({ message: 'Not Found Participant', statusCode: 404 });
+            throw new AppError('Not Found Participant', 404);
         }
 
         const participants = await chatRepository.getParticipants(data.chatId);
@@ -78,16 +66,16 @@ const chatService = {
 
 
         if (!newMessage) {
-            throw ({ message: 'Post creation failed', statusCode: 500 });
+            throw new AppError('Post creation failed', 500);
         }
 
 
         const user = await userRepository.getUserById(data.senderId);
 
         await notificationService.createNotification({
-            userId: user.userId, 
+            userId: user.userId,
             userIdNotify: receiverId,
-            type: "message", 
+            type: "message",
             message: `${user.name} ha enviado un mensaje`,
             body: data.content
         });
@@ -99,13 +87,13 @@ const chatService = {
     },
 
     changeStatusChat: async (chatId, status) => {
-        if (!chatId || !status) {
-            throw ({ message: 'Input invalid data', statusCode: 400 });
+        if (!chatId || status === undefined) {
+            throw new AppError('Input invalid data', 400);
         }
 
         const newStatusChat = await chatRepository.changeStatusChat(chatId, status);
         if (!newStatusChat) {
-            throw ({ message: 'Not Found Chat', statusCode: 404 });
+            throw new AppError('Not Found Chat', 404);
         }
 
         return newStatusChat;

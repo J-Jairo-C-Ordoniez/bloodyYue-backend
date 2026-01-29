@@ -36,6 +36,7 @@ const salesController = {
 
     getSalesSold: async (req, res) => {
         try {
+            const { userId } = req.user;
             const sales = await salesService.getSalesSold();
             success(req, res, sales, 200);
         } catch (err) {

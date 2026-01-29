@@ -2,6 +2,7 @@ import postsRepository from './posts.repository.js';
 import validators from '../../utils/validators/index.js';
 import notificationsService from '../notifications/notifications.service.js';
 import userRepository from '../../modules/users/user.repository.js';
+import AppError from '../../utils/errors/AppError.js';
 
 const postsService = {
     createPost: async (userId, data) => {
@@ -11,15 +12,15 @@ const postsService = {
             (!post.title || !validators.isString(post.title)) ||
             (!post.description || !validators.isString(post.description)) ||
             (!post.content || !validators.isLink(post.content)) ||
-            (!post.typePost || !validators.isString(post.typePost))||
+            (!post.typePost || !validators.isString(post.typePost)) ||
             (!userId)
         ) {
-            throw ({ message: "Invalid Inputs", statusCode: 400 });
+            throw new AppError("Invalid Inputs", 400);
         }
 
         const user = await userRepository.getUserById(userId);
         if (!user) {
-            throw ({ message: "User not found", statusCode: 404 });
+            throw new AppError("User not found", 404);
         }
 
         const newPost = await postsRepository.createPost({
@@ -31,7 +32,7 @@ const postsService = {
         });
 
         if (!newPost) {
-            throw ({ message: "Post creation failed", statusCode: 500 });
+            throw new AppError("Post creation failed", 500);
         }
 
         if (labels && labels.length > 0) {
@@ -51,7 +52,7 @@ const postsService = {
         const posts = await postsRepository.getPosts(id);
 
         if (!posts) {
-            throw ({ message: "Posts not found", statusCode: 404 });
+            throw new AppError("Posts not found", 404);
         }
 
         return posts;
@@ -61,7 +62,7 @@ const postsService = {
         const post = await postsRepository.getPostRandom();
 
         if (!post) {
-            throw ({ message: "Post not found", statusCode: 404 });
+            throw new AppError("Post not found", 404);
         }
 
         const labels = await postsRepository.getLabelsByPostId(post.postId);
@@ -72,7 +73,7 @@ const postsService = {
         const post = await postsRepository.getPostById(id);
 
         if (!post) {
-            throw ({ message: "Post not found", statusCode: 404 });
+            throw new AppError("Post not found", 404);
         }
 
         const labels = await postsRepository.getLabelsByPostId(id);
@@ -81,12 +82,12 @@ const postsService = {
 
     getPostsByLabel: async (labelId) => {
         if (!labelId) {
-            throw ({ message: "Invalid label", statusCode: 400 });
+            throw new AppError("Invalid label", 400);
         }
         const posts = await postsRepository.getPostsByLabel(labelId);
 
         if (!posts) {
-            throw ({ message: "Posts not found", statusCode: 404 });
+            throw new AppError("Posts not found", 404);
         }
 
         return posts;
@@ -94,13 +95,13 @@ const postsService = {
 
     getPostsByTitle: async (title) => {
         if (!title) {
-            throw ({ message: "No title provided", statusCode: 400 });
+            throw new AppError("No title provided", 400);
         }
 
         const posts = await postsRepository.getPostsByTitle(title);
 
         if (!posts) {
-            throw ({ message: "Posts not found", statusCode: 404 });
+            throw new AppError("Posts not found", 404);
         }
 
         return posts;
@@ -108,21 +109,21 @@ const postsService = {
 
     updatePost: async (id, data) => {
         if (!id) {
-            throw ({ message: "No id provided", statusCode: 400 });
+            throw new AppError("No id provided", 400);
         }
         const post = await postsRepository.getPostById(id);
         if (!post) {
-            throw ({ message: "Post not found", statusCode: 404 });
+            throw new AppError("Post not found", 404);
         }
 
         const errors = validators.validateUpdate(data);
         if (errors.length > 0) {
-            throw ({ message: errors, statusCode: 400 });
+            throw new AppError(errors, 400);
         }
 
         const updated = await postsRepository.updatePost(id, data);
         if (!updated) {
-            throw ({ message: "Post update failed", statusCode: 500 });
+            throw new AppError("Post update failed", 500);
         }
 
         return postsService.getPost(id);
@@ -131,23 +132,23 @@ const postsService = {
     updatePostLabels: async (id, labels) => {
         const post = await postsRepository.getPostById(id);
         if (!post) {
-            throw ({ message: "Post not found", statusCode: 404 });
+            throw new AppError("Post not found", 404);
         }
 
         if (!labels || !labels.length > 0) {
-            throw ({ message: "Invalid labels", statusCode: 400 });
+            throw new AppError("Invalid labels", 400);
         }
 
         const removed = await postsRepository.removeLabels(id);
 
         if (!removed) {
-            throw ({ message: "Labels not removed", statusCode: 500 });
+            throw new AppError("Labels not removed", 500);
         }
 
         const added = await postsRepository.addLabels(id, labels);
 
         if (!added) {
-            throw ({ message: "Labels not added", statusCode: 500 });
+            throw new AppError("Labels not added", 500);
         }
 
         const newLabels = await postsRepository.getLabelsByPostId(id);
@@ -158,15 +159,15 @@ const postsService = {
     deletePost: async (id) => {
         const post = await postsRepository.getPostById(id);
         if (!post) {
-            throw ({ message: "Post not found", statusCode: 404 });
+            throw new AppError("Post not found", 404);
         }
-+
+
         await postsRepository.removeAllReactionsByPostId(id);
         await postsRepository.removeLabels(id);
 
         const deleted = await postsRepository.deletePost(id);
         if (!deleted) {
-            throw ({ message: "Post deletion failed", statusCode: 500 });
+            throw new AppError("Post deletion failed", 500);
         }
 
         return { message: "Post deleted successfully", post: deleted };
@@ -175,7 +176,7 @@ const postsService = {
     getPostReactions: async (id) => {
         const post = await postsRepository.getPostById(id);
         if (!post) {
-            throw ({ message: "Post not found", statusCode: 404 });
+            throw new AppError("Post not found", 404);
         }
         const reactions = await postsRepository.getPostReactions(id);
         return reactions;
@@ -184,27 +185,27 @@ const postsService = {
     createPostReaction: async (data) => {
         const { postId, userId } = data;
         if (!postId || !userId) {
-            throw ({ message: "Invalid data", statusCode: 400 });
+            throw new AppError("Invalid data", 400);
         }
 
         const user = await userRepository.getUserById(userId);
         if (!user) {
-            throw ({ message: "User not found", statusCode: 404 });
+            throw new AppError("User not found", 404);
         }
 
         const post = await postsRepository.getPostById(postId);
         if (!post) {
-            throw ({ message: "Post not found", statusCode: 404 });
+            throw new AppError("Post not found", 404);
         }
 
         const reaction = await postsRepository.getPostReactions(postId);
         if (reaction && reaction.some(r => r.userId === userId)) {
-            throw ({ message: "Reaction already exists", statusCode: 400 });
+            throw new AppError("Reaction already exists", 400);
         }
 
         const reactionId = await postsRepository.addReaction({ postId, userId });
         if (!reactionId) {
-            throw ({ message: "Reaction failed", statusCode: 500 });
+            throw new AppError("Reaction failed", 500);
         }
 
         await notificationsService.createNotificationPostReaction({
@@ -220,12 +221,12 @@ const postsService = {
     deletePostReaction: async (data) => {
         const { postId, userId } = data;
         if (!postId || !userId) {
-            throw ({ message: "Invalid data", statusCode: 400 });
+            throw new AppError("Invalid data", 400);
         }
 
         const deleted = await postsRepository.removeReaction({ postId, userId });
         if (!deleted) {
-            throw ({ message: "Reaction not found", statusCode: 404 });
+            throw new AppError("Reaction not found", 404);
         }
 
         return { message: "Reaction removed successfully", reactionId: deleted };
