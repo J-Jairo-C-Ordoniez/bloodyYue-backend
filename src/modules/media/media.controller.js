@@ -1,117 +1,77 @@
-import { error, success } from "../../utils/response/response.js";
+import { success } from "../../utils/response/response.js";
 import mediaService from "./media.service.js";
-
+import asyncHandler from "../../utilsCode/asyncHandler.js";
+import AppError from "../../utils/errors/AppError.js";
 
 const mediaController = {
-    uploadImageUser: async (req, res) => {
-        try {
-            const { context } = req.body;
-            const file = req.file;
-            const userId = req.user.userId;
+    uploadImageUser: asyncHandler(async (req, res) => {
+        const { context } = req.body;
+        const file = req.file;
+        const userId = req.user.userId;
 
-            if (!file) {
-                return error(req, res, 'File is required', 400);
-            }
+        if (!file) throw new AppError('File is required', 400);
+        if (!userId) throw new AppError('User is required', 400);
 
-            if (!userId) {
-                return error(req, res, 'User is required', 400);
-            }
+        const folder = `users/${userId}`;
+        const publicId = context;
 
-            const folder = `users/${userId}`;
-            const publicId = context;
+        const url = await mediaService.uploadImage(file, folder, publicId);
+        success(req, res, url, 201);
+    }),
 
-            const url = await mediaService.uploadImage(file, folder, publicId);
+    uploadImagePost: asyncHandler(async (req, res) => {
+        const { context } = req.body;
+        const file = req.file;
 
-            success(req, res, url, 201);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+        if (!file) throw new AppError('File is required', 400);
 
-    uploadImagePost: async (req, res) => {
-        try {
-            const { context } = req.body;
-            const file = req.file;
+        const folder = `posts/`;
+        const publicId = context;
 
-            if (!file) {
-                return error(req, res, 'File is required', 400);
-            }
+        const url = await mediaService.uploadImage(file, folder, publicId);
+        success(req, res, url, 201);
+    }),
 
-            const folder = `posts/`;
-            const publicId = context;
+    uploadShortsPost: asyncHandler(async (req, res) => {
+        const { context } = req.body;
+        const file = req.file;
+        const userId = req.user.userId;
 
-            const url = await mediaService.uploadImage(file, folder, publicId);
+        if (!file) throw new AppError('File is required', 400);
+        if (!userId) throw new AppError('User is required', 400);
 
-            success(req, res, url, 201);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+        const folder = `posts/`;
+        const publicId = context;
 
-    uploadShortsPost: async (req, res) => {
-        try {
-            const { context } = req.body;
-            const file = req.file;
-            const userId = req.user.userId;
+        const url = await mediaService.uploadShorts(file, folder, publicId);
+        success(req, res, url, 201);
+    }),
 
-            if (!file) {
-                return error(req, res, 'File is required', 400);
-            }
+    uploadImageCommission: asyncHandler(async (req, res) => {
+        const { context } = req.body;
+        const file = req.file;
 
-            if (!userId) {
-                return error(req, res, 'User is required', 400);
-            }
+        if (!file) throw new AppError('File is required', 400);
 
-            const folder = `posts/`;
-            const publicId = context;
+        const folder = `commissions/`;
+        const publicId = context;
 
-            const url = await mediaService.uploadShorts(file, folder, publicId);
+        const url = await mediaService.uploadImage(file, folder, publicId);
+        success(req, res, url, 201);
+    }),
 
-            success(req, res, url, 201);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    uploadImageHero: asyncHandler(async (req, res) => {
+        const { context } = req.body;
+        const file = req.file;
 
-    uploadImageCommission: async (req, res) => {
-        try {
-            const { context } = req.body;
-            const file = req.file;
+        if (!file) throw new AppError('File is required', 400);
 
-            if (!file) {
-                return error(req, res, 'File is required', 400);
-            }
+        const folder = `hero/`;
+        const publicId = context;
 
-            const folder = `commissions/`;
-            const publicId = context;
-
-            const url = await mediaService.uploadImage(file, folder, publicId);
-
-            success(req, res, url, 201);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
-
-    uploadImageHero: async (req, res) => {
-        try {
-            const { context } = req.body;
-            const file = req.file;
-
-            if (!file) {
-                return error(req, res, 'File is required', 400);
-            }
-
-            const folder = `hero/`;
-            const publicId = context;
-
-            const url = await mediaService.uploadImage(file, folder, publicId);
-
-            success(req, res, url, 201);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+        const url = await mediaService.uploadImage(file, folder, publicId);
+        success(req, res, url, 201);
+    }),
 };
 
 export default mediaController;

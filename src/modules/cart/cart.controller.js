@@ -1,56 +1,37 @@
 import cartService from './cart.service.js';
-import { success, error } from '../../utils/response/response.js';
+import { success } from '../../utils/response/response.js';
+import asyncHandler from '../../utilsCode/asyncHandler.js';
 
 const cartController = {
-    addToCart: async (req, res) => {
-        try {
-            const {userId} = req.user;
-            const item = await cartService.addToCart(userId, req.body);
-            success(req, res, item, 201);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    addToCart: asyncHandler(async (req, res) => {
+        const { userId } = req.user;
+        const item = await cartService.addToCart(userId, req.body);
+        success(req, res, item, 201);
+    }),
 
-    getAllItemsCart: async (req, res) => {
-        try {
-            const {userId} = req.user;
-            const cart = await cartService.getAllItemsCart(userId);
-            success(req, res, cart, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getAllItemsCart: asyncHandler(async (req, res) => {
+        const { userId } = req.user;
+        const cart = await cartService.getAllItemsCart(userId);
+        success(req, res, cart, 200);
+    }),
 
-    getItemById: async (req, res) => {
-        try {
-            const {cartItemId} = req.params;
-            const item = await cartService.getItemById(cartItemId);
-            success(req, res, item, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getItemById: asyncHandler(async (req, res) => {
+        const { cartItemId } = req.params;
+        const item = await cartService.getItemById(cartItemId);
+        success(req, res, item, 200);
+    }),
 
-    updateItem: async (req, res) => {
-        try {
-            const {cartItemId} = req.params;
-            const item = await cartService.updateItem(cartItemId, req.body);
-            success(req, res, item, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    updateItem: asyncHandler(async (req, res) => {
+        const { cartItemId } = req.params;
+        const item = await cartService.updateItem(cartItemId, req.body);
+        success(req, res, item, 200);
+    }),
 
-    changeItemStatus: async (req, res) => {
-        try {
-            const {cartItemId} = req.params;
-            const item = await cartService.changeItemStatus(cartItemId);
-            success(req, res, item, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    }
+    changeItemStatus: asyncHandler(async (req, res) => {
+        const { cartItemId } = req.params;
+        const item = await cartService.changeItemStatus(cartItemId);
+        success(req, res, item, 200);
+    })
 }
 
 export default cartController;

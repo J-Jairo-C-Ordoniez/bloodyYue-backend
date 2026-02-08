@@ -1,105 +1,64 @@
 import salesService from './sales.service.js';
-import { success, error } from '../../utils/response/response.js';
+import { success } from '../../utils/response/response.js';
+import asyncHandler from '../../utilsCode/asyncHandler.js';
 
 const salesController = {
-    createSale: async (req, res) => {
-        try {
-            const { userId } = req.user;
-            const sale = await salesService.createSale(userId, req.body);
+    createSale: asyncHandler(async (req, res) => {
+        const { userId } = req.user;
+        const sale = await salesService.createSale(userId, req.body);
+        success(req, res, sale, 201);
+    }),
 
-            success(req, res, sale, 201);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getSales: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const sales = await salesService.getSales(id);
+        success(req, res, sales, 200);
+    }),
 
-    getSales: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const sales = await salesService.getSales(id);
+    getSaleById: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const sale = await salesService.getSalesById(id);
+        success(req, res, sale, 200);
+    }),
 
-            success(req, res, sales, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getSalesSold: asyncHandler(async (req, res) => {
+        const sales = await salesService.getSalesSold();
+        success(req, res, sales, 200);
+    }),
 
-    getSaleById: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const sale = await salesService.getSalesById(id);
-            success(req, res, sale, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getSalesByUserId: asyncHandler(async (req, res) => {
+        const { userId } = req.user;
+        const sales = await salesService.getSalesByUserId(userId);
+        success(req, res, sales, 200);
+    }),
 
-    getSalesSold: async (req, res) => {
-        try {
-            const { userId } = req.user;
-            const sales = await salesService.getSalesSold();
-            success(req, res, sales, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getSalesByPeriod: asyncHandler(async (req, res) => {
+        const { period } = req.params;
+        const sales = await salesService.getSalesByPeriod(period);
+        success(req, res, sales, 200);
+    }),
 
-    getSalesByUserId: async (req, res) => {
-        try {
-            const { userId } = req.user;
+    getDetailsSale: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const detailsSale = await salesService.getDetailsSale(id);
+        success(req, res, detailsSale, 200);
+    }),
 
-            const sales = await salesService.getSalesByUserId(userId);
-            success(req, res, sales, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    updateDetailsSaleStatus: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const { status } = req.body;
+        const { userId } = req.user;
 
-    getSalesByPeriod: async (req, res) => {
-        try {
-            const { period } = req.params;
-            const sales = await salesService.getSalesByPeriod(period);
+        const detailsSale = await salesService.updateDetailsSaleStatus(userId, id, status);
+        success(req, res, detailsSale, 200);
+    }),
 
-            success(req, res, sales, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
-
-    getDetailsSale: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const detailsSale = await salesService.getDetailsSale(id);
-            success(req, res, detailsSale, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
-
-    updateDetailsSaleStatus: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const { status } = req.body;
-            const { userId } = req.user;
-
-            const detailsSale = await salesService.updateDetailsSaleStatus(userId, id, status);
-            success(req, res, detailsSale, 200);
-        } catch (err) {
-
-            error(req, res, err.message, err.statusCode);
-        }
-    },
-
-    updateSaleStatus: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const { userId } = req.user;
-            const sale = await salesService.updateSaleStatus(userId, id, req.body.status);
-            success(req, res, sale, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    updateSaleStatus: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const { userId } = req.user;
+        const sale = await salesService.updateSaleStatus(userId, id, req.body.status);
+        success(req, res, sale, 200);
+    }),
 }
 
 export default salesController;

@@ -1,89 +1,58 @@
 import commissionsService from './commissions.service.js';
-import { success, error } from '../../utils/response/response.js';
+import { success } from '../../utils/response/response.js';
+import asyncHandler from '../../utilsCode/asyncHandler.js';
 
 const commissionsController = {
-    createCommission: async (req, res) => {
-        try {
-            const { userId } = req.user;
-            const commission = await commissionsService.createCommission(userId, req.body);
-            success(req, res, commission, 201);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    createCommission: asyncHandler(async (req, res) => {
+        const { userId } = req.user;
+        const commission = await commissionsService.createCommission(userId, req.body);
+        success(req, res, commission, 201);
+    }),
 
-    getCommissions: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const commissions = await commissionsService.getCommissions(id);
-            success(req, res, commissions, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getCommissions: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const commissions = await commissionsService.getCommissions(id);
+        success(req, res, commissions, 200);
+    }),
 
-    getCommissionsById: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const commission = await commissionsService.getCommissionsById(id);
-            success(req, res, commission, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getCommissionsById: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const commission = await commissionsService.getCommissionsById(id);
+        success(req, res, commission, 200);
+    }),
 
-    getCommissionsByLabel: async (req, res) => {
-        try {
-            const { labelId } = req.params;
-            const commissions = await commissionsService.getCommissionsByLabel(labelId);
-            success(req, res, commissions, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getCommissionsByLabel: asyncHandler(async (req, res) => {
+        const { labelId } = req.params;
+        const commissions = await commissionsService.getCommissionsByLabel(labelId);
+        success(req, res, commissions, 200);
+    }),
 
-    getCommissionsByTitle: async (req, res) => {
-        try {
-            const { title } = req.params;
-            const commissions = await commissionsService.getCommissionsByTitle(title);
-            success(req, res, commissions, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getCommissionsByTitle: asyncHandler(async (req, res) => {
+        const { title } = req.params;
+        const commissions = await commissionsService.getCommissionsByTitle(title);
+        success(req, res, commissions, 200);
+    }),
 
-    getCommissionsByPrice: async (req, res) => {
-        try {
-            const { price } = req.params;
-            const commissions = await commissionsService.getCommissionsByPrice(price);
-            success(req, res, commissions, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getCommissionsByPrice: asyncHandler(async (req, res) => {
+        const { price } = req.params;
+        const commissions = await commissionsService.getCommissionsByPrice(price);
+        success(req, res, commissions, 200);
+    }),
 
-    updateCommission: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const { userId } = req.user;
-            const result = await commissionsService.updateCommission(userId, id, req.body);
-            success(req, res, result, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    updateCommission: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const { userId } = req.user;
+        const result = await commissionsService.updateCommission(userId, id, req.body);
+        success(req, res, result, 200);
+    }),
 
-    updateCommissionLabels: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const { labels } = req.body;
-            const { userId } = req.user;
-            const result = await commissionsService.updateCommissionLabels(userId, id, labels);
-            success(req, res, result, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    }
+    updateCommissionLabels: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const { labels } = req.body;
+        const { userId } = req.user;
+        const result = await commissionsService.updateCommissionLabels(userId, id, labels);
+        success(req, res, result, 200);
+    })
 }
 
 export default commissionsController

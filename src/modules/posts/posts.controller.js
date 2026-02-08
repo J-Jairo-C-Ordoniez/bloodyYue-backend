@@ -1,129 +1,81 @@
 import postsService from './posts.service.js';
-import { success, error } from '../../utils/response/response.js';
+import { success } from '../../utils/response/response.js';
+import asyncHandler from '../../utilsCode/asyncHandler.js';
 
 const postsController = {
-    createPost: async (req, res) => {
-        try {
-            const { userId } = req.user;
-            const post = await postsService.createPost(userId, req.body);
-            success(req, res, post, 201);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    createPost: asyncHandler(async (req, res) => {
+        const { userId } = req.user;
+        const post = await postsService.createPost(userId, req.body);
+        success(req, res, post, 201);
+    }),
 
-    getPosts: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const posts = await postsService.getPosts(id);
-            success(req, res, posts, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getPosts: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const posts = await postsService.getPosts(id);
+        success(req, res, posts, 200);
+    }),
 
-    getPostRandom: async (req, res) => {
-        try {
-            const post = await postsService.getPostRandom();
-            success(req, res, post, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getPostRandom: asyncHandler(async (req, res) => {
+        const post = await postsService.getPostRandom();
+        success(req, res, post, 200);
+    }),
 
-    getPost: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const post = await postsService.getPost(id);
-            success(req, res, post, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getPost: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const post = await postsService.getPost(id);
+        success(req, res, post, 200);
+    }),
 
-    getPostsByLabel: async (req, res) => {
-        try {
-            const { labelId } = req.params;
-            const posts = await postsService.getPostsByLabel(labelId);
-            success(req, res, posts, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getPostsByLabel: asyncHandler(async (req, res) => {
+        const { labelId } = req.params;
+        const posts = await postsService.getPostsByLabel(labelId);
+        success(req, res, posts, 200);
+    }),
 
-    getPostsByTitle: async (req, res) => {
-        try {
-            const { title } = req.params;
-            const posts = await postsService.getPostsByTitle(title);
-            success(req, res, posts, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getPostsByTitle: asyncHandler(async (req, res) => {
+        const { title } = req.params;
+        const posts = await postsService.getPostsByTitle(title);
+        success(req, res, posts, 200);
+    }),
 
-    updatePost: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const result = await postsService.updatePost(id, req.body);
-            success(req, res, result, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    updatePost: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const result = await postsService.updatePost(id, req.body);
+        success(req, res, result, 200);
+    }),
 
-    updatePostLabels: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const { labels } = req.body;
-            const result = await postsService.updatePostLabels(id, labels);
-            success(req, res, result, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    updatePostLabels: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const { labels } = req.body;
+        const result = await postsService.updatePostLabels(id, labels);
+        success(req, res, result, 200);
+    }),
 
-    deletePost: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const result = await postsService.deletePost(id);
+    deletePost: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const result = await postsService.deletePost(id);
+        success(req, res, result, 200);
+    }),
 
-            success(req, res, result, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getPostReactions: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const result = await postsService.getPostReactions(id);
+        success(req, res, result, 200);
+    }),
 
-    getPostReactions: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const result = await postsService.getPostReactions(id);
-            success(req, res, result, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    createPostReaction: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const { userId } = req.user;
+        const result = await postsService.createPostReaction({ postId: id, userId });
+        success(req, res, result, 201);
+    }),
 
-    createPostReaction: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const { userId } = req.user;
-            const result = await postsService.createPostReaction({ postId: id, userId });
-            success(req, res, result, 201);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
-
-    deletePostReaction: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const { userId } = req.user;
-            const result = await postsService.deletePostReaction({ postId: id, userId });
-            success(req, res, result, 201);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    }
+    deletePostReaction: asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const { userId } = req.user;
+        const result = await postsService.deletePostReaction({ postId: id, userId });
+        success(req, res, result, 201);
+    }),
 };
 
 export default postsController;

@@ -1,63 +1,40 @@
 import rolesService from './roles.service.js';
-import { success, error } from '../../utils/response/response.js';
+import { success } from '../../utils/response/response.js';
+import asyncHandler from '../../utilsCode/asyncHandler.js';
 
 const rolesController = {
-    createRole: async (req, res) => {
-        try {
-            const role = await rolesService.createRole(req.body);
-            success(req, res, role, 201);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    createRole: asyncHandler(async (req, res) => {
+        const role = await rolesService.createRole(req.body);
+        success(req, res, role, 201);
+    }),
 
-    getAllRoles: async (req, res) => {
-        try {
-            const roles = await rolesService.getAllRoles();
-            success(req, res, roles, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getAllRoles: asyncHandler(async (req, res) => {
+        const roles = await rolesService.getAllRoles();
+        success(req, res, roles, 200);
+    }),
 
-    getRoleById: async (req, res) => {
-        try {
-            const { rolId } = req.params;
-            const role = await rolesService.getRoleById(rolId);
-            success(req, res, role, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getRoleById: asyncHandler(async (req, res) => {
+        const { rolId } = req.params;
+        const role = await rolesService.getRoleById(rolId);
+        success(req, res, role, 200);
+    }),
 
-    getAllPermits: async (req, res) => {
-        try {
-            const permits = await rolesService.getAllPermits();
-            success(req, res, permits, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getAllPermits: asyncHandler(async (req, res) => {
+        const permits = await rolesService.getAllPermits();
+        success(req, res, permits, 200);
+    }),
 
-    assignPermit: async (req, res) => {
-        try {
-            const { rolId, permitId } = req.body;
-            const result = await rolesService.assignPermitToRole(rolId, permitId);
-            success(req, res, result, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    assignPermit: asyncHandler(async (req, res) => {
+        const { rolId, permitId } = req.body;
+        const result = await rolesService.assignPermitToRole(rolId, permitId);
+        success(req, res, result, 200);
+    }),
 
-    removePermit: async (req, res) => {
-        try {
-            const { rolId, permitId } = req.body;
-            const result = await rolesService.removePermitFromRole(rolId, permitId);
-            success(req, res, result, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    }
+    removePermit: asyncHandler(async (req, res) => {
+        const { rolId, permitId } = req.body;
+        const result = await rolesService.removePermitFromRole(rolId, permitId);
+        success(req, res, result, 200);
+    })
 }
 
 export default rolesController;

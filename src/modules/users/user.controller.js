@@ -1,78 +1,47 @@
 import userService from './user.service.js';
-import { success, error } from '../../utils/response/response.js';
+import { success } from '../../utils/response/response.js';
+import asyncHandler from '../../utilsCode/asyncHandler.js';
 
 const usersController = {
-    getUsers: async (req, res) => {
-        try {
-            const users = await userService.getUsers();
-            success(req, res, users, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getUsers: asyncHandler(async (req, res) => {
+        const users = await userService.getUsers();
+        success(req, res, users, 200);
+    }),
 
-    getMyProfile: async (req, res) => {
-        try {
-            const user = await userService.getMyProfile(req.user.userId);
-            success(req, res, user, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getMyProfile: asyncHandler(async (req, res) => {
+        const user = await userService.getMyProfile(req.user.userId);
+        success(req, res, user, 200);
+    }),
 
-    updateMyProfile: async (req, res) => {
-        try {
-            const user = await userService.updateMyProfile(req.user.userId, req.body);
-            success(req, res, user, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    updateMyProfile: asyncHandler(async (req, res) => {
+        const user = await userService.updateMyProfile(req.user.userId, req.body);
+        success(req, res, user, 200);
+    }),
 
-    getMyTestimony: async (req, res) => {
-        try {
-            const testimony = await userService.getMyTestimony(req.user.userId);
-            success(req, res, testimony, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getMyTestimony: asyncHandler(async (req, res) => {
+        const testimony = await userService.getMyTestimony(req.user.userId);
+        success(req, res, testimony, 200);
+    }),
 
-    createTestimony: async (req, res) => {
-        try {
-            const testimony = await userService.createTestimony(req.user.userId, req.body);
-            success(req, res, testimony, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    createTestimony: asyncHandler(async (req, res) => {
+        const testimony = await userService.createTestimony(req.user.userId, req.body);
+        success(req, res, testimony, 200);
+    }),
 
-    updateTestimony: async (req, res) => {
-        try {
-            const testimony = await userService.updateTestimony(req.user.userId, req.body);
-            success(req, res, testimony, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    updateTestimony: asyncHandler(async (req, res) => {
+        const testimony = await userService.updateTestimony(req.user.userId, req.body);
+        success(req, res, testimony, 200);
+    }),
 
-    deleteTestimony: async (req, res) => {
-        try {
-            const testimony = await userService.deleteTestimony(req.user.userId);
-            success(req, res, testimony, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    deleteTestimony: asyncHandler(async (req, res) => {
+        const testimony = await userService.deleteTestimony(req.user.userId);
+        success(req, res, testimony, 200);
+    }),
 
-    getTestimonies: async (req, res) => {
-        try {
-            const testimonies = await userService.getTestimonies();
-            success(req, res, testimonies, 200);
-        } catch (err) {
-            error(req, res, err.message, err.statusCode);
-        }
-    },
+    getTestimonies: asyncHandler(async (req, res) => {
+        const testimonies = await userService.getTestimonies();
+        success(req, res, testimonies, 200);
+    }),
 }
 
 export default usersController;

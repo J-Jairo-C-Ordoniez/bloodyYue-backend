@@ -1,15 +1,16 @@
-import 'dotenv/config';
-
+import express from 'express';
 import https from 'https';
 import fs from 'fs';
-import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import rateLimit from 'express-rate-limit';
+
+import config from './config/env.config.js';
 import socketConfig from './config/socket.config.js';
 import notFound from './middlewares/errors/notFound.middleware.js';
-import rateLimit from 'express-rate-limit';
+import globalErrorHandler from './middlewares/errors/error.middleware.js';
 
 import authRoutes from './modules/auth/auth.routes.js';
 import userRoutes from './modules/users/user.routes.js';
@@ -24,32 +25,24 @@ import labelsRoutes from './modules/labels/labels.routes.js';
 import rolesRoutes from './modules/roles/roles.routes.js';
 import notificationsRoutes from './modules/notifications/notifications.routes.js';
 
-import globalErrorHandler from './middlewares/errors/error.middleware.js';
-
-const PORT = process.env.PORT || 5000;
-
 const app = express();
-const server = https.createServer(
-  {
-    key: fs.readFileSync('./certs/localhost+2-key.pem'),
-    cert: fs.readFileSync('./certs/localhost+2.pem')
-  },
-  app
-);
 
-const io = socketConfig(server);
-
-app.use(cors({ origin: 'https://localhost:3000', credentials: true }));
+// Security and Middleware
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+app.use(cors({
+  origin: config.corsOrigin,
+  credentials: true
+}));
 app.use(cookieParser());
 app.use(express.json());
-app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+app.use(morgan(config.env === 'production' ? 'combined' : 'dev'));
+
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 300,
   standardHeaders: true,
   legacyHeaders: false,
 }));
-app.use(morgan('dev'));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -69,8 +62,24 @@ app.get('/', (req, res) => {
   res.send('BloodyYue Backend API is running');
 });
 
-// Middlewares
 app.use(notFound);
 app.use(globalErrorHandler);
 
-server.listen(PORT, () => { console.log(`Server running at https://localhost:${PORT}`) });
+let server;
+if (config.env === 'development') {
+  server = https.createServer(
+    {
+      key: fs.readFileSync('./certs/localhost+2-key.pem'),
+      cert: fs.readFileSync('./certs/localhost+2.pem')
+    },
+    app
+  );
+} else {
+  server = app;
+}
+
+const io = socketConfig(server);
+
+const serverInstance = server.listen(config.port, () => {
+  console.log(`Server running in ${config.env} mode on port ${config.port}`);
+});
