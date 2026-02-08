@@ -1,5 +1,6 @@
 import express from 'express';
 import https from 'https';
+import http from 'http';
 import fs from 'fs';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -27,7 +28,6 @@ import notificationsRoutes from './modules/notifications/notifications.routes.js
 
 const app = express();
 
-// Security and Middleware
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({
   origin: config.corsOrigin,
@@ -75,7 +75,7 @@ if (config.env === 'development') {
     app
   );
 } else {
-  server = app;
+  server = http.createServer(app);
 }
 
 const io = socketConfig(server);
