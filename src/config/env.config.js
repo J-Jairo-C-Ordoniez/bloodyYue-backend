@@ -37,7 +37,7 @@ export const config = {
         apiKey: process.env.CLOUDINARYAPIKEY,
         apiSecret: process.env.CLOUDINARYAPISECRET,
     },
-    corsOrigin: process.env.CORS_ORIGIN || 'https://localhost:3000',
+    corsOrigin: process.env.CORS_ORIGIN || 'https://bloody-yue.vercel.app/',
 };
 
 export default config;
