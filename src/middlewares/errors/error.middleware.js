@@ -14,12 +14,10 @@ const globalErrorHandler = (err, req, res, next) => {
         }, err.statusCode);
     }
 
-    // Production
     if (err.isOperational) {
         return error(req, res, err.message, err.statusCode);
     }
 
-    // Programming or other unknown error: don't leak error details
     console.error('ERROR 💥', err);
     error(req, res, 'Something went very wrong!', 500);
 };

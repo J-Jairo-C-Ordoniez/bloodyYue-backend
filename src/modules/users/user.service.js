@@ -154,10 +154,6 @@ const usersService = {
     getTestimonies: async () => {
         const testimonies = await userRepository.getTestimonies();
 
-        if (!testimonies) {
-            throw new AppError("Testimonies not found", 404);
-        }
-
         return testimonies;
     },
 };
