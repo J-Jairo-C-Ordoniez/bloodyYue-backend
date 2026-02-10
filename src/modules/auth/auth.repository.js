@@ -11,7 +11,7 @@ const authRepository = {
                 `INSERT INTO users (${columns}) VALUES (${placeholders})`,
                 values
             );
-            return (result.insertId) ? { id: result.insertId, ...data } : null;
+            return (result.insertId) ? { userId: result.insertId, ...data } : null;
         } catch (err) {
             throw ({ message: err.message, statusCode: 500 });
         }
